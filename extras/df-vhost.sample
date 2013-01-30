@@ -2,12 +2,12 @@
 	ServerName df
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /Users/mschwartz/modus/www/DreamFactory/add/docroot/
+	DocumentRoot /Users/mschwartz/modus/www/DreamFactory/docroot/
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /Users/mschwartz/modus/www/DreamFactory/add/docroot/>
+	<Directory /Users/mschwartz/modus/www/DreamFactory/docroot/>
 		Options All MultiViews
 		AllowOverride All
 		Order allow,deny
