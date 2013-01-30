@@ -54,5 +54,9 @@ $ ln -s ../sites-available/whatever-vhost .
 $ sudo apachectl restart
 ```
 
+For projects I have set up in repositories like this one, I create a vhost.sample file in the repo.  
+You can copy this to your sites-enabled directory and edit it so that it works with your set up.
+You probably have your clone of the git repo in a different place than I do.
+
 At this point you should be able to edit and develop locally, using your clone of the git repository.
 
