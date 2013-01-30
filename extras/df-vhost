@@ -1,0 +1,23 @@
+<VirtualHost *:80>
+	ServerName df
+	ServerAdmin webmaster@localhost
+
+	DocumentRoot /Users/mschwartz/modus/www/DreamFactory/add/docroot/
+	<Directory />
+		Options FollowSymLinks
+		AllowOverride None
+	</Directory>
+	<Directory /Users/mschwartz/modus/www/DreamFactory/add/docroot/>
+		Options All MultiViews
+		AllowOverride All
+		Order allow,deny
+		allow from all
+	</Directory>
+	<Location /service/>
+	    ProxyPass http://modus_create.cloud.dreamfactory.com/app/add/
+	    ProxyPassReverse http://modus_create.cloud.dreamfactory.com/app/add/
+	</Location>
+	ErrorLog /var/log/apache2/df-error.log
+	LogLevel warn
+	CustomLog /var/log/apache2/df-access.log combined
+</VirtualHost>
