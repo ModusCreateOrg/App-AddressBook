@@ -1,6 +1,7 @@
 Ext.define('ab.ux.SchemaGrid', {
     extend : 'Ext.grid.Panel',
     alias  : 'widget.schemagrid',
+    requires: [ 'Ext.Action' ],
 
     autoSizeColumns : true,
     autoFill        : true,

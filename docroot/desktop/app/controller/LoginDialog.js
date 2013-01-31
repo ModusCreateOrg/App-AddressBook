@@ -37,19 +37,22 @@ Ext.define('ab.controller.LoginDialog', {
         dialog.disable();
         dialog.setMessage('Logging in...');
 
-        debugger;
         Ext.Ajax.request({
             url: '/service/REST/User/Login',
             method: 'POST',
             headers: {
                 'X-Application-Name': 'add'
             },
-            params: {
+            jsonData: {
                 username: username,
                 password: password
             },
-            callback: function() {
-                console.dir(arguments);
+            success: function(response) {
+                var o = Ext.decode(response.responseText);
+                    ab.data.user = o;
+                    dialog.close();
+                    me.application.fireEvent('loginsuccessful');
+                console.dir(o);
             }
         });
 
