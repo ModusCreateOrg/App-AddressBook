@@ -62,8 +62,6 @@ Ext.define('ab.controller.Main', {
 
                 Ext.getBody().unmask();
                 me.getController('LoginDialog').showDialog();
-
-
             }
         });
 

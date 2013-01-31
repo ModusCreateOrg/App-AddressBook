@@ -135,6 +135,6 @@ Ext.define('ab.view.Main', {
 
     onAfterRenderUpdateButton : function() {
         var user = ab.data.user;
-        this.down('#user-button').setText(user.firstName + ' ' + user.lastName);
+        this.down('#user-button').setText(user.display_name);
     }
 });
