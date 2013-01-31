@@ -14,8 +14,8 @@
 		allow from all
 	</Directory>
 	<Location /service/>
-	    ProxyPass http://modus_create.cloud.dreamfactory.com/app/add/
-	    ProxyPassReverse http://modus_create.cloud.dreamfactory.com/app/add/
+	    ProxyPass http://modus_create.cloud.dreamfactory.com/
+	    ProxyPassReverse http://modus_create.cloud.dreamfactory.com/
 	</Location>
 	ErrorLog /var/log/apache2/df-error.log
 	LogLevel warn

@@ -8,7 +8,9 @@ Ext.define('ab.controller.Main', {
     init : function() {
         var me = this;
 
+        var production = window.location.host.indexOf('dreamfactory.com') !== -1;
         ab.data = {
+            serviceUrl: production ? '/services/' : '/',
             user : {
                 userId : 0
             }
@@ -45,7 +47,7 @@ Ext.define('ab.controller.Main', {
         Ext.getBody().mask('Loading schemas...');
 
         Ext.Ajax.request({
-            url     : '/services/Schemas.sjs?method=get',
+            url     : ab.data.serviceUrl + 'json/Schemas.json',
             success : function(resp) {
                 var data;
 
