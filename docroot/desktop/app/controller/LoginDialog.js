@@ -37,24 +37,29 @@ Ext.define('ab.controller.LoginDialog', {
         dialog.disable();
         dialog.setMessage('Logging in...');
 
-        Ext.Ajax.request({
-            url: '/service/REST/User/Login',
-            method: 'POST',
-            headers: {
-                'X-Application-Name': 'add'
-            },
-            jsonData: {
-                username: username,
-                password: password
-            },
-            success: function(response) {
-                var o = Ext.decode(response.responseText);
-                    ab.data.user = o;
-                    dialog.close();
-                    me.application.fireEvent('loginsuccessful');
-                console.dir(o);
-            }
+        ab.ux.DreamFactory.login(username, password, function(o) {
+            ab.data.user = o;
+            dialog.close();
+            me.application.fireEvent('loginsuccessful');
         });
+//        Ext.Ajax.request({
+//            url: '/service/REST/User/Login',
+//            method: 'POST',
+//            headers: {
+//                'X-Application-Name': 'add'
+//            },
+//            jsonData: {
+//                username: username,
+//                password: password
+//            },
+//            success: function(response) {
+//                var o = Ext.decode(response.responseText);
+//                    ab.data.user = o;
+//                    dialog.close();
+//                    me.application.fireEvent('loginsuccessful');
+//                console.dir(o);
+//            }
+//        });
 
 //        rpc('Users.login', {
 //            params : {

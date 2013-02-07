@@ -1,1 +1,196 @@
-{"UserGroups":{"name":"UserGroups","fields":[{"name":"userGroupId","type":"int","autoIncrement":true},{"name":"groupName","size":128}],"primaryKey":"userGroupId"},"Users":{"name":"Users","fields":[{"name":"userId","type":"int","autoIncrement":true,"header":"ID","width":40},{"name":"firstName","size":64,"header":"First Name","required":true,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"lastName","size":64,"header":"Last Name","required":true,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"email","size":64,"header":"Email","width":200,"required":true,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"imageUrl","header":"Image URL","size":1024,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"twitter","header":"Twitter","size":1024,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"skype","header":"Skype","size":1024,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"username","size":64,"header":"Username","required":true,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"password","size":32,"serverOnly":true,"editor":{"xtype":"passwordfield","fieldLabel":"Password"},"required":"add"},{"name":"salt","size":16,"serverOnly":true},{"name":"recordCount","type":"int","reserved":true,"header":"Records","width":60},{"name":"notes","size":255,"header":"Notes","autoExpand":true,"editor":{"xtype":"textarea","anchor":"100%"}},{"name":"creator","type":"int","header":"Created","width":150,"renderer":"creator"},{"name":"created","type":"int"},{"name":"creatorIp","size":15},{"name":"creatorInfo","size":1024,"reserved":true},{"name":"editor","type":"int","header":"Edited","width":150,"renderer":"editor"},{"name":"edited","type":"int"},{"name":"editorIp","size":15},{"name":"editorInfo","size":1024,"reserved":true}],"primaryKey":"userId"},"UserInfo":{"name":"UserInfo","fields":[{"name":"infoId","type":"int","autoIncrement":true},{"name":"ordinal","type":"int","defaultValue":0},{"name":"userId","type":"int"},{"name":"infoType","size":32,"header":"Type","editor":{"xtype":"typecombofield","editable":false}},{"name":"phone","size":32,"header":"Phone","editor":{"xtype":"textfield","anchor":"100%"}},{"name":"email","size":64,"header":"Email","width":200,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"address","size":255,"header":"Address","autoExpand":true,"editor":{"xtype":"textfield","anchor":"100%"}},{"name":"city","size":64,"header":"City","editor":{"xtype":"textfield","anchor":"100%"}},{"name":"state","size":64,"header":"State","editor":{"xtype":"textfield","anchor":"100%"}},{"name":"zip","size":32,"header":"Zip","editor":{"xtype":"textfield","anchor":"100%"}},{"name":"country","size":32,"header":"Country","editor":{"xtype":"textfield","anchor":"100%"}},{"name":"creator","type":"int"},{"name":"created","type":"int"},{"name":"creatorIp","size":15},{"name":"creatorInfo","size":1024,"reserved":true},{"name":"editor","type":"int"},{"name":"edited","type":"int"},{"name":"editorIp","size":15},{"name":"editorInfo","size":1024,"reserved":true}],"primaryKey":"infoId"},"UserRelationships":{"name":"UserRelationships","fields":[{"name":"userId","type":"int"},{"name":"userGroupId","type":"int"}],"primaryKey":"userId,userGroupId"},"success":true}
+{
+    "ContactGroups"        : {
+        "name"       : "ContactGroups",
+        "fields"     : [
+            {
+                "name"          : "contactGroupId",
+                "type"          : "int",
+                "autoIncrement" : true
+            },
+            {
+                "name" : "groupName",
+                "size" : 128
+            }
+        ],
+        "primaryKey" : "userGroupId"
+    },
+    "Contacts"             : {
+        "name"       : "Contacts",
+        "fields"     : [
+            {
+                "name"          : "contactId",
+                "type"          : "int",
+                "autoIncrement" : true,
+                "header"        : "ID",
+                "width"         : 40
+            },
+            {
+                "name"     : "firstName",
+                "size"     : 64,
+                "header"   : "First Name",
+                "required" : true,
+                "editor"   : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"     : "lastName",
+                "size"     : 64,
+                "header"   : "Last Name",
+                "required" : true,
+                "editor"   : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "imageUrl",
+                "header" : "Image URL",
+                "size"   : 1024,
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "twitter",
+                "header" : "Twitter",
+                "size"   : 1024,
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "skype",
+                "header" : "Skype",
+                "size"   : 1024,
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"       : "notes",
+                "size"       : 1024,
+                "header"     : "Notes",
+                "autoExpand" : true,
+                "editor"     : {
+                    "xtype"  : "textarea",
+                    "anchor" : "100%"
+                }
+            }
+        ],
+        "primaryKey" : "userId"
+    },
+    "ContactInfo"          : {
+        "name"       : "ContactInfo",
+        "fields"     : [
+            {
+                "name"          : "infoId",
+                "type"          : "int",
+                "autoIncrement" : true
+            },
+            {
+                "name"         : "ordinal",
+                "type"         : "int",
+                "defaultValue" : 0
+            },
+            {
+                "name" : "contactId",
+                "type" : "int"
+            },
+            {
+                "name"   : "infoType",
+                "size"   : 32,
+                "header" : "Type",
+                "editor" : {
+                    "xtype"    : "typecombofield",
+                    "editable" : false
+                }
+            },
+            {
+                "name"   : "phone",
+                "size"   : 32,
+                "header" : "Phone",
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "email",
+                "size"   : 64,
+                "header" : "Email",
+                "width"  : 200,
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"       : "address",
+                "size"       : 255,
+                "header"     : "Address",
+                "autoExpand" : true,
+                "editor"     : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "city",
+                "size"   : 64,
+                "header" : "City",
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "state",
+                "size"   : 64,
+                "header" : "State",
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "zip",
+                "size"   : 32,
+                "header" : "Zip",
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            },
+            {
+                "name"   : "country",
+                "size"   : 32,
+                "header" : "Country",
+                "editor" : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
+            }
+        ],
+        "primaryKey" : "infoId"
+    },
+    "ContactRelationships" : {
+        "name"       : "ContactRelationships",
+        "fields"     : [
+            {
+                "name" : "contactId",
+                "type" : "int"
+            },
+            {
+                "name" : "contactGroupId",
+                "type" : "int"
+            }
+        ],
+        "primaryKey" : "contactId,contactGroupId"
+    },
+    "success"           : true
+}

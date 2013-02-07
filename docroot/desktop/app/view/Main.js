@@ -1,6 +1,7 @@
 Ext.define('ab.view.Main', {
     extend : 'Ext.panel.Panel',
     alias  : 'widget.main',
+    requires: [ 'Ext.form.Panel', 'Ext.tab.Panel' ],
     layout : 'fit',
     border : false,
 
@@ -13,7 +14,7 @@ Ext.define('ab.view.Main', {
             {
                 xtype : 'component',
                 width : 400,
-                html  : '<img style="margin: 0 5px 0 5px; float: left;" src="/img/Modus-create-logo-only.png" />' +
+                html  : '<img style="margin: 0 5px 0 5px; float: left;" src="../img/Modus-create-logo-only.png" />' +
                     '<span style="font-size: 24px;">Modus Create Address Book</span>'
 
             },
@@ -23,17 +24,17 @@ Ext.define('ab.view.Main', {
             {
                 text   : '', //ab.user.username
                 itemId : 'user-button',
-                icon   : '/img/famfam/user.png',
+                icon   : '../img/famfam/user.png',
                 menu   : [
                     {
                         text   : 'Log Out',
                         action : 'logout',
-                        icon   : '/img/famfam/control_power_blue.png'
+                        icon   : '../img/famfam/control_power_blue.png'
                     },
                     '-',
                     {
                         text   : 'Change Password...',
-                        icon   : '/img/famfam/cog.png',
+                        icon   : '../img/famfam/cog.png',
                         itemId : 'change-password-item'
                     }
                 ]
@@ -85,8 +86,8 @@ Ext.define('ab.view.Main', {
                     xtype      : 'schemagrid',
                     title      : 'Users',
                     border     : false,
-                    icon       : '/img/famfam/group.png',
-                    schema     : ab.Schemas.Users,
+                    icon       : '../img/famfam/group.png',
+                    schema     : ab.Schemas.Contacts,
                     filterable : true,
                     listeners  : {
                         scope         : me,
@@ -100,7 +101,7 @@ Ext.define('ab.view.Main', {
     onSchemaGridDeleteRecords : function(grid, records) {
         var tabPanel = this.down('#ab-tabPanel');
         Ext.each(records, function(record) {
-            var cmp = this.down('#userInfo-grid-' + record.data.userId);
+            var cmp = this.down('#userInfo-grid-' + record.data.contactId);
             if (cmp) {
                 tabPanel.remove(cmp);
             }
@@ -110,22 +111,25 @@ Ext.define('ab.view.Main', {
     onSchemaGridItemDblClick : function(view, record) {
         var tabPanel = this.down('#ab-tabPanel'),
             recordData = record.data,
-            tab = this.down('#userInfo-grid-' + recordData.userId),
+            tab = this.down('#userInfo-grid-' + recordData.contactId),
             title = recordData.firstName + ' ' + recordData.lastName;
 
 
-        console.log(title + " selected", recordData);
+//        console.log(title + " selected", recordData);
         if (!tab) {
             tab = tabPanel.add({
                 xtype       : 'schemagrid',
                 title       : Ext.String.ellipsis(title, 15),
-                itemId      : 'userInfo-grid-' + recordData.userId,
-                icon        : '/img/famfam/user_b.png',
+                itemId      : 'userInfo-grid-' + recordData.contactId,
+                icon        : '../img/famfam/user_b.png',
                 userInfo    : recordData,
-                schema      : ab.Schemas.UserInfo,
+                schema      : ab.Schemas.ContactInfo,
                 closable    : true,
                 extraParams : {
-                    userId : record.data.userId
+                    filter: 'contactId=' + record.data.contactId
+                },
+                extraFields: {
+                    contactId: record.data.contactId
                 }
             });
         }

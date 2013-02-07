@@ -8,10 +8,10 @@
 (function() {
 	var isMobile = navigator.userAgent.toLowerCase().match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i);
 	if (isMobile) {
-		window.location += 'mobile/';
+		window.location = 'mobile/index.html';
 	}
 	else {
-		window.location += 'desktop/';
+		window.location = 'desktop/index.html';
 	}
 }());
 </script>

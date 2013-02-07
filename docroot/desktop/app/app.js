@@ -17,7 +17,8 @@ Ext.application({
         'ab.ux.Renderers',
         'ab.ux.SchemaGrid',
         'ab.ux.PasswordField',
-        'ab.ux.TypeComboField'
+        'ab.ux.TypeComboField',
+        'ab.ux.DreamFactory'
     ],
     controllers : [
         'LoginDialog',
