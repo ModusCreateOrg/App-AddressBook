@@ -45,11 +45,20 @@
         var args = [];
 
         if (options) {
-            if (options.where) {
-                args.push(encodeURIComponent(options.where));
+            if (options.fields) {
+                if (Ext.isArray(options.fields)) {
+                    args.push('fields=' + encodeURIComponent(options.fields.join(',')));
+                }
+                else {
+                    args.push('fields=' + options.fields);
+                }
             }
-            else if (options.filters) {
-                args.push(encodeURIComponent(options.filters));
+
+            if (options.where) {
+                args.push('filter=' + encodeURIComponent(options.where));
+            }
+            else if (options.filter) {
+                args.push('filter=' + encodeURIComponent(options.filter));
             }
 
             if (options.order) {
@@ -110,11 +119,11 @@
         singleton : true,
         extend    : 'Ext.Base',
 
-        init: function() {
+        init : function() {
             console.log('init dream factory');
         },
 
-        login                 : function(username, password, callback) {
+        login : function(username, password, callback) {
             rpc({
                 url      : 'user/session/',
                 params   : {
@@ -125,110 +134,110 @@
             });
         },
 
-        logout: function(callback) {
+        logout : function(callback) {
             rpc({
-                url: 'user/session/',
-                method: 'DELETE',
-                callback: callback
+                url      : 'user/session/',
+                method   : 'DELETE',
+                callback : callback
             });
         },
 
-        session               : function(callback) {
+        session : function(callback) {
             rpc({
-                url    : 'user/session/',
-                callback: callback
+                url      : 'user/session/',
+                callback : callback
             });
         },
 
-        temporarySession: function(ticket, callback) {
+        temporarySession : function(ticket, callback) {
             rpc({
-                url: 'user/session/?ticket='+ticket,
-                callback: callback
+                url      : 'user/session/?ticket=' + ticket,
+                callback : callback
             });
         },
 
-        getProfile: function(callback) {
+        getProfile    : function(callback) {
             rpc({
-                url: 'user/profile/',
-                callback: callback
+                url      : 'user/profile/',
+                callback : callback
             });
         },
 
         // note: profile may contain one or more fields to update
-        updateProfile: function(profile, callback) {
+        updateProfile : function(profile, callback) {
             rpc({
-                url: 'user/profile/',
-                method: 'POST',
-                params: profile
+                url    : 'user/profile/',
+                method : 'POST',
+                params : profile
             });
         },
 
-        changePassword: function(oldPassword, newPassword, callback) {
+        changePassword : function(oldPassword, newPassword, callback) {
             rpc({
-                url: 'user/password/',
-                method: 'POST',
-                params: {
-                    old_password: oldPassword,
-                    new_password: newPassword
+                url      : 'user/password/',
+                method   : 'POST',
+                params   : {
+                    old_password : oldPassword,
+                    new_password : newPassword
                 },
-                callback: callback
+                callback : callback
             });
         },
 
         // throws 500 error on user admin
-        getChallenge: function(username, callback) {
+        getChallenge   : function(username, callback) {
             rpc({
-                url: 'user/challenge/?username=' + username,
-                callback: callback
+                url      : 'user/challenge/?username=' + username,
+                callback : callback
             });
         },
 
-        describeSystemTables  : function(callback) {
+        describeSystemTables : function(callback) {
             rpc({
                 url      : 'system/schema/',
                 callback : callback
             });
         },
 
-        describeTables        : function(callback) {
+        describeTables : function(callback) {
             rpc({
-                url      : 'db/schema/',
+                url      : 'schema/',
                 callback : callback
             });
         },
 
-        describeSystemTable   : function(name, callback) {
+        describeSystemTable : function(name, callback) {
             rpc({
                 url      : 'system/schema/' + name,
                 callback : callback
             });
         },
 
-        describeTable         : function(name, callback) {
+        describeTable : function(name, callback) {
             rpc({
-                url      : 'db/schema/' + tableName(name),
+                url      : 'schema/' + tableName(name),
                 callback : callback
             });
         },
 
-        deleteTable         : function(name, callback) {
+        deleteTable : function(name, callback) {
             rpc({
-                url      : 'db/schema/' + name,
-                method: 'DELETE',
+                url      : 'schema/' + name,
+                method   : 'DELETE',
                 callback : callback
             });
         },
 
-        createTable           : function(schema, callback) {
+        createTable : function(schema, callback) {
             rpc({
-                url      : 'db/schema/' + schema.table[0].name,
+                url      : 'schema/' + schema.table[0].name,
                 method   : 'POST',
-                params: schema,
+                params   : schema,
                 callback : callback
             });
         },
 
-        createSystemRecords   : function(table, records, callback) {
+        createSystemRecords : function(table, records, callback) {
             rpc({
                 url      : 'system/' + table,
                 method   : 'POST',
@@ -237,7 +246,7 @@
             });
         },
 
-        createRecords         : function(table, records, callback) {
+        createRecords : function(table, records, callback) {
             rpc({
                 url      : 'dB/' + tableName(table),
                 method   : 'POST',
@@ -266,7 +275,7 @@
             });
         },
 
-        retrieveRecords       : function(table, ids, callback, fields) {
+        retrieveRecords : function(table, ids, callback, fields) {
             var url = 'db/' + tableName(table);
             if (Ext.isArray(ids)) {
                 url += '?ids=' + ids.join(',');
@@ -286,7 +295,7 @@
             });
         },
 
-        filterSystemRecords   : function(table, options, callback) {
+        filterSystemRecords : function(table, options, callback) {
             var url = 'system/' + table,
                 args = buildQuery(options);
 
@@ -295,11 +304,11 @@
             }
             rpc({
                 url      : url,
-                callback : callback
+                callback : callback || options.callback
             });
         },
 
-        filterRecords         : function(table, options, callback) {
+        filterRecords : function(table, options, callback) {
             var url = 'db/' + tableName(table),
                 args = buildQuery(options);
 
@@ -309,7 +318,7 @@
 
             rpc({
                 url      : url,
-                callback : callback
+                callback : callback || options.callback
             });
         },
 
@@ -373,7 +382,12 @@
         deleteRecords : function(table, ids, callback, fields) {
             var url = 'db/' + tableName(table);
             if (Ext.isArray(ids)) {
-                url += '?ids=' + ids.join(',');
+                if (ids.length > 1) {
+                    url += '?ids=' + ids.join(',');
+                }
+                else {
+                    url += '?id=' + ids[0];
+                }
             }
             else {
                 url += '?id=' + ids;
@@ -391,7 +405,22 @@
             });
         },
 
-        putDocuments  : function(documents, callback) {
+        deleteRecord : function(table, id, callback, fields) {
+            var url = 'db/' + tableName(table) + '/' + id;
+            if (Ext.isArray(fields)) {
+                url += '?fields=' + fields.join(',');
+            }
+            else if (Ext.isString(fields)) {
+                url += '?fields=' + fields;
+            }
+            rpc({
+                url      : url,
+                method   : 'DELETE',
+                callback : callback
+            });
+        },
+
+        putDocuments : function(documents, callback) {
             var files = [],
                 folders = [],
                 params = {};

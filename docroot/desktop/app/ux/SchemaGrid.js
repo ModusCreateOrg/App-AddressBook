@@ -447,10 +447,20 @@ Ext.define('ab.ux.SchemaGrid', {
                     examples.push(record.data[primaryKey]);
                 });
 
-                ab.ux.DreamFactory.deleteRecords(schema.name, examples, function(o) {
+                if (me.deleteFn) {
+                    me.deleteFn(examples, function(o) {
+                        me.fireEvent('deleterecords', me, records);
+                        me.store.load();
+                    });
+                }
+                else {
                     me.fireEvent('deleterecords', me, records);
                     me.store.load();
-                });
+                }
+//                ab.ux.DreamFactory.deleteRecords(schema.name, examples, function(o) {
+//                    me.fireEvent('deleterecords', me, records);
+//                    me.store.load();
+//                });
 //                rpc(schema.name + '.delete' + schema.name, {
 //                    params : {
 //                        examples : Ext.encode(examples)

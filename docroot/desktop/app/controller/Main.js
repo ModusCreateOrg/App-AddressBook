@@ -159,13 +159,23 @@
         },
 
         onAjaxRequestException : function(conn, response, options, eOpts) {
+            var title = '',
+                message = response.responseText;
+            try {
+                var o = Ext.decode(message);
+                message = o.error[0].message;
+                title = o.error[0].code;
+            }
+            catch (e) {
+
+            }
             new Ext.window.Window({
-                title       : 'Server Error',
+                title       : 'Server Error ' + title,
                 modal       : true,
                 resizable   : false,
                 draggable   : false,
                 bodyStyle   : 'background: white; padding: 5px;',
-                html        : response.responseText,
+                html        : message,
                 buttonAlign : 'center',
                 buttons     : {
                     text    : 'OK',

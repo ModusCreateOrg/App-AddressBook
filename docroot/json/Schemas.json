@@ -12,7 +12,7 @@
                 "size" : 128
             }
         ],
-        "primaryKey" : "userGroupId"
+        "primaryKey" : "contactGroupId"
     },
     "Contacts"             : {
         "name"       : "Contacts",
@@ -82,7 +82,7 @@
                 }
             }
         ],
-        "primaryKey" : "userId"
+        "primaryKey" : "contactId"
     },
     "ContactInfo"          : {
         "name"       : "ContactInfo",
