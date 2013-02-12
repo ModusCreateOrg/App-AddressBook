@@ -1,19 +1,196 @@
+$include-form-sliders : false;
+//$include-floating-panels : false;
+$include-top-tabs : false;
+$include-bottom-tabs : true ! default;
+
+//$base-color: #9E9E9E;
+//$base-gradient: 'glossy';
+$font-family : "Ubuntu" ! default;
+
+//// Lists
+//$list-active-gradient: 'bevel';
+//$list-header-bg-color: '#999';
+$list-header-gradient: 'rmatte';
+//$list-bg-color: #eee;
+//$list-color: #333;
+//$list-pressed-color: #FFF;
+$list-active-gradient : 'rmatte';
+
 @import 'sencha-touch/default/all';
 
 // You may remove any of the following modules that you
 // do not use in order to create a smaller css file.
 @include sencha-panel;
 @include sencha-buttons;
-@include sencha-sheet;
-@include sencha-picker;
-@include sencha-tabs;
+// @include sencha-sheet;
+// @include sencha-picker;
+// @include sencha-tabs;
 @include sencha-toolbar;
 @include sencha-toolbar-forms;
 @include sencha-indexbar;
 @include sencha-list;
 @include sencha-layout;
-@include sencha-carousel;
-@include sencha-form;
-@include sencha-msgbox;
+// @include sencha-carousel;
+// @include sencha-form;
+// @include sencha-msgbox;
 
-// Your custom code goes here...
+html {
+  -webkit-font-smoothing : antialiased;
+}
+
+@mixin photo {
+  @include border-radius(5px);
+  background-size : cover;
+  display         : inline-block;
+  vertical-align  : middle;
+  margin-right    : 10px;
+}
+
+.x-list-normal .x-list-header {
+  background-color : '#999';
+}
+
+.header-logo {
+  background-size   : 170px 35px;
+  background-repeat : no-repeat;
+  width             : 170px;
+  height            : 35px;
+}
+
+
+
+// individual profile pages
+.person {
+  padding : 10px 10px 0 10px;
+  .photo {
+    @include photo;
+    width  : 30px;
+    height : 30px;
+  }
+
+  .name-title {
+    display        : inline-block;
+    vertical-align : middle;
+    .name {
+      font-weight   : bold;
+      font-size     : 1.1em;
+      white-space   : nowrap;
+      //border       : 1px solid red;
+      width         : 220px;
+      overflow      : hidden;
+      text-overflow : ellipsis;
+    }
+    .title {
+      color : #444;
+    }
+  }
+
+  // contact blocks for phone and email
+  .contact-methods {
+    margin-top : 20px;
+    a {
+      //@include box-shadow(inset 0px 1px 2px rgba(0, 0, 0, .5));
+      @include border-radius(5px);
+      text-decoration : none;
+      width           : 100%;
+      display         : block;
+      color           : #333;
+      margin-bottom   : 5px;
+      overflow        : hidden;
+      background      : #fff;
+      padding         : 10px;
+      font-weight     : bold;
+      font-size       : 1.1em;
+      &.touched {
+        @include background(linear-gradient(top bottom, rgb(178,222,254), rgb(85,174,243)));
+        text-shadow : 0px 1px #fff;
+      }
+      .contact {
+        width           : 30px;
+        height          : 30px;
+        background-size : 30px 30px;
+        display         : inline-block;
+        margin-right    : 5px;
+        vertical-align  : middle;
+        &.phone {
+          background-image : url("../images/phone1.png");
+        }
+        &.email {
+          background-image : url("../images/mail.png");
+        }
+        &.address {
+          background-image : url("../images/home.png");
+        }
+        &.twitter {
+          background-image : url("../images/twitter2.png");
+        }
+        &.skype {
+          background-image : url("../images/skype.png");
+        }
+      }
+    }
+
+    .contact-address {
+      //@include box-shadow(inset 0px 1px 2px rgba(0, 0, 0, .5));
+      @include border-radius(5px);
+      text-decoration : none;
+      width           : 100%;
+      display         : block;
+      color           : #333;
+      margin-bottom   : 5px;
+      overflow        : hidden;
+      background      : #fff;
+      padding         : 10px;
+      font-weight     : bold;
+      font-size       : 1em;
+      &.touched {
+        //@include background(linear-gradient(top bottom, #ccc, #ddd));
+        text-shadow : 0px 1px #fff;
+      }
+      .contact {
+        width           : 30px;
+        height          : 30px;
+        background-size : 30px 30px;
+        display         : inline-block;
+        margin-right    : 5px;
+        vertical-align  : middle;
+        &.address {
+          background-image : url("../images/address_book.png");
+          float: left;
+        }
+      }
+
+    }
+  }
+}
+
+.contact-rest {
+  margin-bottom: 0;
+  margin-left     : 35px;
+}
+.info-type {
+  font-weight: bold;
+  color: #2d2d2d;
+  font-size: 1em;
+  margin-bottom: 5px;
+}
+
+// list view of employees
+.employee_photo {
+  @include photo;
+  width  : 60px;
+  height : 60px;
+}
+
+.last_name {
+  font-weight : bold;
+}
+
+.info-clear {
+  margin-bottom: 10px;
+}
+
+.back-button {
+  margin-left: 0.528em !important;
+}
+

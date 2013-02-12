@@ -1,8 +1,9 @@
 /**
  * Created with JetBrains WebStorm.
  * User: mschwartz
- * Date: 2/6/13
- * Time: 4:47 AM
+ * Date: 2/11/13
+ * Time: 7:17 AM
+ * To change this template use File | Settings | File Templates.
  */
 
 (function() {
@@ -18,7 +19,7 @@
             method = 'POST';
         }
         Ext.Ajax.request({
-            url      : ab.data.serviceUrl + 'rest/' + config.url,
+            url      : common.DreamFactory.serviceUrl + 'rest/' + config.url,
             method   : method,
             headers  : headers,
             jsonData : config.params,
@@ -115,10 +116,18 @@
         };
     }
 
-    Ext.define('ab.ux.DreamFactory', {
+//    var production = window.location.host.indexOf('dreamfactory.com') !== -1;
+//    console.dir(window.location.host);
+//    console.dir(window.location.host.indexOf('dreamfactory.com'));
+//    ab.data = {
+//        serviceUrl : production ? '/' : '/service/',
+
+
+    Ext.define('common.DreamFactory', {
         singleton : true,
         extend    : 'Ext.Base',
 
+        serviceUrl: (window.location.host.indexOf('dreamfactory.com') !== -1) ? '/' : '/service/',
         init : function() {
             console.log('init dream factory');
         },

@@ -42,7 +42,7 @@
                     });
                 }
             });
-            ab.ux.DreamFactory.createTable({
+            common.DreamFactory.createTable({
                 table: [
                     {
                         name: schema.name,
@@ -147,7 +147,7 @@
             var me = this;
 
             me.viewport.removeAll();
-            ab.ux.DreamFactory.logout(function() {
+            common.DreamFactory.logout(function() {
                 me.getController('LoginDialog').showDialog();
             });
         },

@@ -37,7 +37,7 @@ Ext.define('ab.controller.LoginDialog', {
         dialog.disable();
         dialog.setMessage('Logging in...');
 
-        ab.ux.DreamFactory.login(username, password, function(o) {
+        common.DreamFactory.login(username, password, function(o) {
             ab.data.user = o;
             dialog.close();
             me.application.fireEvent('loginsuccessful');

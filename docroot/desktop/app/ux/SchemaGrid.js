@@ -15,34 +15,21 @@ Ext.define('ab.ux.SchemaGrid', {
         mode : 'MULTI'
     },
 
-    initComponent : function() {
+    initComponent : function () {
         var me = this,
             schema = me.schema,
             fields = schema.fields,
             id = me.id;
 
         me.store = me.buildStore(schema);
-        //
-        //        me.selModel = Ext.create('Ext.selection.RowModel', {
-        //            mode      : 'MULTI',
-        //            listeners : {
-        //                scope    : me,
-        //                select   : me.updatebuttons,
-        //                deselect : me.updatebuttons
-        //            }
-        //        });
 
         var columns = me.columns = [],
-            fieldHash = {},
-            field,
-            i;
+            fieldHash = {};
 
-        for (i in fields) {
-            field = fields[i];
+        Ext.iterate(fields, function(field) {
             fieldHash[field.name] = field;
 
-            if (field.header && !field.serverOnly) {
-                //                var flex = field.autoExpand ? 1 : 0;
+            if (field.header) {
                 var column = {
                     header    : field.header,
                     hidden    : field.hidden,
@@ -62,7 +49,8 @@ Ext.define('ab.ux.SchemaGrid', {
 
                 columns.push(column);
             }
-        }
+
+        });
 
         me.dockedItems = me.buildDockedItems();
 
@@ -77,12 +65,10 @@ Ext.define('ab.ux.SchemaGrid', {
         });
         me.fieldHash = fieldHash;
     },
-    buildStore    : function(schema) {
+    buildStore    : function (schema) {
         var me = this,
-            url = ab.data.serviceUrl + 'rest/db/' + schema.name,
-            extraParams = Ext.apply({
-//                method : 'list' + schema.name
-            }, me.extraParams || {});
+            url = common.DreamFactory.serviceUrl + 'rest/db/' + schema.name,
+            extraParams = me.extraParams;
 
         return Ext.data.Store.create({
             proxy     : {
@@ -93,23 +79,16 @@ Ext.define('ab.ux.SchemaGrid', {
                     root          : 'record',
                     record        : 'fields',
                     idProperty    : schema.primaryKey,
-                    totalProperty : 'count'
+                    totalProperty : 'meta.total'
                 },
                 headers     : {
                     'X-Application-Name' : 'add'
                 },
                 extraParams : extraParams,
                 pageParam   : false, //to remove param "page"
-                startParam  : false, //to remove param "start"
-                limitParam  : false, //to remove param "limit"
+                startParam  : 'offset', //to remove param "start"
+                limitParam  : 'limit', //to remove param "limit"
                 filterParam : false
-//                extraParams   : extraParams,
-//                actionMethods : {
-//                    create  : 'POST',
-//                    read    : 'POST',
-//                    update  : 'POST',
-//                    destroy : 'POST'
-//                }
             },
             fields    : schema.fields,
             listeners : {
@@ -120,7 +99,7 @@ Ext.define('ab.ux.SchemaGrid', {
         });
     },
 
-    buildDockedItems : function() {
+    buildDockedItems : function () {
         var me = this,
             store = me.store,
             Action = Ext.Action,
@@ -188,14 +167,11 @@ Ext.define('ab.ux.SchemaGrid', {
 
     },
 
-    filterTaskFn : function() {
-
-        this.store.load({
-//            _filter : this.down('#topToolbar').down('#filterField').getValue()
-        });
+    filterTaskFn : function () {
+        this.store.load();
     },
 
-    updatebuttons : function() {
+    updatebuttons : function () {
         var me = this,
             selections = me.getSelectionModel().getSelection(),
             deleteButton = me.actions[2],
@@ -216,19 +192,19 @@ Ext.define('ab.ux.SchemaGrid', {
         }
     },
 
-    onAddButton : function() {
+    onAddButton : function () {
         this.editRecord();
     },
 
-    onEditButton : function() {
+    onEditButton : function () {
         this.editRecord(this.getSelectionModel().getSelection()[0].data);
     },
 
-    onActivate : function() {
+    onActivate : function () {
         this.store.reload();
     },
 
-    onStoreBeforeLoad : function(store) {
+    onStoreBeforeLoad : function (store) {
         if (!this.filterable) {
             return;
         }
@@ -247,8 +223,7 @@ Ext.define('ab.ux.SchemaGrid', {
         }
         val = "'%" + val + "%'";
 
-//        debugger;
-        Ext.iterate(this.schema.fields, function(field) {
+        Ext.iterate(this.schema.fields, function (field) {
             if (field.size) {
                 filters.push(field.name + ' like ' + val);
             }
@@ -256,15 +231,14 @@ Ext.define('ab.ux.SchemaGrid', {
         if (filter.length) {
             filter += ' AND ';
         }
-        filter = filters.join(' OR ');
-        store.getProxy().extraParams.filter = filter;
+        store.getProxy().extraParams.filter = filter + filters.join(' OR ');
     },
 
-    onStoreLoad : function(store) {
+    onStoreLoad : function () {
         this.updatebuttons();
     },
 
-    editRecord : function(record) {
+    editRecord : function (record) {
         record = record || {};
 
         record = Ext.apply(record, this.extraFields);
@@ -272,11 +246,11 @@ Ext.define('ab.ux.SchemaGrid', {
         this.showEditDialog(record);
     },
 
-    onFilterFieldKeyDown : function() {
+    onFilterFieldKeyDown : function () {
         this.filterTask.delay(250);
     },
 
-    onItemContextMenu : function(view, moddel, itemEl, index, evtObj) {
+    onItemContextMenu : function (view, moddel, itemEl, index, evtObj) {
         var menu = this.contextMenu || (
             this.contextMenu = Ext.create('Ext.menu.Menu', {
                 items : this.actions
@@ -287,21 +261,17 @@ Ext.define('ab.ux.SchemaGrid', {
         menu.showAt(evtObj.getXY());
     },
 
-    showEditDialog : function(record) {
+    showEditDialog : function (record) {
 
         var me = this,
             schema = me.schema,
             fields = schema.fields,
             primaryKey = schema.primaryKey,
             items = [],
-            i,
-            field,
             fieldLabel,
             cfg;
 
-        for (i in fields) {
-            field = fields[i];
-
+        Ext.iterate(fields, function(field) {
             if (field.editor) {
                 fieldLabel = field.header || field.editor.fieldLabel;
 
@@ -313,7 +283,8 @@ Ext.define('ab.ux.SchemaGrid', {
 
                 items.push(cfg);
             }
-        }
+
+        });
 
         var win = Ext.create('Ext.window.Window', {
             title  : record[primaryKey] ? 'Edit Record' : 'Add Record',
@@ -338,7 +309,7 @@ Ext.define('ab.ux.SchemaGrid', {
                 },
                 {
                     text    : 'Cancel',
-                    handler : function(btn) {
+                    handler : function (btn) {
                         btn.up('window').close();
                     }
                 }
@@ -363,29 +334,29 @@ Ext.define('ab.ux.SchemaGrid', {
             y        : yPos,
             height   : newHeight,
             duration : 500,
-            callback : function() {
+            callback : function () {
                 buttonBarEl.show();
 
                 win.setHeight(newHeight);
                 winBody.fadeIn({duration : 500});
                 buttonBarEl.fadeIn({duration : 500});
-                Ext.Function.defer(function() {
+                Ext.Function.defer(function () {
                     form.items.items[0].focus()
                 }, 600)
             }
         });
     },
 
-    onWindowOkBtn : function(btn) {
+    onWindowOkBtn : function (btn) {
 
         var me = this,
             errors = [],
-            bullet = '<img src="../img/famfam/bullet_error.png" style="vertical-align: middle; align: left;" /> ',
+            bullet = '<img src="../img/famfam/bullet_error.png" style="vertical-align: middle;" /> ',
             win = btn.up('window'),
             record = win.record,
             schema = me.schema;
 
-        win.down('form').items.each(function(cmp) {
+        win.down('form').items.each(function (cmp) {
             if (!cmp.getValue) {
                 return;
             }
@@ -404,31 +375,20 @@ Ext.define('ab.ux.SchemaGrid', {
         }
 
         if (record[schema.primaryKey]) {
-            ab.ux.DreamFactory.updateRecords(schema.name, [record], function() {
+            common.DreamFactory.updateRecords(schema.name, [record], function () {
                 btn.up('window').close();
                 me.store.load();
             });
         }
         else {
-            ab.ux.DreamFactory.createRecords(schema.name, [record], function() {
+            common.DreamFactory.createRecords(schema.name, [record], function () {
                 btn.up('window').close();
                 me.store.load();
             });
         }
-//        Ext.Ajax.request({
-//            url     : '/services/' + schema.name + '.sjs',
-//            params  : {
-//                method  : 'edit' + schema.name.replace(/s$/, ''),
-//                example : Ext.encode(record)
-//            },
-//            success : function(response) {
-//                btn.up('window').close();
-//                me.store.load();
-//            }
-//        });
     },
 
-    deleteRecords : function() {
+    deleteRecords : function () {
         var me = this,
             schema = me.schema,
             primaryKey = schema.primaryKey,
@@ -437,18 +397,18 @@ Ext.define('ab.ux.SchemaGrid', {
             examples;
 
         if (len) {
-            Ext.MessageBox.confirm('Delete ' + len + ' Record(s) ', 'Are you sure?', function(btn) {
+            Ext.MessageBox.confirm('Delete ' + len + ' Record(s) ', 'Are you sure?', function (btn) {
                 if (btn !== 'yes') {
                     return;
                 }
                 examples = [];
 
-                Ext.each(records, function(record) {
+                Ext.each(records, function (record) {
                     examples.push(record.data[primaryKey]);
                 });
 
                 if (me.deleteFn) {
-                    me.deleteFn(examples, function(o) {
+                    me.deleteFn(examples, function () {
                         me.fireEvent('deleterecords', me, records);
                         me.store.load();
                     });
@@ -457,29 +417,11 @@ Ext.define('ab.ux.SchemaGrid', {
                     me.fireEvent('deleterecords', me, records);
                     me.store.load();
                 }
-//                ab.ux.DreamFactory.deleteRecords(schema.name, examples, function(o) {
-//                    me.fireEvent('deleterecords', me, records);
-//                    me.store.load();
-//                });
-//                rpc(schema.name + '.delete' + schema.name, {
-//                    params : {
-//                        examples : Ext.encode(examples)
-//                    },
-//                    fn     : function(o) {
-//                        if (!o.success) {
-//                            Ext.MessageBox.alert('Error', o.message);
-//                        }
-//                        else {
-//                            me.fireEvent('deleterecords', me, records);
-//                            me.store.load();
-//                        }
-//                    }
-//                });
             });
         }
     },
-    renderField   : function(value, p, r) {
-        // todo optimize
+
+    renderField   : function (value, p, r) {
         var me = this,
             renderer = me.format;
 
@@ -490,7 +432,8 @@ Ext.define('ab.ux.SchemaGrid', {
             return value;
         }
     },
-    destroy       : function() {
+
+    destroy       : function () {
         var contextMenu = this.contextMenu;
 
         if (contextMenu) {
@@ -500,4 +443,5 @@ Ext.define('ab.ux.SchemaGrid', {
 
         this.callParent(arguments);
     }
+
 });

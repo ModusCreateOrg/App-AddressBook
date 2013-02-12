@@ -17,7 +17,7 @@
                 return;
             }
 
-            ab.ux.DreamFactory.filterRecords(ab.Schemas.ContactInfo.name, {
+            common.DreamFactory.filterRecords(ab.Schemas.ContactInfo.name, {
                 fields   : 'infoId',
                 where    : 'contactId=' + recordId,
                 callback : function(o) {
@@ -26,7 +26,7 @@
                         associated.push(record.fields.infoId);
                     });
                     deleteInfoRecords(associated, function() {
-                        ab.ux.DreamFactory.deleteRecord(ab.Schemas.Contacts.name, recordId, function() {
+                        common.DreamFactory.deleteRecord(ab.Schemas.Contacts.name, recordId, function() {
                             Ext.defer(deleteOne, 0);
                         });
                     });
@@ -52,7 +52,7 @@
                 }
                 return;
             }
-            ab.ux.DreamFactory.deleteRecord(ab.Schemas.ContactInfo.name, recordId, function() {
+            common.DreamFactory.deleteRecord(ab.Schemas.ContactInfo.name, recordId, function() {
                 Ext.defer(deleteOne, 0);
             });
         }

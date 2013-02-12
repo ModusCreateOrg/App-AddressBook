@@ -1,10 +1,10 @@
 //<debug>
 Ext.Loader.setConfig({
-    enabled : true
+    enabled : true,
 //    // disableCaching: false,
-//    paths   : {
-//        ab : 'app'
-//    }
+    paths   : {
+        common : '../../common'
+    }
 });
 //</debug>
 
@@ -18,7 +18,7 @@ Ext.application({
         'ab.ux.SchemaGrid',
         'ab.ux.PasswordField',
         'ab.ux.TypeComboField',
-        'ab.ux.DreamFactory'
+        'common.DreamFactory'
     ],
     controllers : [
         'LoginDialog',
