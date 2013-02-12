@@ -2,7 +2,7 @@
 Ext.Loader.setPath({
     'Ext'    : 'touch/src',
     'mobile' : 'app',
-    'common': '../../common'
+    'common' : '../common'
 });
 //</debug>
 
@@ -15,8 +15,14 @@ Ext.application({
         'common.DreamFactory'
     ],
 
-    controllers: [ 'Main' ],
-    views : ['Main'],
+    controllers : [
+        'Main',
+        'Login'
+    ],
+    views       : [
+        'Main',
+        'Login'
+    ],
 
     icon : {
         '57'  : 'resources/icons/Icon.png',
@@ -70,7 +76,7 @@ Ext.application({
         Ext.fly('appLoadingIndicator').destroy();
 
         // Initialize the main view
-        Ext.Viewport.add(Ext.create('mobile.view.Main'));
+        Ext.Viewport.add(Ext.create('mobile.view.Login'));
     },
 
     onUpdated : function () {

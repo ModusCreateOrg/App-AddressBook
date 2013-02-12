@@ -31,22 +31,17 @@ Ext.define('mobile.controller.Main', {
                 me.onAfterContactDetailsLoad(o);
             }
         });
-//        Ext.Ajax.request({
-//            url    : '/services/UserInfo.sjs',
-//            scope  : this,
-//            params : {
-//                method : 'listUserInfo',
-//                userId : record.get('userId')
-//            },
-//            success : this.onAfterContactDetailsLoad
-//        });
     },
 
     onAfterContactDetailsLoad : function(data) {
         var me = this,
             record = me.selectedRecord;
 
-        me.showDetails(data.list);
+        var records = [];
+        Ext.iterate(data.record, function(record) {
+            records.push(record.fields);
+        });
+        me.showDetails(records);
 
         delete me.selectedRecord;
     },

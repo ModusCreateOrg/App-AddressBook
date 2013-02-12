@@ -5,6 +5,7 @@ Ext.define("mobile.view.Main", {
 
     requires : [
         'Ext.TitleBar',
+        'mobile.view.Login',
         'mobile.view.ContactList',
         'mobile.view.ContactInformation'
     ],
@@ -16,11 +17,10 @@ Ext.define("mobile.view.Main", {
             type : 'card'
         },
         items      : [
-
         ]
     },
     initialize : function() {
-
+console.log('initialize main');
         this.add([
             {
                 xtype  : 'titlebar',

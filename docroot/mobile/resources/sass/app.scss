@@ -31,8 +31,8 @@ $list-active-gradient : 'rmatte';
 @include sencha-list;
 @include sencha-layout;
 // @include sencha-carousel;
-// @include sencha-form;
-// @include sencha-msgbox;
+@include sencha-form;
+@include sencha-msgbox;
 
 html {
   -webkit-font-smoothing : antialiased;

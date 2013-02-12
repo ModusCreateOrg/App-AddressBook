@@ -33,7 +33,11 @@
                 }
             },
             failure  : function(response) {
-                console.dir(Ext.decode(response.responseText));
+                var o = Ext.decode(response.responseText);
+                console.dir(o);
+                if (config.callback) {
+                    config.callback(o);
+                }
             }
         });
     }

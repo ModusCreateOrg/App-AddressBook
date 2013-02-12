@@ -3,7 +3,7 @@ Ext.Loader.setConfig({
     enabled : true,
 //    // disableCaching: false,
     paths   : {
-        common : '../../common'
+        common : '../common'
     }
 });
 //</debug>
