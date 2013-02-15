@@ -9,20 +9,25 @@ Ext.Loader.setPath({
 Ext.application({
     name : 'mobile',
 
-    requires : [
-        'Ext.MessageBox',
-        'Ext.Ajax',
-        'common.DreamFactory'
+//    requires : [
+//        'Ext.MessageBox',
+//        'Ext.Ajax',
+//        'common.DreamFactory'
+//    ],
+
+    profiles: [
+        'Phone',
+        'Tablet'
     ],
 
     controllers : [
-        'Main',
+//        'Main',
         'Login'
     ],
-    views       : [
-        'Main',
-        'Login'
-    ],
+//    views       : [
+////        'Main',
+//        'Login'
+//    ],
 
     icon : {
         '57'  : 'resources/icons/Icon.png',
@@ -45,6 +50,7 @@ Ext.application({
     launch : function () {
         var me = this;
 
+
         var production = window.location.host.indexOf('dreamfactory.com') !== -1;
         mobile.data = {
             serviceUrl : production ? '/' : '/service/',
@@ -53,31 +59,31 @@ Ext.application({
             }
         };
 
-        Ext.Ajax.request({
-            url     : '../json/Schemas.json',
-            scope   : this,
-            success : this.onAfterSchemaLoad
-        });
+//        Ext.Ajax.request({
+//            url     : '../json/Schemas.json',
+//            scope   : this,
+//            success : this.onAfterSchemaLoad
+//        });
     },
 
-    onAfterSchemaLoad : function (response) {
-        var o;
-
-        try {
-            o = Ext.decode(response.responseText);
-        }
-        catch (e) {
-            console.dir(e);
-            Ext.Msg.alert('Error', 'Schemas did not load!  App cannot continue.');
-        }
-        mobile.schemas = o;
-
-        // Destroy the #appLoadingIndicator element
-        Ext.fly('appLoadingIndicator').destroy();
-
-        // Initialize the main view
-        Ext.Viewport.add(Ext.create('mobile.view.Login'));
-    },
+//    onAfterSchemaLoad : function (response) {
+//        var o;
+//
+//        try {
+//            o = Ext.decode(response.responseText);
+//        }
+//        catch (e) {
+//            console.dir(e);
+//            Ext.Msg.alert('Error', 'Schemas did not load!  App cannot continue.');
+//        }
+//        mobile.schemas = o;
+//
+//        // Destroy the #appLoadingIndicator element
+//        Ext.fly('appLoadingIndicator').destroy();
+//
+//        // Initialize the main view
+//        Ext.Viewport.add(Ext.create('mobile.view.Login'));
+//    },
 
     onUpdated : function () {
         Ext.Msg.confirm(

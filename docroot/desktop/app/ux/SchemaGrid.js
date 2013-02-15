@@ -68,7 +68,7 @@ Ext.define('ab.ux.SchemaGrid', {
     buildStore    : function (schema) {
         var me = this,
             url = common.DreamFactory.serviceUrl + 'rest/db/' + schema.name,
-            extraParams = me.extraParams;
+            extraParams = Ext.apply({ include_count: true}, me.extraParams);
 
         return Ext.data.Store.create({
             proxy     : {
@@ -79,7 +79,7 @@ Ext.define('ab.ux.SchemaGrid', {
                     root          : 'record',
                     record        : 'fields',
                     idProperty    : schema.primaryKey,
-                    totalProperty : 'meta.total'
+                    totalProperty : 'meta.count'
                 },
                 headers     : {
                     'X-Application-Name' : 'add'

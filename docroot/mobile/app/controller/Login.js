@@ -27,6 +27,10 @@ Ext.define('mobile.controller.Login', {
         }
     },
 
+    init: function() {
+        console.log('init ' + this.$className);
+    },
+
     onFormShown: function() {
         var form = this.getLoginView();
         var Login = Ext.ModelManager.getModel('mobile.model.Login');
@@ -45,8 +49,10 @@ Ext.define('mobile.controller.Login', {
     },
 
     onLoginButton: function(button) {
-        var form = button.up('loginview');
-        var fields = form.getValues();
+        var me = this,
+            form = button.up('loginview'),
+            fields = form.getValues();
+
         var login = Ext.create('mobile.model.Login', { id: 'saved', username: fields.username, password: fields.password });
         login.save();
 
@@ -62,7 +68,7 @@ Ext.define('mobile.controller.Login', {
             }
             else {
                 Ext.Viewport.removeAll(true, true);
-                Ext.Viewport.add(Ext.create('mobile.view.Main'));
+                Ext.Viewport.add(Ext.create('mobile.view.' + me.which + '.Main'));
             }
         });
 

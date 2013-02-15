@@ -1,4 +1,12 @@
-Ext.define("mobile.view.Main", {
+/**
+ * Created with JetBrains WebStorm.
+ * User: mschwartz
+ * Date: 2/14/13
+ * Time: 6:49 AM
+ * To change this template use File | Settings | File Templates.
+ */
+
+Ext.define("mobile.view.tablet.Main", {
 
     extend : 'Ext.Container',
     xtype  : 'mainview',
@@ -19,8 +27,9 @@ Ext.define("mobile.view.Main", {
         items      : [
         ]
     },
+
     initialize : function() {
-console.log('initialize main');
+        console.log('initialize tablet main');
         this.add([
             {
                 xtype  : 'titlebar',

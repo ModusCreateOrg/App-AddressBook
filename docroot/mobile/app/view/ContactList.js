@@ -55,8 +55,10 @@ Ext.define("mobile.view.ContactList", {
                     'X-Application-Name' : 'add'
                 },
                 extraParams: me.extraParams,
-                startParam: 'offset',
-                limitParam: 'limit',
+                startParam: false,
+                limitParam: false,
+//                startParam: 'offset',
+//                limitParam: 'limit',
                 pageParam: false
             },
             sorters  : [
