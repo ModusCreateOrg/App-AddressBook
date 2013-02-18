@@ -9,11 +9,11 @@ Ext.Loader.setPath({
 Ext.application({
     name : 'mobile',
 
-//    requires : [
+    requires : [
 //        'Ext.MessageBox',
 //        'Ext.Ajax',
-//        'common.DreamFactory'
-//    ],
+        'common.DreamFactory'
+    ],
 
     profiles: [
         'Phone',

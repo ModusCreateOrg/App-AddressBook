@@ -13,6 +13,7 @@ Ext.define("mobile.view.tablet.Main", {
 
     requires : [
         'Ext.TitleBar',
+        'Ext.Toolbar',
         'mobile.view.Login',
         'mobile.view.ContactList',
         'mobile.view.ContactInformation'
@@ -22,7 +23,7 @@ Ext.define("mobile.view.tablet.Main", {
         fullscreen : true,
         title      : '<div style="background-image: url(resources/images/modus.png)" class="header-logo"></div>',
         layout     : {
-            type : 'card'
+            type : 'hbox'
         },
         items      : [
         ]
@@ -44,11 +45,36 @@ Ext.define("mobile.view.tablet.Main", {
                 }
             },
             {
-                xtype  : 'contact_list',
-                schema : mobile.schemas.Contacts
+                flex:.3,
+                style: 'border-right: 1px solid black;',
+//                margin: '0 1 0 0',
+                layout: 'fit',
+                items: [
+                    {
+                        xtype: 'toolbar',
+                        docked: 'top',
+                        title: 'Contacts'
+                    },
+                    {
+                        xtype  : 'contact_list',
+                        schema : mobile.schemas.Contacts
+                    }
+                ]
             },
             {
-                xtype : 'contact_information'
+//                margin: '0 0 0 1',
+                flex:.7,
+                layout: 'fit',
+                items: [
+                    {
+                        xtype: 'toolbar',
+                        docked: 'top',
+                        title: 'Info'
+                    },
+                    {
+                        xtype : 'contact_information'
+                    }
+                ]
             }
         ]);
 

@@ -28,7 +28,7 @@ Ext.define('mobile.controller.Login', {
     },
 
     init: function() {
-        console.log('init ' + this.$className);
+//        console.log('init ' + this.$className);
     },
 
     onFormShown: function() {
@@ -57,7 +57,6 @@ Ext.define('mobile.controller.Login', {
         login.save();
 
         common.DreamFactory.login(fields.username, fields.password, function(o) {
-            console.dir(o);
             if (o.error) {
                 var e = o.error[0],
                     code = e.code,
@@ -68,7 +67,7 @@ Ext.define('mobile.controller.Login', {
             }
             else {
                 Ext.Viewport.removeAll(true, true);
-                Ext.Viewport.add(Ext.create('mobile.view.' + me.which + '.Main'));
+                Ext.Viewport.add(Ext.create('mobile.view.' + form.which + '.Main'));
             }
         });
 

@@ -20,12 +20,10 @@ Ext.define('mobile.profile.Phone', {
     },
 
     isActive: function() {
-        console.log('phone isActive');
         return Ext.os.is.Phone;
     },
 
     launch: function() {
-        console.log('phone launch');
         Ext.Ajax.request({
             url     : '../json/Schemas.json',
             scope   : this,
