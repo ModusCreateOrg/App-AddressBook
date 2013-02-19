@@ -67,7 +67,7 @@ Ext.define('mobile.controller.phone.Main', {
             backButton   = me.getBackButton();
 
         recordData.contactData = recordData.contactData || contactData;
-        recordData.imageUrl = recordData.imageUrl || '/img/default_portrait.png';
+        recordData.imageUrl = recordData.imageUrl || '../img/default_portrait.png';
         if (recordData.notes) {
             recordData.notes = recordData.notes.replace(/\n/igm, '<br/>');
         }

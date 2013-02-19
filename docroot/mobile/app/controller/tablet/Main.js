@@ -60,7 +60,7 @@ Ext.define('mobile.controller.tablet.Main', {
             titleBar     = me.getTitleBar();
 
         recordData.contactData = recordData.contactData || contactData;
-        recordData.imageUrl = recordData.imageUrl || '/img/default_portrait.png';
+        recordData.imageUrl = recordData.imageUrl || '../img/default_portrait.png';
         if (recordData.notes) {
             recordData.notes = recordData.notes.replace(/\n/igm, '<br/>');
         }
