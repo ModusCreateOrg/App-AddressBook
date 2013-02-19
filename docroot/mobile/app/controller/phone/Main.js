@@ -67,8 +67,11 @@ Ext.define('mobile.controller.phone.Main', {
             backButton   = me.getBackButton();
 
         recordData.contactData = recordData.contactData || contactData;
+        recordData.imageUrl = recordData.imageUrl || '/img/default_portrait.png';
+        if (recordData.notes) {
+            recordData.notes = recordData.notes.replace(/\n/igm, '<br/>');
+        }
 
-        console.log('Contact', recordData);
         me.getDetailCard().setData(recordData);
 
         mainPanel.animateActiveItem(1, {

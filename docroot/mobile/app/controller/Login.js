@@ -19,7 +19,8 @@ Ext.define('mobile.controller.Login', {
         },
         control: {
             'loginview': {
-                show: 'onFormShown'
+                show: 'onFormShown',
+                beforesubmit: 'onBeforeSubmit'
             },
             'loginview  button': {
                 tap: 'onLoginButton'
@@ -48,10 +49,8 @@ Ext.define('mobile.controller.Login', {
         });
     },
 
-    onLoginButton: function(button) {
-        var me = this,
-            form = button.up('loginview'),
-            fields = form.getValues();
+    doLogin: function(form) {
+        var fields = form.getValues();
 
         var login = Ext.create('mobile.model.Login', { id: 'saved', username: fields.username, password: fields.password });
         login.save();
@@ -61,8 +60,6 @@ Ext.define('mobile.controller.Login', {
                 var e = o.error[0],
                     code = e.code,
                     message = e.message;
-                console.log('here');
-                console.log(code + ' ' + message);
                 Ext.Msg.alert('Error ' + code, message);
             }
             else {
@@ -70,6 +67,41 @@ Ext.define('mobile.controller.Login', {
                 Ext.Viewport.add(Ext.create('mobile.view.' + form.which + '.Main'));
             }
         });
+
+    },
+
+    onBeforeSubmit: function(form) {
+        console.log('beforesubmit');
+        this.doLogin(form);
+        return false;
+    },
+
+
+
+    onLoginButton: function(button) {
+        var me = this,
+            form = button.up('loginview');
+
+        me.doLogin(form);
+//            fields = form.getValues();
+//
+//        var login = Ext.create('mobile.model.Login', { id: 'saved', username: fields.username, password: fields.password });
+//        login.save();
+//
+//        common.DreamFactory.login(fields.username, fields.password, function(o) {
+//            if (o.error) {
+//                var e = o.error[0],
+//                    code = e.code,
+//                    message = e.message;
+//                console.log('here');
+//                console.log(code + ' ' + message);
+//                Ext.Msg.alert('Error ' + code, message);
+//            }
+//            else {
+//                Ext.Viewport.removeAll(true, true);
+//                Ext.Viewport.add(Ext.create('mobile.view.' + form.which + '.Main'));
+//            }
+//        });
 
     }
 });

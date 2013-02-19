@@ -14,7 +14,11 @@ Ext.define('mobile.view.Login', {
         'Ext.field.Text',
         'Ext.field.Password'
     ],
-//    fullscreen: true,
+    config: {
+        submitOnAction: true,
+        fullscreen: true
+    },
+    fullscreen: true,
 
     initialize: function() {
         this.callParent(arguments);

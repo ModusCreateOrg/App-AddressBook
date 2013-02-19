@@ -13,16 +13,11 @@ Ext.define('mobile.controller.tablet.Main', {
             contactList : 'contact_list',
             mainPanel    : 'mainview',
             titleBar     : 'titlebar',
-            backButton   : 'button[align=left]',
             detailCard   : 'contact_information'
         },
         control : {
             'contact_list' : {
                 itemtap : 'onContactSelected'
-            },
-
-            'mainview > titlebar button[align=left]' : {
-                tap : 'onBackButton'
             }
         }
     },
@@ -62,47 +57,16 @@ Ext.define('mobile.controller.tablet.Main', {
             recordData   = me.selectedRecord.data,
             contactList = me.getContactList(),
             mainPanel    = me.getMainPanel(),
-            titleBar     = me.getTitleBar(),
-            backButton   = me.getBackButton();
+            titleBar     = me.getTitleBar();
 
         recordData.contactData = recordData.contactData || contactData;
         recordData.imageUrl = recordData.imageUrl || '/img/default_portrait.png';
         if (recordData.notes) {
             recordData.notes = recordData.notes.replace(/\n/igm, '<br/>');
         }
-        console.log('Contact', recordData);
         me.getDetailCard().setData(recordData);
 
-//        mainPanel.animateActiveItem(1, {
-//            type      : 'slide',
-//            duration  : 250,
-//            direction : 'left'
-//        });
-
-//        Ext.Function.defer(function() {
-//            titleBar.setTitle('info');
-//            backButton.show();
-//            contactList.deselectAll();
-//        }, 260);
-
         delete me.selectedRecord;
-    },
-
-    onBackButton : function() {
-        var mainPanel  = this.getMainPanel(),
-            titleBar   = this.getTitleBar(),
-            backButton = this.getBackButton();
-
-        mainPanel.animateActiveItem(0, {
-            type      : 'slide',
-            duration  : 250,
-            direction : 'right'
-        });
-
-        Ext.Function.defer(function() {
-            titleBar.setTitle(mainPanel.getTitle());
-            backButton.hide();
-        }, 260)
     }
 
 });

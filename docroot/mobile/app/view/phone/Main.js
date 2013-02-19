@@ -20,7 +20,6 @@ Ext.define("mobile.view.phone.Main", {
         ]
     },
     initialize : function() {
-console.log('initialize phone main');
         this.add([
             {
                 xtype  : 'titlebar',
