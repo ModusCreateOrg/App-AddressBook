@@ -47,34 +47,78 @@ Ext.define("mobile.view.tablet.Main", {
             {
                 flex:.3,
                 style: 'border-right: 1px solid black;',
-//                margin: '0 1 0 0',
                 layout: 'fit',
                 items: [
                     {
                         xtype: 'toolbar',
                         docked: 'top',
-                        title: 'Contacts'
+                        items: [
+                            {
+                                xtype: 'selectfield',
+                                width: '90%',
+                                centered: true,
+                                options: [
+                                    { text: 'All Contacts' },
+                                    { text: 'Group 1' },
+                                    { text: 'Group 2' },
+                                    { text: 'Group 3' },
+                                    { text: 'Group 4' },
+                                    { text: 'Group 5' },
+                                    { text: 'Group 6' },
+                                    { text: 'Group 7' },
+                                    { text: 'Group 8' },
+                                    { text: 'Group 9' },
+                                    { text: 'Group 10' },
+                                    { text: 'Group 11' },
+                                    { text: 'Group 12' },
+                                    { text: 'Group 13' },
+                                    { text: 'Group 14' },
+                                    { text: 'Group 15' },
+                                    { text: 'Group 16' },
+                                    { text: 'Group 17' },
+                                    { text: 'Group 18' },
+                                    { text: 'Group 19' },
+                                    { text: 'Group 20' },
+                                    { text: 'Group 21' },
+                                    { text: 'Group 22' },
+                                    { text: 'Group 23' },
+                                    { text: 'Group 24' },
+                                    { text: 'Group 25' },
+                                    { text: 'Group 26' },
+                                    { text: 'Group 27' },
+                                    { text: 'Group 28' },
+                                    { text: 'Group 29' }
+                                ]
+                            }
+                        ]
+//                        title: 'Contacts'
                     },
                     {
-                        xtype  : 'contact_list',
-                        schema : mobile.schemas.Contacts
+                        layout: 'fit',
+                        items: [
+                            {
+                                xtype: 'toolbar',
+                                docked: 'top',
+                                items: [
+                                    {
+                                        xtype: 'searchfield',
+                                        placeHolder: 'Search',
+                                        width: '90%',
+                                        centered: true
+                                    }
+                                ]
+                            },
+                            {
+                                xtype  : 'contact_list',
+                                schema : mobile.schemas.Contacts
+                            }
+                        ]
                     }
                 ]
             },
             {
-//                margin: '0 0 0 1',
                 flex:.7,
-                layout: 'fit',
-                items: [
-                    {
-                        xtype: 'toolbar',
-                        docked: 'top',
-                        title: 'Info'
-                    },
-                    {
-                        xtype : 'contact_information'
-                    }
-                ]
+                xtype : 'contact_information'
             }
         ]);
 

@@ -5,11 +5,18 @@
             {
                 "name"          : "contactGroupId",
                 "type"          : "int",
-                "autoIncrement" : true
+                "autoIncrement" : true,
+                "header"        : "ID"
             },
             {
-                "name" : "groupName",
-                "size" : 128
+                "name"       : "groupName",
+                "size"       : 128,
+                "header"     : "Group Name",
+                "autoExpand" : true,
+                "editor"     : {
+                    "xtype"  : "textfield",
+                    "anchor" : "100%"
+                }
             }
         ],
         "primaryKey" : "contactGroupId"
@@ -192,5 +199,5 @@
         ],
         "primaryKey" : "contactId,contactGroupId"
     },
-    "success"           : true
+    "success"              : true
 }

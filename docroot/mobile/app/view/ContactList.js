@@ -46,7 +46,7 @@ Ext.define("mobile.view.ContactList", {
                     type         : 'json',
                     rootProperty : 'record',
                     idProperty: schema.primaryKey,
-                    totalProperty: 'count',
+                    totalProperty: 'meta.count',
                     record: 'fields'
                 },
                 headers     : {
@@ -54,8 +54,8 @@ Ext.define("mobile.view.ContactList", {
                 },
                 extraParams: me.extraParams,
                 startParam: false,
-                limitParam: false,
 //                startParam: 'offset',
+                limitParam: false,
 //                limitParam: 'limit',
                 pageParam: false
             },

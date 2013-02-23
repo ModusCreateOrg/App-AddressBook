@@ -18,12 +18,20 @@ Ext.define('mobile.controller.tablet.Main', {
         control : {
             'contact_list' : {
                 itemtap : 'onContactSelected'
+            },
+            viewport: {
+                orientationchange: 'onOrientationChange'
             }
         }
     },
 
     init: function() {
         console.log('init ' + this.$className);
+    },
+
+    onOrientationChange: function(viewport, orientation, width, height) {
+        console.log('orientation changed');
+        console.log(orientation + ' ' + width + 'x' + height);
     },
 
     onContactSelected : function(list, index, target, record, e) {

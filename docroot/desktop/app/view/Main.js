@@ -60,6 +60,11 @@
         deleteOne();
     }
 
+    function deleteContactGroupRecords(records, callback) {
+        if (callback) {
+            callback();
+        }
+    }
 
     Ext.define('ab.view.Main', {
         extend   : 'Ext.panel.Panel',
@@ -145,6 +150,20 @@
                 activeItem : 0,
                 border     : false,
                 items      : [
+                    {
+                        xtype      : 'schemagrid',
+                        title      : 'Groups',
+                        border     : false,
+                        icon       : '../img/famfam/group.png',
+                        schema     : ab.Schemas.ContactGroups,
+//                        filterable : true,
+                        deleteFn   : deleteContactGroupRecords,
+                        listeners  : {
+                            scope         : me,
+                            deleterecords : me.onSchemaGridDeleteRecords,
+                            itemdblclick  : me.onSchemaGridItemDblClick
+                        }
+                    },
                     {
                         xtype      : 'schemagrid',
                         title      : 'Contacts',
