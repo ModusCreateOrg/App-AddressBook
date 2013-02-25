@@ -87,6 +87,15 @@
                     "xtype"  : "textarea",
                     "anchor" : "100%"
                 }
+            },
+            {
+                "name" : "groups",
+                "clientOnly": true,
+                "editor" : {
+                    "xtype": "datasourcefield",
+                    "fieldLabel": "Groups",
+                    "dataSource": "allGroups"
+                }
             }
         ],
         "primaryKey" : "contactId"

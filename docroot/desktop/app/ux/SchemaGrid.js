@@ -239,11 +239,19 @@ Ext.define('ab.ux.SchemaGrid', {
     },
 
     editRecord : function (record) {
+        var me = this;
+
         record = record || {};
+        record = Ext.apply(record, me.extraFields);
 
-        record = Ext.apply(record, this.extraFields);
-
-        this.showEditDialog(record);
+        if (me.loadFn) {
+            me.loadFn(record, function(record) {
+                me.showEditDialog(record);
+            });
+        }
+        else {
+            me.showEditDialog(record);
+        }
     },
 
     onFilterFieldKeyDown : function () {
@@ -374,18 +382,33 @@ Ext.define('ab.ux.SchemaGrid', {
             return;
         }
 
-        if (record[schema.primaryKey]) {
-            common.DreamFactory.updateRecords(schema.name, [record], function () {
+        if (me.saveFn) {
+            me.saveFn(record, function () {
                 btn.up('window').close();
+                me.fireEvent('saverecord', me, [record]);
                 me.store.load();
             });
         }
         else {
-            common.DreamFactory.createRecords(schema.name, [record], function () {
-                btn.up('window').close();
-                me.store.load();
-            });
+            btn.up('window').close();
+            me.fireEvent('saverecord', me, [record]);
+            me.store.load();
         }
+
+
+
+//        if (record[schema.primaryKey]) {
+//            common.DreamFactory.updateRecords(schema.name, [record], function () {
+//                btn.up('window').close();
+//                me.store.load();
+//            });
+//        }
+//        else {
+//            common.DreamFactory.createRecords(schema.name, [record], function () {
+//                btn.up('window').close();
+//                me.store.load();
+//            });
+//        }
     },
 
     deleteRecords : function () {

@@ -19,6 +19,9 @@
                 var name = field.name,
                     label = field.label || name;
 
+                if (field.clientOnly) {
+                    return;
+                }
                 if (field.size) {
                     fields.push({
                         name: name,

@@ -1,5 +1,74 @@
 (function() {
 
+    function loadContactRecord(record, callback) {
+        var allGroups = [],
+            groups = [];
+
+        console.log('loadContactRecord');
+        common.DreamFactory.filterRecords(ab.Schemas.ContactGroups.name, {
+            fields   : 'contactGroupId,groupName',
+//            where    : 'contactId=' + recordId,
+            callback : function(o) {
+                Ext.iterate(o.record, function(record) {
+                    allGroups.push({
+                        value: record.fields.contactGroupId,
+                        display: record.fields.groupName,
+                        checked: false
+                    });
+//                    groups.push(record.fields)
+                });
+                if (record.contactId) {
+                    common.DreamFactory.filterRecords(ab.Schemas.ContactRelationships.name, {
+                        fields: 'contactGroupId',
+                        where: 'contactId='+record.contactId,
+                        callback: function(o) {
+                            Ext.iterate(o.record, function(record) {
+                                groups.push(record.fields.contactGroupId);
+                            });
+                        }
+                    });
+                    Ext.each(allGroups, function(group) {
+                        if (groups.indexOf(group.value) !== -1) {
+                            group.checked = true;
+                        }
+                    });
+                    record.groups = allGroups;
+                    record.currentGroups = groups;
+                    if (callback) {
+                        callback(record);
+                    }
+                }
+                else {
+                    record.groups = allGroups;
+                    record.currentGroups = groups;
+                    if (callback) {
+                        callback(record);
+                    }
+                }
+            }
+        });
+    }
+
+    function saveContactRecord(record, callback) {
+        var me = this,
+            schema = ab.Schemas.Contacts;
+
+        if (record[schema.primaryKey]) {
+            common.DreamFactory.updateRecords(schema.name, [record], function() {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+        else {
+            common.DreamFactory.createRecords(schema.name, [record], function() {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
     function deleteContactRecords(records, callback) {
         var me = this,
             toDelete = [];
@@ -60,6 +129,26 @@
         deleteOne();
     }
 
+    function saveContactGroupRecord(record, callback) {
+        var me = this,
+            schema = ab.Schemas.ContactGroups;
+
+        if (record[schema.primaryKey]) {
+            common.DreamFactory.updateRecords(schema.name, [record], function() {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+        else {
+            common.DreamFactory.createRecords(schema.name, [record], function() {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
     function deleteContactGroupRecords(records, callback) {
         if (callback) {
             callback();
@@ -69,7 +158,11 @@
     Ext.define('ab.view.Main', {
         extend   : 'Ext.panel.Panel',
         alias    : 'widget.main',
-        requires : [ 'Ext.form.Panel', 'Ext.tab.Panel' ],
+        requires : [
+            'Ext.form.Panel',
+            'Ext.tab.Panel',
+            'ab.ux.DataSourceField'
+        ],
         layout   : 'fit',
         border   : false,
 
@@ -152,12 +245,14 @@
                 items      : [
                     {
                         xtype      : 'schemagrid',
-                        title      : 'Groups',
+                        title      : 'Contacts',
                         border     : false,
                         icon       : '../img/famfam/group.png',
-                        schema     : ab.Schemas.ContactGroups,
-//                        filterable : true,
-                        deleteFn   : deleteContactGroupRecords,
+                        schema     : ab.Schemas.Contacts,
+                        filterable : true,
+                        loadFn     : loadContactRecord,
+                        saveFn     : saveContactRecord,
+                        deleteFn   : deleteContactRecords,
                         listeners  : {
                             scope         : me,
                             deleterecords : me.onSchemaGridDeleteRecords,
@@ -165,14 +260,15 @@
                         }
                     },
                     {
-                        xtype      : 'schemagrid',
-                        title      : 'Contacts',
-                        border     : false,
-                        icon       : '../img/famfam/group.png',
-                        schema     : ab.Schemas.Contacts,
-                        filterable : true,
-                        deleteFn   : deleteContactRecords,
-                        listeners  : {
+                        xtype     : 'schemagrid',
+                        title     : 'Groups',
+                        border    : false,
+                        icon      : '../img/famfam/group.png',
+                        schema    : ab.Schemas.ContactGroups,
+//                        filterable : true,
+                        saveFn    : saveContactGroupRecord,
+                        deleteFn  : deleteContactGroupRecords,
+                        listeners : {
                             scope         : me,
                             deleterecords : me.onSchemaGridDeleteRecords,
                             itemdblclick  : me.onSchemaGridItemDblClick
@@ -198,7 +294,7 @@
                 tab = me.down('#userInfo-grid-' + recordData.contactId),
                 title = recordData.firstName + ' ' + recordData.lastName;
 
-    //        console.log(title + " selected", recordData);
+            //        console.log(title + " selected", recordData);
             if (!tab) {
                 tab = tabPanel.add({
                     xtype       : 'schemagrid',
