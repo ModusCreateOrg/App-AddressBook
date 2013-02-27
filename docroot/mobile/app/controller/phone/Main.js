@@ -7,17 +7,21 @@
  */
 
 Ext.define('mobile.controller.phone.Main', {
-    extend: 'Ext.app.Controller',
+    extend : 'Ext.app.Controller',
 
     config : {
         refs    : {
+            groupList   : 'group_list',
             contactList : 'contact_list',
-            mainPanel    : 'mainview',
-            titleBar     : 'titlebar',
-            backButton   : 'button[align=left]',
-            detailCard   : 'contact_information'
+            mainPanel   : 'mainview',
+            titleBar    : 'titlebar',
+            backButton  : 'button[align=left]',
+            detailCard  : 'contact_information'
         },
         control : {
+            'group_list' : {
+                itemtap: 'onGroupSelected'
+            },
             'contact_list' : {
                 itemtap : 'onContactSelected'
             },
@@ -28,29 +32,48 @@ Ext.define('mobile.controller.phone.Main', {
         }
     },
 
-    init: function() {
+    init : function () {
         console.log('init ' + this.$className);
     },
 
-    onContactSelected : function(list, index, target, record, e) {
+    onGroupSelected: function(list, index, target, record, e) {
+        var me = this,
+            mainPanel = this.getMainPanel(),
+            titleBar = this.getTitleBar(),
+            backButton = this.getBackButton();
+
+        mainPanel.animateActiveItem(1, {
+            type      : 'slide',
+            duration  : 250,
+            direction : 'right'
+        });
+        Ext.Function.defer(function () {
+//            titleBar.setTitle(mainPanel.getTitle());
+            titleBar.setTitle(record.data.groupName);
+            backButton.show();
+            backButton.setText('Groups');
+        }, 260)
+    },
+
+    onContactSelected : function (list, index, target, record, e) {
         var me = this;
 
         me.selectedRecord = record;
 
         common.DreamFactory.filterRecords('ContactInfo', {
-            where: 'contactId=' + record.get('contactId'),
-            callback: function(o) {
+            where    : 'contactId=' + record.get('contactId'),
+            callback : function (o) {
                 me.onAfterContactDetailsLoad(o);
             }
         });
     },
 
-    onAfterContactDetailsLoad : function(data) {
+    onAfterContactDetailsLoad : function (data) {
         var me = this,
             record = me.selectedRecord;
 
         var records = [];
-        Ext.iterate(data.record, function(record) {
+        Ext.iterate(data.record, function (record) {
             records.push(record.fields);
         });
         me.showDetails(records);
@@ -58,13 +81,13 @@ Ext.define('mobile.controller.phone.Main', {
         delete me.selectedRecord;
     },
 
-    showDetails : function(contactData) {
-        var me           = this,
-            recordData   = me.selectedRecord.data,
+    showDetails : function (contactData) {
+        var me = this,
+            recordData = me.selectedRecord.data,
             contactList = me.getContactList(),
-            mainPanel    = me.getMainPanel(),
-            titleBar     = me.getTitleBar(),
-            backButton   = me.getBackButton();
+            mainPanel = me.getMainPanel(),
+            titleBar = me.getTitleBar(),
+            backButton = me.getBackButton();
 
         recordData.contactData = recordData.contactData || contactData;
         recordData.imageUrl = recordData.imageUrl || '../img/default_portrait.png';
@@ -74,14 +97,15 @@ Ext.define('mobile.controller.phone.Main', {
 
         me.getDetailCard().setData(recordData);
 
-        mainPanel.animateActiveItem(1, {
+        mainPanel.animateActiveItem(2, {
             type      : 'slide',
             duration  : 250,
             direction : 'left'
         });
 
-        Ext.Function.defer(function() {
+        Ext.Function.defer(function () {
             titleBar.setTitle('info');
+            backButton.setText('Contacts');
             backButton.show();
             contactList.deselectAll();
         }, 260);
@@ -89,21 +113,34 @@ Ext.define('mobile.controller.phone.Main', {
         delete me.selectedRecord;
     },
 
-    onBackButton : function() {
-        var mainPanel  = this.getMainPanel(),
-            titleBar   = this.getTitleBar(),
+    onBackButton : function () {
+        var mainPanel = this.getMainPanel(),
+            titleBar = this.getTitleBar(),
             backButton = this.getBackButton();
 
-        mainPanel.animateActiveItem(0, {
-            type      : 'slide',
-            duration  : 250,
-            direction : 'right'
-        });
+        if (backButton.getText() === 'Groups') {
+            mainPanel.animateActiveItem(0, {
+                type      : 'slide',
+                duration  : 250,
+                direction : 'right'
+            });
+            Ext.Function.defer(function () {
+                titleBar.setTitle('Contact Groups');
+                backButton.hide();
+            }, 260)
+        }
+        else {
+            mainPanel.animateActiveItem(1, {
+                type      : 'slide',
+                duration  : 250,
+                direction : 'right'
+            });
 
-        Ext.Function.defer(function() {
-            titleBar.setTitle(mainPanel.getTitle());
-            backButton.hide();
-        }, 260)
+            Ext.Function.defer(function () {
+                backButton.setText('Groups');
+                titleBar.setTitle('Contacts');
+            }, 260)
+        }
     }
 
 });

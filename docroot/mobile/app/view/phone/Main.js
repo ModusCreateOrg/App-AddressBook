@@ -6,6 +6,7 @@ Ext.define("mobile.view.phone.Main", {
     requires : [
         'Ext.TitleBar',
         'mobile.view.Login',
+        'mobile.view.GroupList',
         'mobile.view.ContactList',
         'mobile.view.ContactInformation'
     ],
@@ -19,30 +20,107 @@ Ext.define("mobile.view.phone.Main", {
         items      : [
         ]
     },
-    initialize : function() {
+
+    initialize : function () {
         this.add([
             {
                 xtype  : 'titlebar',
                 title  : this.getTitle(),
                 docked : 'top',
-                items  : {
-                    align  : 'left',
-                    ui     : 'back',
-                    cls    : 'back-button',
-                    text   : 'Contacts',
-                    hidden : true
-                }
+                items  : [
+                    {
+                        align  : 'left',
+                        ui     : 'back',
+                        cls    : 'back-button',
+                        text   : 'Contacts',
+                        hidden : true
+                    }
+//                    ,
+//                    {
+//                        align  : 'right',
+//                        ui     : 'edit',
+//                        cls    : 'edit-button',
+//                        text   : 'Edit',
+//                        hidden : false
+//                    }
+                ]
             },
             {
-                xtype  : 'contact_list',
-                schema : mobile.schemas.Contacts
+                layout: 'fit',
+                items: [
+                    {
+                        xtype : 'group_list'
+                    },
+                    {
+                        xtype: 'toolbar',
+                        docked: 'bottom',
+                        ui: 'search',
+                        items: [
+                            {
+                                iconCls: 'add',
+                                iconMask: true
+                            }
+                        ]
+                    }
+                ]
             },
             {
-                xtype : 'contact_information'
+                layout: 'fit',
+                items: [
+                    {
+                        xtype  : 'toolbar',
+                        docked : 'top',
+                        ui: 'search',
+                        items  : [
+                            {
+                                xtype       : 'searchfield',
+                                placeHolder : 'Search',
+                                width       : '90%',
+                                centered    : true
+                            }
+                        ]
+                    },
+                    {
+                        xtype  : 'contact_list',
+                        schema : mobile.schemas.Contacts
+                    },
+                    {
+                        xtype: 'toolbar',
+                        docked: 'bottom',
+                        ui: 'search',
+                        items: [
+                            {
+                                iconCls: 'add',
+                                iconMask: true
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                layout: 'fit',
+                items: [
+                    {
+                        xtype : 'contact_information'
+                    },
+                    {
+                        xtype: 'toolbar',
+                        docked: 'bottom',
+                        ui: 'search',
+                        items: [
+                            {
+                                text: 'Edit'
+//                                iconCls: 'compose',
+//                                iconMask: true
+                            }
+                        ]
+                    }
+                ]
             }
         ]);
 
         this.callParent();
     }
+
 });
 

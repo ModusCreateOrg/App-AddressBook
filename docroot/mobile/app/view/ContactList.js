@@ -73,7 +73,7 @@ Ext.define("mobile.view.ContactList", {
             grouper : {
                 groupFn      : function (record) {
                     var last_name = record.get('lastName');
-                    return last_name == null ? '' : last_name.substr(0, 1).toUpperCase();
+                    return (last_name === null || last_name === '') ? '&nbsp' : last_name.substr(0, 1).toUpperCase();
                 },
                 sortProperty : 'lastName'
             }
