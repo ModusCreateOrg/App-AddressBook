@@ -77,7 +77,7 @@ Ext.define('ab.ux.SchemaGrid', {
                 reader      : {
                     type          : 'json',
                     root          : 'record',
-                    record        : 'fields',
+//                    record        : 'fields',
                     idProperty    : schema.primaryKey,
                     totalProperty : 'meta.count'
                 },

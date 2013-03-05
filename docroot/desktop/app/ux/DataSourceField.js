@@ -16,18 +16,46 @@ Ext.define('ab.ux.DataSourceField', {
 
     initComponent: function() {
         var me = this,
-            id = 'ds-' + Ext.id(),
-            items = [];
+//            id = 'ds-' + Ext.id(),
+            items = [],
+            initialized = false;
 
         Ext.iterate(me.value, function(item) {
             console.dir(item);
             items.push({
+                id: me.id + '-' + item.value,
+                checked: item.checked,
+                valueItem: item,
                 boxLabel: item.display,
-                name: id,
-                inputValue: item.value
+//                name: id,
+                inputValue: item.value,
+                listeners: {
+                    change: function(cb, newValue, oldValue, eOpts) {
+                        console.log(newValue + ' ' + oldValue);
+                        if (initialized) {
+                            console.log('initialized');
+                            cb.valueItem.checked = newValue;
+                        }
+                    }
+                }
             });
         });
         me.items = items;
         me.callParent(arguments);
+        initialized = true;
+    },
+    getValue: function() {
+        return this.value;
+//        return this.callParent(arguments);
+    },
+    setValue: function(v) {
+        var me = this;
+        console.dir(v);
+        me.value = v;
+//        me.callParent(arguments);
+        Ext.iterate(v, function(value) {
+            Ext.getCmp(me.id + '-' + value.value).setRawValue(value.checked);
+        });
     }
+
 });

@@ -73,8 +73,6 @@
             var me = this;
 
             var production = window.location.host.indexOf('dreamfactory.com') !== -1;
-            console.dir(window.location.host);
-            console.dir(window.location.host.indexOf('dreamfactory.com'));
             ab.data = {
                 serviceUrl : production ? '/' : '/service/',
                 user       : {
@@ -88,8 +86,7 @@
             //        });
 
             Ext.Ajax.on({
-                requestexception : this.onAjaxRequestException,
-                beforerequest    : this.onAjaxBeforeRequest
+                requestexception : this.onAjaxRequestException
             });
 
 
@@ -162,8 +159,18 @@
         },
 
         onAjaxRequestException : function(conn, response, options, eOpts) {
+            console.dir(arguments);
             var title = '',
                 message = response.responseText;
+
+            if (message.indexOf('No records deleted from table')) {
+                if (options.success) {
+//                    response.status = 200;
+//                    response.responseText = Ext.encode({ record: [] });
+//                    options.success(response, options);
+                    return;
+                }
+            }
             try {
                 var o = Ext.decode(message);
                 message = o.error[0].message;
@@ -188,12 +195,6 @@
                 }
 
             }).show();
-        },
-
-        onAjaxBeforeRequest    : function() {
-            Ext.Ajax.defaultHeaders = {
-                'login-id' : ab.data.user.userId
-            };
         }
     });
 }());

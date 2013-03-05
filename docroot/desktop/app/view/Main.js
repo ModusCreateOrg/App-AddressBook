@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
     function loadContactRecord(record, callback) {
         var allGroups = [],
@@ -8,35 +8,36 @@
         common.DreamFactory.filterRecords(ab.Schemas.ContactGroups.name, {
             fields   : 'contactGroupId,groupName',
 //            where    : 'contactId=' + recordId,
-            callback : function(o) {
-                Ext.iterate(o.record, function(record) {
+            callback : function (o) {
+                Ext.iterate(o.record, function (record) {
                     allGroups.push({
-                        value: record.fields.contactGroupId,
-                        display: record.fields.groupName,
-                        checked: false
+                        value   : record.contactGroupId,
+                        display : record.groupName,
+                        checked : false
                     });
 //                    groups.push(record.fields)
                 });
                 if (record.contactId) {
                     common.DreamFactory.filterRecords(ab.Schemas.ContactRelationships.name, {
-                        fields: 'contactGroupId',
-                        where: 'contactId='+record.contactId,
-                        callback: function(o) {
-                            Ext.iterate(o.record, function(record) {
-                                groups.push(record.fields.contactGroupId);
+                        fields   : 'contactGroupId',
+                        where    : 'contactId=' + record.contactId,
+                        callback : function (o) {
+                            Ext.iterate(o.record, function (record) {
+                                groups.push(record.contactGroupId);
                             });
+                            Ext.each(allGroups, function (group) {
+                                if (groups.indexOf(group.value) !== -1) {
+                                    group.checked = true;
+                                }
+                            });
+                            record.groups = allGroups;
+                            record.currentGroups = groups;
+                            console.dir(record);
+                            if (callback) {
+                                callback(record);
+                            }
                         }
                     });
-                    Ext.each(allGroups, function(group) {
-                        if (groups.indexOf(group.value) !== -1) {
-                            group.checked = true;
-                        }
-                    });
-                    record.groups = allGroups;
-                    record.currentGroups = groups;
-                    if (callback) {
-                        callback(record);
-                    }
                 }
                 else {
                     record.groups = allGroups;
@@ -49,19 +50,63 @@
         });
     }
 
-    function saveContactRecord(record, callback) {
-        var me = this,
-            schema = ab.Schemas.Contacts;
+    function deleteContactRelationships(contactId, callback) {
+        if (!contactId) {
+            callback();
+            return;
+        }
+        common.DreamFactory.deleteRecordsFiltered(ab.Schemas.ContactRelationships.name, {
+            where: 'contactId=' + contactId,
+            callback: function(o) {
+                callback();
+            }
+        });
+    }
 
-        if (record[schema.primaryKey]) {
-            common.DreamFactory.updateRecords(schema.name, [record], function() {
-                if (callback) {
-                    callback();
-                }
+    function addContactRelationships(contactId, groupIds, callback) {
+//        callback();
+//        return;
+        var records = [];
+        Ext.each(groupIds, function(id) {
+            records.push({
+                contactId: contactId,
+                contactGroupId: id
+            });
+        });
+        if (records.length) {
+            common.DreamFactory.createRecords(ab.Schemas.ContactRelationships.name, records, function(o) {
+                callback();
             });
         }
         else {
-            common.DreamFactory.createRecords(schema.name, [record], function() {
+            callback();
+        }
+    }
+
+    function saveContactRecord(record, callback) {
+        var me = this,
+            schema = ab.Schemas.Contacts,
+            groupIds = [];
+
+        Ext.iterate(record.groups, function(group) {
+            if (group.checked) {
+                groupIds.push(parseInt(group.value, 10));
+            }
+        });
+        if (record[schema.primaryKey]) {
+            deleteContactRelationships(record[schema.primaryKey], function() {
+                common.DreamFactory.updateRecords(schema.name, [record], function () {
+                    addContactRelationships(record[schema.primaryKey], groupIds, function() {
+                        if (callback) {
+                            callback();
+                        }
+                    });
+                });
+            });
+        }
+        else {
+            common.DreamFactory.createRecords(schema.name, [record], function (o) {
+                console.dir(o);
                 if (callback) {
                     callback();
                 }
@@ -73,7 +118,7 @@
         var me = this,
             toDelete = [];
 
-        Ext.iterate(records, function(value) {
+        Ext.iterate(records, function (value) {
             toDelete.push(value);
         });
 
@@ -89,13 +134,13 @@
             common.DreamFactory.filterRecords(ab.Schemas.ContactInfo.name, {
                 fields   : 'infoId',
                 where    : 'contactId=' + recordId,
-                callback : function(o) {
+                callback : function (o) {
                     var associated = [];
-                    Ext.iterate(o.record, function(record) {
-                        associated.push(record.fields.infoId);
+                    Ext.iterate(o.record, function (record) {
+                        associated.push(record.infoId);
                     });
-                    deleteInfoRecords(associated, function() {
-                        common.DreamFactory.deleteRecord(ab.Schemas.Contacts.name, recordId, function() {
+                    deleteInfoRecords(associated, function () {
+                        common.DreamFactory.deleteRecord(ab.Schemas.Contacts.name, recordId, function () {
                             Ext.defer(deleteOne, 0);
                         });
                     });
@@ -106,11 +151,31 @@
         deleteOne();
     }
 
+    function saveContactInfoRecord(record, callback) {
+        var me = this,
+            schema = ab.Schemas.ContactInfo;
+
+        if (record[schema.primaryKey]) {
+            common.DreamFactory.updateRecords(schema.name, [record], function () {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+        else {
+            common.DreamFactory.createRecords(schema.name, [record], function () {
+                if (callback) {
+                    callback();
+                }
+            });
+        }
+    }
+
     function deleteInfoRecords(records, callback) {
         var me = this,
             toDelete = [];
 
-        Ext.iterate(records, function(value) {
+        Ext.iterate(records, function (value) {
             toDelete.push(value);
         });
         function deleteOne() {
@@ -121,7 +186,7 @@
                 }
                 return;
             }
-            common.DreamFactory.deleteRecord(ab.Schemas.ContactInfo.name, recordId, function() {
+            common.DreamFactory.deleteRecord(ab.Schemas.ContactInfo.name, recordId, function () {
                 Ext.defer(deleteOne, 0);
             });
         }
@@ -134,14 +199,14 @@
             schema = ab.Schemas.ContactGroups;
 
         if (record[schema.primaryKey]) {
-            common.DreamFactory.updateRecords(schema.name, [record], function() {
+            common.DreamFactory.updateRecords(schema.name, [record], function () {
                 if (callback) {
                     callback();
                 }
             });
         }
         else {
-            common.DreamFactory.createRecords(schema.name, [record], function() {
+            common.DreamFactory.createRecords(schema.name, [record], function () {
                 if (callback) {
                     callback();
                 }
@@ -203,14 +268,14 @@
             ]
         },
 
-        initComponent             : function() {
+        initComponent             : function () {
             var me = this,
                 layout = true,
                 runner = new Ext.util.TaskRunner();
 
             runner.start({
                 interval : 1000,
-                run      : function() {
+                run      : function () {
                     var el = Ext.fly('clock'),
                         text = Ext.util.Format.date(new Date(), 'D M j Y g:i:s A');
 
@@ -226,7 +291,7 @@
             me.items = me.buildItems();
 
             me.callParent(arguments);
-            me.on('destroy', function() {
+            me.on('destroy', function () {
                 Ext.TaskManager.stop(runner);
             });
 
@@ -235,7 +300,7 @@
                 afterrender : me.onAfterRenderUpdateButton
             });
         },
-        buildItems                : function() {
+        buildItems                : function () {
             var me = this;
             return {
                 xtype      : 'tabpanel',
@@ -277,9 +342,9 @@
                 ]
             }
         },
-        onSchemaGridDeleteRecords : function(grid, records) {
+        onSchemaGridDeleteRecords : function (grid, records) {
             var tabPanel = this.down('#ab-tabPanel');
-            Ext.iterate(records, function(record) {
+            Ext.iterate(records, function (record) {
                 var cmp = this.down('#userInfo-grid-' + record.data.contactId);
                 if (cmp) {
                     tabPanel.remove(cmp);
@@ -287,7 +352,7 @@
             }, this);
         },
 
-        onSchemaGridItemDblClick : function(view, record) {
+        onSchemaGridItemDblClick : function (view, record) {
             var me = this,
                 tabPanel = me.down('#ab-tabPanel'),
                 recordData = record.data,
@@ -304,6 +369,7 @@
                     userInfo    : recordData,
                     schema      : ab.Schemas.ContactInfo,
                     closable    : true,
+                    saveFn      : saveContactInfoRecord,
                     deleteFn    : deleteInfoRecords,
                     extraParams : {
                         filter : 'contactId=' + record.data.contactId
@@ -317,7 +383,7 @@
             tabPanel.setActiveTab(tab);
         },
 
-        onAfterRenderUpdateButton : function() {
+        onAfterRenderUpdateButton : function () {
             var user = ab.data.user;
             this.down('#user-button').setText(user.display_name);
         }
