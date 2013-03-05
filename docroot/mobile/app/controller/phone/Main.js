@@ -11,19 +11,26 @@ Ext.define('mobile.controller.phone.Main', {
 
     config : {
         refs    : {
-            groupList   : 'group_list',
-            contactList : 'contact_list',
-            mainPanel   : 'mainview',
-            titleBar    : 'titlebar',
-            backButton  : 'button[align=left]',
-            detailCard  : 'contact_information'
+            groupList     : 'group_list',
+            contactList   : 'contact_list',
+            contactEditor : 'contact_editor',
+            mainPanel     : 'mainview',
+            titleBar      : 'titlebar',
+            backButton    : 'button[align=left]',
+            rightButton   : 'button[action=title-right]',
+            detailCard    : 'contact_information'
         },
         control : {
             'group_list' : {
-                itemtap: 'onGroupSelected'
+                itemtap : 'onGroupSelected'
             },
+
             'contact_list' : {
                 itemtap : 'onContactSelected'
+            },
+
+            'button[action=title-right]' : {
+                tap : 'onRightButton'
             },
 
             'mainview > titlebar button[align=left]' : {
@@ -32,48 +39,76 @@ Ext.define('mobile.controller.phone.Main', {
         }
     },
 
-    init : function () {
+    init : function() {
         console.log('init ' + this.$className);
     },
 
-    onGroupSelected: function(list, index, target, record, e) {
+    showContactGroupsCard: function() {
         var me = this,
             mainPanel = this.getMainPanel(),
             titleBar = this.getTitleBar(),
+            rightButton = me.getRightButton(),
             backButton = this.getBackButton();
+
+        mainPanel.animateActiveItem(0, {
+            type      : 'slide',
+            duration  : 250,
+            direction : 'right'
+        });
+        Ext.Function.defer(function() {
+            titleBar.setTitle('Contact Groups');
+            backButton.hide();
+            rightButton.setIconCls('add');
+            rightButton.setCls('mobile-add-contact-group-button');
+        }, 260)
+    },
+
+    showContactsCard: function() {
+        var me = this,
+            mainPanel = me.getMainPanel(),
+            titleBar = me.getTitleBar(),
+            rightButton = me.getRightButton(),
+            backButton = me.getBackButton();
 
         mainPanel.animateActiveItem(1, {
             type      : 'slide',
             duration  : 250,
             direction : 'right'
         });
-        Ext.Function.defer(function () {
-//            titleBar.setTitle(mainPanel.getTitle());
-            titleBar.setTitle(record.data.groupName);
+        Ext.Function.defer(function() {
+            titleBar.setTitle(me.contactGroupSelected);
             backButton.show();
             backButton.setText('Groups');
+            rightButton.setCls('mobile-add-contact-button');
         }, 260)
     },
 
-    onContactSelected : function (list, index, target, record, e) {
+    onGroupSelected : function(list, index, target, record, e) {
+        var me = this;
+        me.contactGroupSelected = record.data.groupName;
+
+        me.showContactsCard();
+    },
+
+    onContactSelected : function(list, index, target, record, e) {
         var me = this;
 
         me.selectedRecord = record;
 
         common.DreamFactory.filterRecords('ContactInfo', {
             where    : 'contactId=' + record.get('contactId'),
-            callback : function (o) {
+            callback : function(o) {
                 me.onAfterContactDetailsLoad(o);
             }
         });
     },
 
-    onAfterContactDetailsLoad : function (data) {
+    onAfterContactDetailsLoad : function(data) {
         var me = this,
             record = me.selectedRecord;
 
         var records = [];
-        Ext.iterate(data.record, function (record) {
+        Ext.iterate(data.record, function(record) {
             records.push(record.fields);
         });
         me.showDetails(records);
@@ -81,12 +116,13 @@ Ext.define('mobile.controller.phone.Main', {
         delete me.selectedRecord;
     },
 
-    showDetails : function (contactData) {
+    showDetails : function(contactData) {
         var me = this,
             recordData = me.selectedRecord.data,
             contactList = me.getContactList(),
             mainPanel = me.getMainPanel(),
             titleBar = me.getTitleBar(),
+            rightButton = me.getRightButton(),
             backButton = me.getBackButton();
 
         recordData.contactData = recordData.contactData || contactData;
@@ -103,43 +139,76 @@ Ext.define('mobile.controller.phone.Main', {
             direction : 'left'
         });
 
-        Ext.Function.defer(function () {
+        Ext.Function.defer(function() {
             titleBar.setTitle('info');
             backButton.setText('Contacts');
             backButton.show();
+            rightButton.setIconCls('compose');
+            rightButton.setCls('mobile-edit-contact-button');
             contactList.deselectAll();
         }, 260);
 
         delete me.selectedRecord;
     },
 
-    onBackButton : function () {
+    onRightButton : function() {
         var mainPanel = this.getMainPanel(),
             titleBar = this.getTitleBar(),
             backButton = this.getBackButton();
+            rightButton = this.getRightButton();
 
-        if (backButton.getText() === 'Groups') {
-            mainPanel.animateActiveItem(0, {
-                type      : 'slide',
-                duration  : 250,
-                direction : 'right'
-            });
-            Ext.Function.defer(function () {
-                titleBar.setTitle('Contact Groups');
-                backButton.hide();
-            }, 260)
+        var cls = '';
+        Ext.each(rightButton.getCls(), function(item) {
+            if (item.indexOf('mobile-') === 0) {
+                cls = item;
+            }
+        });
+        console.dir(cls);
+        switch (cls) {
+            case 'mobile-edit-contact-button':
+                mainPanel.animateActiveItem(3, {
+                    type      : 'slide',
+                    duration  : 250,
+                    direction : 'right'
+                });
+                Ext.Function.defer(function() {
+                    titleBar.setTitle('Edit Contact');
+                    backButton.setText('Cancel');
+                    backButton.show();
+                }, 260)
+                break;
         }
-        else {
-            mainPanel.animateActiveItem(1, {
-                type      : 'slide',
-                duration  : 250,
-                direction : 'right'
-            });
 
-            Ext.Function.defer(function () {
-                backButton.setText('Groups');
-                titleBar.setTitle('Contacts');
-            }, 260)
+    },
+
+    onBackButton : function() {
+        var me = this,
+            mainPanel = this.getMainPanel(),
+            titleBar = this.getTitleBar(),
+            rightButton = me.getRightButton(),
+            backButton = this.getBackButton();
+
+        switch (backButton.getText()) {
+            case 'Groups':
+                me.showContactGroupsCard();
+                break;
+            case 'Cancel':
+                mainPanel.animateActiveItem(2, {
+                    type      : 'slide',
+                    duration  : 250,
+                    direction : 'right'
+                });
+                Ext.Function.defer(function() {
+                    titleBar.setTitle('info');
+                    backButton.setText('Contacts');
+                    backButton.show();
+                    rightButton.setIconCls('add');
+                    rightButton.setCls('mobile-edit-contact-button');
+                }, 260);
+                break;
+            default:
+                me.showContactsCard();
+                break;
         }
     }
 

@@ -5,10 +5,12 @@ Ext.define("mobile.view.phone.Main", {
 
     requires : [
         'Ext.TitleBar',
+        'Ext.field.Search',
         'mobile.view.Login',
         'mobile.view.GroupList',
         'mobile.view.ContactList',
-        'mobile.view.ContactInformation'
+        'mobile.view.ContactInformation',
+        'mobile.view.ContactEditor'
     ],
 
     config     : {
@@ -35,14 +37,18 @@ Ext.define("mobile.view.phone.Main", {
                         text   : 'Contacts',
                         hidden : true
                     }
-//                    ,
-//                    {
-//                        align  : 'right',
+                    ,
+                    {
+                        align  : 'right',
+                        iconCls: 'add',
+                        iconMask: true,
+                        action: 'title-right',
+                        cls: 'mobile-add-contact-group-button',
 //                        ui     : 'edit',
 //                        cls    : 'edit-button',
 //                        text   : 'Edit',
-//                        hidden : false
-//                    }
+                        hidden : false
+                    }
                 ]
             },
             {
@@ -109,12 +115,38 @@ Ext.define("mobile.view.phone.Main", {
                         ui: 'search',
                         items: [
                             {
-                                text: 'Edit'
+                                text: 'Edit',
+                                action: 'edit'
 //                                iconCls: 'compose',
 //                                iconMask: true
                             }
                         ]
                     }
+                ]
+            },
+            {
+                layout: 'fit',
+                items: [
+                    {
+                        xtype : 'contact_editor'
+                    }
+//                    },
+//                    {
+//                        xtype: 'titlebar',
+//                        docked: 'bottom',
+//                        ui: 'search',
+//                        items: [
+//                            {
+//                                align  : 'left',
+//                                ui     : 'back',
+//                                cls    : 'back-button',
+//                                text: 'Cancel'
+////                                iconCls: 'compose',
+////                                iconMask: true
+//                            }
+//
+//   ]
+//                    }
                 ]
             }
         ]);
