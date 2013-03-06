@@ -3,7 +3,9 @@ Ext.define("mobile.view.ContactList", {
     extend : 'Ext.dataview.List',
     xtype  : 'contact_list',
 
-    requires : [ 'Ext.data.Store' ],
+    requires : [
+        'Ext.data.Store'
+    ],
 
     config     : {
         grouped  : true,
@@ -40,24 +42,21 @@ Ext.define("mobile.view.ContactList", {
             fields   : fields,
             autoLoad : true,
             proxy    : {
-                type   : 'ajax',
-                url    : url,
-                reader : {
-                    type         : 'json',
-                    rootProperty : 'record',
-                    idProperty: schema.primaryKey,
-                    totalProperty: 'meta.count',
-                    record: 'fields'
+                type        : 'ajax',
+                url         : url,
+                reader      : {
+                    type          : 'json',
+                    rootProperty  : 'record',
+                    idProperty    : schema.primaryKey,
+                    totalProperty : 'meta.count'
                 },
                 headers     : {
                     'X-Application-Name' : 'add'
                 },
-                extraParams: me.extraParams,
-                startParam: false,
-//                startParam: 'offset',
-                limitParam: false,
-//                limitParam: 'limit',
-                pageParam: false
+                extraParams : me.extraParams,
+                startParam  : false,
+                limitParam  : false,
+                pageParam   : false
             },
             sorters  : [
                 {
@@ -76,6 +75,15 @@ Ext.define("mobile.view.ContactList", {
                     return (last_name === null || last_name === '') ? '&nbsp' : last_name.substr(0, 1).toUpperCase();
                 },
                 sortProperty : 'lastName'
+            },
+
+            filters: {
+                filterFn: function(record) {
+//                    if (mobile.data.contactIds) {
+//                        debugger;
+//                    }
+                    return (!mobile.data.contactIds || mobile.data.contactIds.indexOf(parseInt(''+record.data.contactId, 10)) !== -1);
+                }
             }
         });
 

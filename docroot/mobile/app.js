@@ -22,7 +22,8 @@ Ext.application({
 
     controllers : [
 //        'Main',
-        'Login'
+        'Login',
+        'ContactGroupEditor'
     ],
 //    views       : [
 ////        'Main',

@@ -7,41 +7,43 @@
  */
 
 Ext.define('mobile.view.Login', {
-    extend: 'Ext.form.Panel',
-    xtype: 'loginview',
-    requires: [
+    extend     : 'Ext.form.Panel',
+    xtype      : 'loginview',
+    requires   : [
         'Ext.form.FieldSet',
         'Ext.field.Text',
         'Ext.field.Password'
     ],
-    config: {
-        submitOnAction: true,
-        fullscreen: true
+    config     : {
+        submitOnAction : true,
+        fullscreen     : true
     },
-    fullscreen: true,
+    fullscreen : true,
 
-    initialize: function() {
+    initialize : function () {
         this.callParent(arguments);
         this.add([
             {
-                xtype: 'fieldset',
-                defaults: {
-                    labelWidth: 100
+                xtype    : 'fieldset',
+                defaults : {
+                    labelWidth : 100
                 },
-                items: [
+                items    : [
                     {
-                        xtype: 'textfield',
-                        name: 'username',
-                        label: 'User Name'
+                        xtype : 'textfield',
+                        name  : 'username',
+                        label : 'User Name'
                     },
                     {
-                        xtype: 'passwordfield',
-                        name: 'password',
-                        label: 'Password'
+                        xtype : 'passwordfield',
+                        name  : 'password',
+                        label : 'Password'
                     },
                     {
-                        xtype: 'button',
-                        text: 'Log In'
+                        xtype : 'button',
+                        ui    : 'confirm',
+                        style : 'margin: 10px',
+                        text  : 'Log In'
                     }
                 ]
             }

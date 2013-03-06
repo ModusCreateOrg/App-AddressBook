@@ -47,8 +47,7 @@ Ext.define('mobile.view.GroupList', {
                     type: 'json',
                     rootProperty: 'record',
                     idProperty: schema.primaryKey,
-                    totalProperty: 'meta.count',
-                    record: 'fields'
+                    totalProperty: 'meta.count'
                 },
                 headers: {
                     'X-Application-Name' : 'add'
@@ -71,7 +70,6 @@ Ext.define('mobile.view.GroupList', {
         me.callParent(arguments);
         me.on("itemswipe", function(dataview, ix, target, record, event, options) {
             var el = event.target;
-//            console.dir(target);
             if (event.direction == "left") {
                 var del = Ext.create("Ext.Button", {
                     ui: "decline",
@@ -79,6 +77,12 @@ Ext.define('mobile.view.GroupList', {
                     style: "position:absolute;right:0.125in; margin-top: -40px",
                     handler: function(btn, e) {
                         console.dir(e);
+                        console.dir(record);
+                        Ext.Msg.confirm('Delete ' + record.data.groupName, 'Are you sure?', function(btn) {
+                            if (btn === 'yes') {
+                                me.fireEvent('deleteGroup', record.data.contactGroupId);
+                            }
+                        });
                         e.stopEvent();
 //                        record.stores[0].remove(record);
 //                        record.stores[0].sync();

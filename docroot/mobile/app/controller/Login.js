@@ -71,7 +71,6 @@ Ext.define('mobile.controller.Login', {
     },
 
     onBeforeSubmit: function(form) {
-        console.log('beforesubmit');
         this.doLogin(form);
         return false;
     },
