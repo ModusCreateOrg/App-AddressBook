@@ -21,7 +21,6 @@ Ext.define('ab.ux.DataSourceField', {
             initialized = false;
 
         Ext.iterate(me.value, function(item) {
-            console.dir(item);
             items.push({
                 id: me.id + '-' + item.value,
                 checked: item.checked,

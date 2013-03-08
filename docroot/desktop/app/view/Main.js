@@ -7,7 +7,6 @@
         console.log('loadContactRecord');
         common.DreamFactory.filterRecords(ab.Schemas.ContactGroups.name, {
             fields   : 'contactGroupId,groupName',
-//            where    : 'contactId=' + recordId,
             callback : function (o) {
                 Ext.iterate(o.record, function (record) {
                     allGroups.push({
@@ -15,27 +14,39 @@
                         display : record.groupName,
                         checked : false
                     });
-//                    groups.push(record.fields)
                 });
-                if (record.contactId) {
-                    common.DreamFactory.filterRecords(ab.Schemas.ContactRelationships.name, {
-                        fields   : 'contactGroupId',
+                if (!record || !record.contactId) {
+                    common.DreamFactory.filterRecords(ab.Schemas.Contacts.name, {
                         where    : 'contactId=' + record.contactId,
                         callback : function (o) {
-                            Ext.iterate(o.record, function (record) {
-                                groups.push(record.contactGroupId);
-                            });
-                            Ext.each(allGroups, function (group) {
-                                if (groups.indexOf(group.value) !== -1) {
-                                    group.checked = true;
+                            record = o.record[0];
+                            if (!record.contactId) {
+                                Ext.Msg.alert('Error', 'Contact has been removed and can no longer be edited.');
+                                if (callback) {
+                                    callback(false);
+                                }
+                                return;
+                            }
+                            common.DreamFactory.filterRecords(ab.Schemas.ContactRelationships.name, {
+                                fields   : 'contactGroupId',
+                                where    : 'contactId=' + record.contactId,
+                                callback : function (o) {
+                                    Ext.iterate(o.record, function (record) {
+                                        groups.push(record.contactGroupId);
+                                    });
+                                    Ext.each(allGroups, function (group) {
+                                        if (groups.indexOf(group.value) !== -1) {
+                                            group.checked = true;
+                                        }
+                                    });
+                                    record.groups = allGroups;
+                                    record.currentGroups = groups;
+                                    console.dir(record);
+                                    if (callback) {
+                                        callback(record);
+                                    }
                                 }
                             });
-                            record.groups = allGroups;
-                            record.currentGroups = groups;
-                            console.dir(record);
-                            if (callback) {
-                                callback(record);
-                            }
                         }
                     });
                 }
@@ -56,8 +67,8 @@
             return;
         }
         common.DreamFactory.deleteRecordsFiltered(ab.Schemas.ContactRelationships.name, {
-            where: 'contactId=' + contactId,
-            callback: function(o) {
+            where    : 'contactId=' + contactId,
+            callback : function (o) {
                 callback();
             }
         });
@@ -67,14 +78,14 @@
 //        callback();
 //        return;
         var records = [];
-        Ext.each(groupIds, function(id) {
+        Ext.each(groupIds, function (id) {
             records.push({
-                contactId: contactId,
-                contactGroupId: id
+                contactId      : contactId,
+                contactGroupId : id
             });
         });
         if (records.length) {
-            common.DreamFactory.createRecords(ab.Schemas.ContactRelationships.name, records, function(o) {
+            common.DreamFactory.createRecords(ab.Schemas.ContactRelationships.name, records, function (o) {
                 callback();
             });
         }
@@ -88,15 +99,15 @@
             schema = ab.Schemas.Contacts,
             groupIds = [];
 
-        Ext.iterate(record.groups, function(group) {
+        Ext.iterate(record.groups, function (group) {
             if (group.checked) {
                 groupIds.push(parseInt(group.value, 10));
             }
         });
         if (record[schema.primaryKey]) {
-            deleteContactRelationships(record[schema.primaryKey], function() {
+            deleteContactRelationships(record[schema.primaryKey], function () {
                 common.DreamFactory.updateRecords(schema.name, [record], function () {
-                    addContactRelationships(record[schema.primaryKey], groupIds, function() {
+                    addContactRelationships(record[schema.primaryKey], groupIds, function () {
                         if (callback) {
                             callback();
                         }
@@ -192,6 +203,24 @@
         }
 
         deleteOne();
+    }
+
+    function loadContactGroupRecord(record, callback) {
+        if (!record.contactGroupId) {
+            callback(record);
+            return;
+        }
+        common.DreamFactory.filterRecords(ab.Schemas.ContactGroups.name, {
+            where    : 'contactGroupId=' + record.contactGroupId,
+            callback : function (o) {
+                record = o.record[0];
+                if (!record || !record.contactGroupId) {
+                    Ext.Msg.alert('Error', 'Group has been removed and can no longer be edited.');
+                    record = false;
+                }
+                callback(record);
+            }
+        });
     }
 
     function saveContactGroupRecord(record, callback) {
@@ -325,19 +354,21 @@
                         }
                     },
                     {
-                        xtype     : 'schemagrid',
-                        title     : 'Groups',
-                        border    : false,
-                        icon      : '../img/famfam/group.png',
-                        schema    : ab.Schemas.ContactGroups,
+                        xtype    : 'schemagrid',
+                        title    : 'Groups',
+                        border   : false,
+                        icon     : '../img/famfam/group.png',
+                        schema   : ab.Schemas.ContactGroups,
 //                        filterable : true,
-                        saveFn    : saveContactGroupRecord,
-                        deleteFn  : deleteContactGroupRecords,
-                        listeners : {
-                            scope         : me,
-                            deleterecords : me.onSchemaGridDeleteRecords,
-                            itemdblclick  : me.onSchemaGridItemDblClick
-                        }
+                        loadFn   : loadContactGroupRecord,
+                        saveFn   : saveContactGroupRecord,
+                        deleteFn : deleteContactGroupRecords
+//                        ,
+//                        listeners : {
+//                            scope         : me,
+//                            deleterecords : me.onSchemaGridDeleteRecords,
+//                            itemdblclick  : me.onSchemaGridItemDblClick
+//                        }
                     }
                 ]
             }

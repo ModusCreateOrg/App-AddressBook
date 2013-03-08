@@ -20,7 +20,6 @@ Ext.define("mobile.view.ContactList", {
         )
     },
     initialize : function () {
-
         var me = this,
             fields = [],
             schema = me.getSchema(),
@@ -88,5 +87,48 @@ Ext.define("mobile.view.ContactList", {
         });
 
         me.callParent(arguments);
+
+        me.on("itemswipe", function(dataview, ix, target, record, event, options) {
+            var el = event.target;
+            if (event.direction == "left") {
+                var del = Ext.create("Ext.Button", {
+                    ui: "decline",
+                    text: "Delete",
+                    style: "position:absolute;right:0.125in; margin-top: -40px",
+                    handler: function(btn, e) {
+                        console.dir(e);
+                        console.dir(record);
+                        Ext.Msg.confirm('Delete ' + record.data.firstName + ' ' + record.data.lastName, 'Are you sure?', function(btn) {
+                            if (btn === 'yes') {
+                                me.fireEvent('deleteContact', record.data.contactId);
+                            }
+                        });
+                        e.stopEvent();
+//                        record.stores[0].remove(record);
+//                        record.stores[0].sync();
+                    }
+                });
+                var removeDeleteButton = function() {
+                    Ext.Anim.run(del, 'fade', {
+                        after: function() {
+                            del.destroy();
+                        },
+                        out: true
+                    });
+                };
+                del.renderTo(target.element);
+                dataview.on({
+                    single: true,
+                    buffer: 250,
+                    itemtouchstart: removeDeleteButton
+                });
+                dataview.element.on({
+                    single: true,
+                    buffer: 250,
+                    touchstart: removeDeleteButton
+                });
+            }
+        });
+
     }
 });

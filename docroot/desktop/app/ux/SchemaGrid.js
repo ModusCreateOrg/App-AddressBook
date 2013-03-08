@@ -239,13 +239,18 @@ Ext.define('ab.ux.SchemaGrid', {
     },
 
     editRecord : function (record) {
-        var me = this;
+        var me = this
+            create = !!record;
 
         record = record || {};
         record = Ext.apply(record, me.extraFields);
 
-        if (me.loadFn) {
+        if (create && me.loadFn) {
             me.loadFn(record, function(record) {
+                if (record === false) {
+                    me.getStore().load();
+                    return;
+                }
                 me.showEditDialog(record);
             });
         }

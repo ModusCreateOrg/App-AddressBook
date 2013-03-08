@@ -13,7 +13,7 @@ Ext.define('mobile.controller.tablet.Main', {
             contactList : 'contact_list',
             mainPanel    : 'mainview',
             titleBar     : 'titlebar',
-            detailCard   : 'contact_information'
+            detailCard   : 'contact_details'
         },
         control : {
             'contact_list' : {

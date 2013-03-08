@@ -14,7 +14,7 @@
             'mobile.view.Login',
             'mobile.view.GroupList',
             'mobile.view.ContactList',
-            'mobile.view.ContactInformation',
+            'mobile.view.ContactDetails',
             'mobile.view.ContactEditor',
             'mobile.view.ContactGroupEditor'
         ],
@@ -82,13 +82,7 @@
                     ]
                 },
                 {
-                    xtype : 'contact_information'
-                },
-                {
-                    xtype : 'contact_editor'
-                },
-                {
-                    xtype : 'contact_group_editor'
+                    xtype : 'contact_details'
                 }
             ]);
 

@@ -17,16 +17,21 @@ Ext.define('mobile.view.ContactGroupEditor', {
         var me = this;
         me.callParent(arguments);
         me.add({
-            xtype: 'textfield',
-            label: 'Group Name',
-            name: 'groupName'
+            xtype: 'fieldset',
+            items: [
+                {
+                    xtype: 'textfield',
+                    placeHolder: 'Group Name',
+                    name: 'groupName'
+                }
+            ]
         });
-        me.add({
-            xtype: 'button',
-            ui: 'confirm',
-            style: 'margin: 10px',
-            text: 'Create Group',
-            action: 'create-group'
-        });
+//        me.add({
+//            xtype: 'button',
+//            ui: 'confirm',
+//            style: 'margin: 10px',
+//            text: 'Create Group',
+//            action: 'create-group'
+//        });
     }
 });

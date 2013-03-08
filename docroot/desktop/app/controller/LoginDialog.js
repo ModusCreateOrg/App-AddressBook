@@ -3,9 +3,9 @@ Ext.define('ab.controller.LoginDialog', {
     views  : [
         'LoginDialog'
     ],
+
     init   : function() {
         var me = this;
-
 
         me.control({
             '#login-button' : {
@@ -42,45 +42,6 @@ Ext.define('ab.controller.LoginDialog', {
             dialog.close();
             me.application.fireEvent('loginsuccessful');
         });
-//        Ext.Ajax.request({
-//            url: '/service/REST/User/Login',
-//            method: 'POST',
-//            headers: {
-//                'X-Application-Name': 'add'
-//            },
-//            jsonData: {
-//                username: username,
-//                password: password
-//            },
-//            success: function(response) {
-//                var o = Ext.decode(response.responseText);
-//                    ab.data.user = o;
-//                    dialog.close();
-//                    me.application.fireEvent('loginsuccessful');
-//                console.dir(o);
-//            }
-//        });
-
-//        rpc('Users.login', {
-//            params : {
-//                username : username,
-//                password : ab.ux.Utils.md5(password)
-//            },
-//
-//            fn : function(o) {
-//                if (o.success) {
-//                    // global ab.user is user record of current logged in user
-//                    ab.data.user = o.user;
-//                    dialog.close();
-//                    me.application.fireEvent('loginsuccessful');
-//
-//                }
-//                else {
-//                    dialog.errorMessage(o.message);
-//                    dialog.enable();
-//                }
-//            }
-//        });
     },
 
     onDialogShow : function(dialog) {

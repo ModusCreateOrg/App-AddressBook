@@ -16,7 +16,7 @@ Ext.define("mobile.view.tablet.Main", {
         'Ext.Toolbar',
         'mobile.view.Login',
         'mobile.view.ContactList',
-        'mobile.view.ContactInformation'
+        'mobile.view.ContactDetails'
     ],
 
     config : {
@@ -163,7 +163,7 @@ Ext.define("mobile.view.tablet.Main", {
             {
                 flex    : .7,
                 padding : 20,
-                xtype   : 'contact_information'
+                xtype   : 'contact_details'
             }
         ]);
 

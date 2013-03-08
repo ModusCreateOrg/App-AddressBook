@@ -1,6 +1,6 @@
-Ext.define("mobile.view.ContactInformation", {
+Ext.define("mobile.view.ContactDetails", {
     extend: 'Ext.Container',
-    xtype: 'contact_information',
+    xtype: 'contact_details',
 
 
     config : {

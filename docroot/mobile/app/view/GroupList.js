@@ -25,6 +25,7 @@ Ext.define('mobile.view.GroupList', {
     },
 
     initialize: function() {
+        console.log('initialize group list');
         var me = this,
             fields = [],
             schema = mobile.schemas.ContactGroups,

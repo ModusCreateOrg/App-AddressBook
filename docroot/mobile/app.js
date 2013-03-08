@@ -10,8 +10,6 @@ Ext.application({
     name : 'mobile',
 
     requires : [
-//        'Ext.MessageBox',
-//        'Ext.Ajax',
         'common.DreamFactory'
     ],
 
@@ -21,14 +19,9 @@ Ext.application({
     ],
 
     controllers : [
-//        'Main',
         'Login',
         'ContactGroupEditor'
     ],
-//    views       : [
-////        'Main',
-//        'Login'
-//    ],
 
     icon : {
         '57'  : 'resources/icons/Icon.png',
@@ -59,32 +52,7 @@ Ext.application({
                 userId : 0
             }
         };
-
-//        Ext.Ajax.request({
-//            url     : '../json/Schemas.json',
-//            scope   : this,
-//            success : this.onAfterSchemaLoad
-//        });
     },
-
-//    onAfterSchemaLoad : function (response) {
-//        var o;
-//
-//        try {
-//            o = Ext.decode(response.responseText);
-//        }
-//        catch (e) {
-//            console.dir(e);
-//            Ext.Msg.alert('Error', 'Schemas did not load!  App cannot continue.');
-//        }
-//        mobile.schemas = o;
-//
-//        // Destroy the #appLoadingIndicator element
-//        Ext.fly('appLoadingIndicator').destroy();
-//
-//        // Initialize the main view
-//        Ext.Viewport.add(Ext.create('mobile.view.Login'));
-//    },
 
     onUpdated : function () {
         Ext.Msg.confirm(
