@@ -1,0 +1,12 @@
+.x-list-normal .x-list-header {
+  background-color : '#999';
+}
+
+.x-list-item {
+  .x-item-selected {
+    background-image: none;
+    background: $lightBlue;
+    box-shadow: none;
+    border: none;
+  }
+}
