@@ -26,12 +26,5 @@ Ext.define('mobile.view.ContactGroupEditor', {
                 }
             ]
         });
-//        me.add({
-//            xtype: 'button',
-//            ui: 'confirm',
-//            style: 'margin: 10px',
-//            text: 'Create Group',
-//            action: 'create-group'
-//        });
     }
 });
