@@ -15,7 +15,7 @@
                         checked : false
                     });
                 });
-                if (!record || !record.contactId) {
+                if (record && record.contactId) {
                     common.DreamFactory.filterRecords(ab.Schemas.Contacts.name, {
                         where    : 'contactId=' + record.contactId,
                         callback : function (o) {
@@ -350,7 +350,7 @@
                         listeners  : {
                             scope         : me,
                             deleterecords : me.onSchemaGridDeleteRecords,
-                            itemdblclick  : me.onSchemaGridItemDblClick
+                            itemdblclick  : me.onContactsGridItemDblClick
                         }
                     },
                     {
@@ -362,13 +362,12 @@
 //                        filterable : true,
                         loadFn   : loadContactGroupRecord,
                         saveFn   : saveContactGroupRecord,
-                        deleteFn : deleteContactGroupRecords
-//                        ,
-//                        listeners : {
-//                            scope         : me,
+                        deleteFn : deleteContactGroupRecords,
+                        listeners : {
+//                            itemdblclick  : me.onGroupsGridItemDblClick,
 //                            deleterecords : me.onSchemaGridDeleteRecords,
-//                            itemdblclick  : me.onSchemaGridItemDblClick
-//                        }
+                            scope         : me
+                        }
                     }
                 ]
             }
@@ -383,7 +382,7 @@
             }, this);
         },
 
-        onSchemaGridItemDblClick : function (view, record) {
+        onContactsGridItemDblClick : function (view, record) {
             var me = this,
                 tabPanel = me.down('#ab-tabPanel'),
                 recordData = record.data,
@@ -407,6 +406,39 @@
                     },
                     extraFields : {
                         contactId : record.data.contactId
+                    }
+                });
+            }
+
+            tabPanel.setActiveTab(tab);
+        },
+
+        onGroupsGridItemDblClick : function (view, record) {
+            var me = this,
+                tabPanel = me.down('#ab-tabPanel'),
+                recordData = record.data,
+                tab = me.down('#userInfo-grid-' + recordData.contactId),
+                title = recordData.firstName + ' ' + recordData.lastName;
+//console.log('dbl click');
+//            return;
+            //        console.log(title + " selected", recordData);
+            if (!tab) {
+                tab = tabPanel.add({
+                    xtype       : 'schemagrid',
+                    title       : Ext.String.ellipsis(title, 15),
+                    itemId      : 'userInfo-grid-' + recordData.contactId,
+                    icon        : '../img/famfam/user_b.png',
+                    userInfo    : recordData,
+                    schema      : ab.Schemas.ContactGroups,
+                    closable    : true,
+                    saveFn      : saveContactInfoRecord,
+                    deleteFn    : deleteInfoRecords,
+                    extraParams : {
+                        related: 'Contacts_by_ContactRelationships',
+                        filter : 'contactGroupId=' + record.data.contactGroupId
+                    },
+                    extraFields : {
+                        contactGroupId : record.data.contactGroupId
                     }
                 });
             }
