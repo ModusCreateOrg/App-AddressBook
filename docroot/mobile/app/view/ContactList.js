@@ -87,36 +87,44 @@ Ext.define("mobile.view.ContactList", {
         });
 
         me.callParent(arguments);
-
+        me.del = null;
         me.on("itemswipe", function(dataview, ix, target, record, event, options) {
             var el = event.target;
+            if (me.del) {
+                console.log('stop event');
+                event.stopEvent();
+                return false;
+            }
             if (event.direction == "left") {
-                var del = Ext.create("Ext.Button", {
+                me.deleteButton = true;
+                var del = me.del = Ext.create("Ext.Button", {
                     ui: "decline",
                     text: "Delete",
                     style: "position:absolute;right:0.125in; margin-top: -40px",
                     handler: function(btn, e) {
-                        console.dir(e);
-                        console.dir(record);
                         Ext.Msg.confirm('Delete ' + record.data.firstName + ' ' + record.data.lastName, 'Are you sure?', function(btn) {
                             if (btn === 'yes') {
                                 me.fireEvent('deleteContact', record.data.contactId);
                             }
                         });
                         e.stopEvent();
-//                        record.stores[0].remove(record);
-//                        record.stores[0].sync();
                     }
                 });
                 var removeDeleteButton = function() {
                     Ext.Anim.run(del, 'fade', {
                         after: function() {
                             del.destroy();
+                            delete me.del;
                         },
                         out: true
                     });
                 };
                 del.renderTo(target.element);
+                Ext.Anim.run(me.del, 'fade', {
+                    out: false,
+                    autoClear: true,
+                    duration: 500
+                });
                 dataview.on({
                     single: true,
                     buffer: 250,
