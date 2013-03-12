@@ -1,8 +1,11 @@
+/* setup some variables */
+$boundlist-background-color: red;
+
 $include-form-sliders : false;
 $include-top-tabs : false;
 $include-bottom-tabs : true ! default;
 
-$font-family: "jaf-facitweb";
+$font-family: 'Lato', sans-serif;
 
 /* setup some colors */
 $darkBlue: #34495e;
@@ -23,11 +26,14 @@ $baseRed: #e74c3c;
 @include sencha-form;
 @include sencha-msgbox;
 
+
+
 html {
   -webkit-font-smoothing : antialiased;
 }
 
 /* setup our includes */
+@import "include/base";
 @import "include/list";
 @import "include/toolbar";
 

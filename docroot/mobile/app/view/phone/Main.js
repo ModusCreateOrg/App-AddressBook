@@ -21,7 +21,8 @@
 
         config : {
             fullscreen : true,
-            title      : TITLE,
+            // title      : TITLE,
+            title      : "Address Book",
             layout     : {
                 type : 'card'
             },
@@ -90,7 +91,7 @@
         },
 
         showLogo: function() {
-            this.down('titlebar').setTitle(TITLE);
+            this.down('titlebar').setTitle('Address Book');
         }
 
     });
