@@ -69,44 +69,59 @@ Ext.define('mobile.view.GroupList', {
         });
 
         me.callParent(arguments);
+        me.del = null;
         me.on("itemswipe", function(dataview, ix, target, record, event, options) {
             var el = event.target;
+            if (me.del || record.get('groupName') === 'All Contact Groups') {
+                console.log('stop event');
+                event.stopEvent();
+                return false;
+            }
             if (event.direction == "left") {
-                var del = Ext.create("Ext.Button", {
+                me.deleteButton = true;
+                me.del = Ext.create("Ext.Button", {
                     ui: "decline",
                     text: "Delete",
                     style: "position:absolute;right:0.125in; margin-top: -40px",
                     handler: function(btn, e) {
-                        console.dir(e);
-                        console.dir(record);
                         Ext.Msg.confirm('Delete ' + record.data.groupName, 'Are you sure?', function(btn) {
                             if (btn === 'yes') {
                                 me.fireEvent('deleteGroup', record.data.contactGroupId);
                             }
                         });
                         e.stopEvent();
-//                        record.stores[0].remove(record);
-//                        record.stores[0].sync();
                     }
                 });
                 var removeDeleteButton = function() {
-                    Ext.Anim.run(del, 'fade', {
+                    Ext.Anim.run(me.del, 'fade', {
                         after: function() {
-                            del.destroy();
+                            me.del.destroy();
+                            delete me.del;
                         },
                         out: true
                     });
                 };
-                del.renderTo(target.element);
+                me.del.renderTo(target.element);
+                Ext.Anim.run(me.del, 'fade', {
+                    out: false,
+                    autoClear: true,
+                    duration: 500
+                });
                 dataview.on({
                     single: true,
                     buffer: 250,
-                    itemtouchstart: removeDeleteButton
+                    itemtouchstart: function() {
+//                        console.dir('itemtouchstart');
+                        removeDeleteButton();
+                    }
                 });
                 dataview.element.on({
                     single: true,
                     buffer: 250,
-                    touchstart: removeDeleteButton
+                    touchstart: function() {
+//                        console.dir('touchstart');
+                        removeDeleteButton();
+                    }
                 });
             }
         });

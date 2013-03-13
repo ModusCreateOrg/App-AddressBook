@@ -82,7 +82,6 @@ Ext.define('mobile.controller.phone.Main', {
             rightButton.setUi('action');
             rightButton.setCls('mobile-add-contact-group-button');
             rightButton.show();
-            console.dir(mainPanel.getAt(4));
             mainPanel.removeAt(4);
         }, 260);
         delete me.selectedRecord;
@@ -120,7 +119,6 @@ Ext.define('mobile.controller.phone.Main', {
     },
 
     showContactsCard : function (direction) {
-        console.dir(direction);
         direction = direction || 'right';
         var me = this,
             mainPanel = me.getMainPanel(),
@@ -128,7 +126,6 @@ Ext.define('mobile.controller.phone.Main', {
             rightButton = me.getRightButton(),
             backButton = me.getBackButton();
 
-        console.dir(direction);
         mainPanel.animateActiveItem(1, {
             type      : 'slide',
             duration  : 250,
@@ -144,7 +141,6 @@ Ext.define('mobile.controller.phone.Main', {
             rightButton.setUi('action');
             rightButton.setCls('mobile-add-contact-button');
             rightButton.show();
-            console.dir(mainPanel.getAt(4));
             mainPanel.removeAt(4);
         }, 260)
         delete me.selectedRecord;
@@ -221,34 +217,58 @@ Ext.define('mobile.controller.phone.Main', {
     },
 
     onGroupSelected : function (list, index, target, record, e) {
-        var me = this;
+        var me = this
+            contactList = me.getContactList(),
+            groupList = me.getGroupList();
 
+        if (groupList.deleteButton) {
+            delete groupList.deleteButton;
+            Ext.Function.defer(function() {
+                groupList.deselectAll();
+            }, 1);
+            return;
+        }
         me.contactGroupSelected = record.data.groupName;
         if (record.data.contactGroupId) {
             common.DreamFactory.filterRecords(mobile.schemas.ContactRelationships.name, {
                 where: 'contactGroupId=' + record.data.contactGroupId,
                 callback: function(o) {
-                    console.dir(o);
                     mobile.data.contactIds = [];
                     Ext.iterate(o.record, function(item) {
                         mobile.data.contactIds.push(parseInt(''+item.contactId, 10));
                     });
                     me.getContactList().getStore().load(function() {
                         me.showContactsCard('left');
+                        Ext.Function.defer(function() {
+                            groupList.deselectAll();
+                        }, 1);
                     });
                 }
             });
         }
         else {
             mobile.data.contactIds = undefined;
-            me.getContactList().getStore().load(function() {
+            contactList.getStore().load(function() {
                 me.showContactsCard('left');
+                Ext.Function.defer(function() {
+                    groupList.deselectAll();
+                }, 1);
             });
         }
     },
 
     onContactSelected : function (list, index, target, record, e) {
-        var me = this;
+        var me = this,
+            contactList = me.getContactList();
+
+        if (contactList.deleteButton) {
+            Ext.Function.defer(function() {
+                contactList.deselectAll();
+            }, 1);
+//            contactList.deselectAll();
+            delete contactList.deleteButton;
+            return;
+        }
 
         me.selectedRecord = record;
 
