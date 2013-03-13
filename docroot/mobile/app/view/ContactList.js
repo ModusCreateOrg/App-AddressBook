@@ -81,7 +81,15 @@ Ext.define("mobile.view.ContactList", {
 //                    if (mobile.data.contactIds) {
 //                        debugger;
 //                    }
-                    return (!mobile.data.contactIds || mobile.data.contactIds.indexOf(parseInt(''+record.data.contactId, 10)) !== -1);
+                    if (mobile.data.contactIds && mobile.data.contactIds.indexOf(parseInt(''+record.data.contactId, 10)) === -1) {
+                        return false;
+                    }
+                    if (me.search && me.search.length) {
+                        var s = me.search.toLowerCase(),
+                            r = record.data;
+                        return r.firstName.toLowerCase().indexOf(s) !== -1 || r.lastName.toLowerCase().indexOf(s) !== -1;
+                    }
+                    return true;
                 }
             }
         });

@@ -3,7 +3,6 @@
  * User: mschwartz
  * Date: 3/6/13
  * Time: 6:23 AM
- * To change this template use File | Settings | File Templates.
  */
 
 Ext.define('mobile.view.ContactGroupEditor', {
