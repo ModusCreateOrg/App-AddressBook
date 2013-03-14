@@ -66,13 +66,21 @@
   border-bottom: none;
   text-shadow: none;
 }
-// Letter header - color
-.x-list-grouped .x-list-header-wrap .x-list-header {
-  background: #00bd9c;
+
+.x-list-header-swap {
+  background: #2C3E50 !important;
+  background-color: #2C3E50 !important;
+  background-image: #2C3E50 !important;
 }
-// Letter header - background
+
+
+// Letter header - Background
+.x-list-grouped .x-list-header-wrap .x-list-header {
+  background: #2C3E50;
+}
+// Letter header - Text color
 .x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
-  color: #33485f;
+  color: #FFF;
 }
 
 .x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
