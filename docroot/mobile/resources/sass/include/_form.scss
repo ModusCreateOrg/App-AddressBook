@@ -1,0 +1,33 @@
+::-webkit-input-placeholder {
+  color: #afb8c3
+}
+
+.x-form-field {
+  @include border-radius(6px);
+  border: 2px solid #dce4ec;
+  background: white;
+  color: #42566b;
+  &:focus {
+
+  }
+}
+
+.x-form-fieldset .x-form-fieldset-inner {
+  background: transparent;
+  margin-bottom: 5px;
+  border: none;
+  .x-field {
+    border: none;
+    margin-bottom: 5px;
+  }
+}
+
+.x-form-fieldset-title {
+  margin-left: 3px;
+  margin-bottom: 5px;
+  text-shadow: none !important;
+  .x-innerhtml {
+    font-weight: 800;
+    color: #3a4f65;
+  }  
+}
