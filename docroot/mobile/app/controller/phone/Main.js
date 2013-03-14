@@ -77,7 +77,6 @@ Ext.define('mobile.controller.phone.Main', {
         Ext.Function.defer(function () {
             mainPanel.showLogo();
             backButton.hide();
-            rightButton.setIconCls('add');
             rightButton.setText('');
             rightButton.setUi('action');
             rightButton.setCls('mobile-add-contact-group-button');
@@ -140,7 +139,7 @@ Ext.define('mobile.controller.phone.Main', {
             backButton.setCls('mobile-cancel-groups-button');
             backButton.show();
             rightButton.setIconCls('add');
-            rightButton.setText('');
+            // rightButton.setText('');
             rightButton.setUi('action');
             rightButton.setCls('mobile-add-contact-button');
             rightButton.show();

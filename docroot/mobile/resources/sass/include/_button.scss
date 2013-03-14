@@ -1,19 +1,28 @@
 .x-toolbar-dark .x-button {
-	background: #2C3E50;
+	background: #33485f;
 	border-radius: 0px;
 	border: none;
 	height: 35px;
 }
 
 .x-button.x-button-action {
-	background: #2C3E50;
+	background: #33485f;
 	border-radius: 0px;
 	border: none;
 	height: 35px;
 }
 .x-toolbar .x-button.x-button-action-small.x-button-forward:after {
-	background: #2C3E50;
+	background: #33485f;
 }
 .x-button-back:before {
-	background: #2C3E50;
+	background: #33485f;
+}
+
+.mobile-add-contact-group-button {
+	background: none !important;
+	&:before {
+		font-family: "FontAwesome";
+		content: "\f0fe";
+		color: #33485f;
+	}
 }

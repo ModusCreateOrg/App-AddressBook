@@ -49,8 +49,8 @@
                         ,
                         {
                             align    : 'right',
-                            iconCls  : 'add',
-                            iconMask : true,
+                            // iconCls  : 'add',
+                            // iconMask : true,
                             action   : 'title-right',
                             cls      : 'mobile-add-contact-group-button',
                             hidden   : false
