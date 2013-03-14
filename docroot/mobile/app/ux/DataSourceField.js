@@ -8,17 +8,19 @@
 Ext.define('mobile.ux.DataSourceField', {
     extend: 'Ext.form.FieldSet',
     xtype: 'datasourcefield',
-    items: [],
-    title: 'Data Source Field',
     requires: [
         'Ext.field.Checkbox'
     ],
+    
+    config : {
+          title: 'Data Source Field',  
+    },
 
     initialize: function() {
         var me = this,
             items = [];
 
-        console.log('init datasourcefield');
+        console.log('init', this.$className);
         Ext.iterate(me.value, function(item) {
             items.push({
                 id: me.id + '-' + item.value,
