@@ -2,14 +2,14 @@
 	background: #33485f;
 	border-radius: 0px;
 	border: none;
-	height: 35px;
+	height: 30px;
 }
 
 .x-button.x-button-action {
 	background: #33485f;
 	border-radius: 0px;
 	border: none;
-	height: 35px;
+	height: 30px;
 }
 .x-toolbar .x-button.x-button-action-small.x-button-forward:after {
 	background: #33485f;
@@ -18,11 +18,13 @@
 	background: #33485f;
 }
 
-.mobile-add-contact-group-button {
+.mobile-add-contact-group-button, 
+.mobile-add-contact-button  {
 	background: none !important;
+	border: none !important;
 	&:before {
 		font-family: "FontAwesome";
-		content: "\f0fe";
+		content: "\f067";
 		color: #33485f;
 	}
 	&.x-button-pressing {
@@ -32,6 +34,31 @@
 	}
 }
 
-.mobile-save-contact-group-button {
-	
+/* back button */
+.mobile-cancel-groups-button {
+	background: none !important;
+	border: none !important;
+	&:before {
+		font-family: "FontAwesome";
+		content: "\f060";
+		color: #33485f;
+	}
+	&.x-button-pressing {
+		&:before {
+			color: #6184a9;
+		}		
+	}	
+}
+
+/* swipe to delete button */
+.swipe-delete-button {
+	@include border-radius(3px);
+	background-color: #e94b35 !important;
+	border: none !important;
+	background-image: none !important;
+}
+
+.mobile-save-contact-group-button,
+.mobile-cancel-groups-editor-button {
+	height: 30px;
 }

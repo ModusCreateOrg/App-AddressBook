@@ -13,10 +13,14 @@
 }
 
 .x-toolbar .x-field-select .x-component-outer, .x-toolbar .x-field-search .x-component-outer {
-	-webkit-border-radius: none !important;
-	border-radius: none !important;
+	-webkit-border-radius: 0px !important;
+	border-radius: 0px !important;
 }
 
-.yes {
-   
- }
+
+.search-field {
+  .x-component-outer {
+    -webkit-border-radius: none !important;
+    border-radius: none !important;
+  }
+}
