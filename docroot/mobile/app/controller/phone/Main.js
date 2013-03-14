@@ -210,7 +210,7 @@
                 rightButton.setText('Add');
                 rightButton.show();
                 backButton.setCls('mobile-cancel-groups-editor-button');
-                backButton.setText('Cancel');
+                // backButton.setText('Cancel');
                 backButton.show();
             }, 260)
             delete me.selectedRecord;
@@ -260,11 +260,9 @@
 
             Ext.Function.defer(function () {
                 titleBar.setTitle('Contact Details');
-                // backButton.setText('Contacts');
                 backButton.setCls('mobile-cancel-contact-button');
                 backButton.show();
-                rightButton.setIconCls('compose');
-                // rightButton.setText('');
+                rightButton.setText('Edit');
                 // rightButton.setUi('action');
                 rightButton.setCls('mobile-edit-contact-button');
                 rightButton.show();
@@ -293,9 +291,7 @@
                 direction : direction
             });
             Ext.Function.defer(function () {
-                titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Add Contact');
-                // rightButton.setIconCls('');
-                // rightButton.setUi('confirm');
+                titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Create New Contact');
                 rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-button');
                 rightButton.show();
@@ -307,7 +303,7 @@
                     backButton.setCls('mobile-cancel-add-contact-button');
                 }
 
-                backButton.setText('Cancel');
+                // backButton.setText('Cancel');
                 backButton.show();
             }, 260)
         },
