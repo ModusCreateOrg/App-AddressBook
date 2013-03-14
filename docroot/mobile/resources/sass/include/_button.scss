@@ -25,4 +25,13 @@
 		content: "\f0fe";
 		color: #33485f;
 	}
+	&.x-button-pressing {
+		&:before {
+			color: #6184a9;
+		}		
+	}
+}
+
+.mobile-save-contact-group-button {
+	
 }

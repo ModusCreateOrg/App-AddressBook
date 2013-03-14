@@ -28,7 +28,7 @@
 
         config : {
             fullscreen : true,
-            title      : TITLE,
+            title      : 'Address Book',
             layout     : {
                 type : 'card'
             },

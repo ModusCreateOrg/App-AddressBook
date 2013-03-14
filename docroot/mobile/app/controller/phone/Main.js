@@ -176,8 +176,8 @@
             Ext.Function.defer(function () {
                 // mainPanel.showLogo();
                 backButton.hide();
-                rightButton.setIconCls('add');
-                rightButton.setText('');
+                // rightButton.setIconCls('add');
+                // rightButton.setText('');
                 rightButton.setUi('action');
                 rightButton.setCls('mobile-add-contact-group-button');
                 rightButton.show();
@@ -205,8 +205,8 @@
             });
             Ext.Function.defer(function () {
                 titleBar.setTitle('Add Group');
-                rightButton.setIconCls('');
-                rightButton.setText('Save');
+                // rightButton.setIconCls('');
+                // rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-group-button');
                 rightButton.setUi('confirm');
                 rightButton.show();
@@ -235,8 +235,8 @@
                 backButton.setText('Groups');
                 backButton.setCls('mobile-cancel-groups-button');
                 backButton.show();
-                rightButton.setIconCls('add');
-                rightButton.setText('');
+                // rightButton.setIconCls('add');
+                // rightButton.setText('');
                 rightButton.setUi('action');
                 rightButton.setCls('mobile-add-contact-button');
                 rightButton.show();
@@ -267,7 +267,7 @@
                 backButton.setCls('mobile-cancel-contact-button');
                 backButton.show();
                 rightButton.setIconCls('compose');
-                rightButton.setText('');
+                // rightButton.setText('');
                 rightButton.setUi('action');
                 rightButton.setCls('mobile-edit-contact-button');
                 rightButton.show();
@@ -297,8 +297,8 @@
             });
             Ext.Function.defer(function () {
                 titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Add Contact');
-                rightButton.setText('Save');
-                rightButton.setIconCls('');
+                // rightButton.setText('Save');
+                // rightButton.setIconCls('');
                 rightButton.setUi('confirm');
                 rightButton.setCls('mobile-save-contact-button');
                 rightButton.show();
