@@ -1,10 +1,3 @@
-/**
- * Created with JetBrains WebStorm.
- * User: mschwartz
- * Date: 2/14/13
- * Time: 7:10 AM
- */
-
 (function () {
 
     var /** @constant */ LOGO = 'resources/images/modus.png',
@@ -51,7 +44,8 @@
                             cls    : 'back-button',
                             text   : 'Contacts',
                             hidden : true
-                        },
+                        }
+                        ,
                         {
                             align    : 'right',
                             iconCls  : 'add',
@@ -95,7 +89,7 @@
             me.callParent(arguments);
         },
 
-        showLogo : function () {
+        showLogo: function() {
             this.down('titlebar').setTitle(TITLE);
         }
 

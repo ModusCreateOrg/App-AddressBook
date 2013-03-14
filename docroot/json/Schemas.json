@@ -13,6 +13,7 @@
                 "size"       : 128,
                 "header"     : "Group Name",
                 "autoExpand" : true,
+                "required"   : true,
                 "editor"     : {
                     "xtype"  : "textfield",
                     "anchor" : "100%"
@@ -29,7 +30,10 @@
                 "type"          : "int",
                 "autoIncrement" : true,
                 "header"        : "ID",
-                "width"         : 40
+                "width"         : 40,
+                "editor"        : {
+                    "xtype" : "hiddenfield"
+                }
             },
             {
                 "name"     : "firstName",
@@ -89,12 +93,12 @@
                 }
             },
             {
-                "name" : "groups",
-                "clientOnly": true,
-                "editor" : {
-                    "xtype": "datasourcefield",
-                    "fieldLabel": "Groups",
-                    "dataSource": "allGroups"
+                "name"       : "groups",
+                "clientOnly" : true,
+                "editor"     : {
+                    "xtype"      : "datasourcefield",
+                    "fieldLabel" : "Groups",
+                    "dataSource" : "allGroups"
                 }
             }
         ],
@@ -106,7 +110,10 @@
             {
                 "name"          : "infoId",
                 "type"          : "int",
-                "autoIncrement" : true
+                "autoIncrement" : true,
+                "editor"        : {
+                    "xtype" : "hiddenfield"
+                }
             },
             {
                 "name"         : "ordinal",

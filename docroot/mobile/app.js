@@ -20,7 +20,8 @@ Ext.application({
 
     controllers : [
         'Login',
-        'ContactGroupEditor'
+        'ContactGroupEditor',
+        'ContactEditor'
     ],
 
     icon : {

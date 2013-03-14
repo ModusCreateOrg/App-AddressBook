@@ -16,17 +16,12 @@ Ext.define('mobile.controller.ContactGroupEditor', {
         refs    : {
             mainPanel         : 'mainview',
             groupList         : 'group_list',
-            form              : 'contact_group_editor',
-            createGroupButton : 'button[action=create-group]'
+            form              : 'contact_group_editor'
         },
         control : {
             'contact_group_editor' : {
                 show         : 'onFormShown',
                 beforesubmit : 'onBeforeSubmit'
-            },
-
-            'button[action=create-group]' : {
-                tap : 'onCreateGroupButton'
             }
         }
     },
@@ -62,7 +57,7 @@ Ext.define('mobile.controller.ContactGroupEditor', {
                     groupList.getStore().load({
                         callback : function () {
                             mainPanel.fireEvent('showCard', 'groupList', 'down');
-                            form.reset();
+//                            form.reset();
                         }
                     });
                 });
@@ -78,9 +73,6 @@ Ext.define('mobile.controller.ContactGroupEditor', {
     onBeforeSubmit : function () {
         this.doSave();
         return false;
-    },
-
-    onCreateGroupButton : function () {
-        this.doSave();
     }
+
 });
