@@ -20,7 +20,7 @@ Ext.define('mobile.view.ContactGroupEditor', {
             items: [
                 {
                     xtype: 'textfield',
-                    placeHolder: 'Group Name',
+                    placeHolder: 'Group Name (required)',
                     name: 'groupName'
                 }
             ]
