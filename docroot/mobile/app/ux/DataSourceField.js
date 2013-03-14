@@ -13,7 +13,8 @@ Ext.define('mobile.ux.DataSourceField', {
     ],
     
     config : {
-          title: 'Data Source Field',  
+          title: 'Data Source Field',
+          value : null
     },
 
     initialize: function() {
@@ -21,7 +22,7 @@ Ext.define('mobile.ux.DataSourceField', {
             items = [];
 
         console.log('init', this.$className);
-        Ext.iterate(me.value, function(item) {
+        Ext.iterate(me.getValue(), function(item) {
             items.push({
                 id: me.id + '-' + item.value,
                 checked: item.checked,
