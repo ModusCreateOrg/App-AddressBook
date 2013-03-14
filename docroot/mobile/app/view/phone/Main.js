@@ -47,9 +47,7 @@
                     items  : [
                         {
                             align  : 'left',
-                            ui     : 'back',
                             cls    : 'back-button',
-                            text   : 'Contacts',
                             hidden : true
                         },
                         {
@@ -70,6 +68,7 @@
                             xtype  : 'toolbar',
                             docked : 'top',
                             ui     : 'search',
+                            cls    : 'search-field',
                             items  : [
                                 {
                                     xtype       : 'searchfield',

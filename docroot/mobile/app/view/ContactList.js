@@ -23,7 +23,7 @@ Ext.define("mobile.view.ContactList", {
         var me = this,
             fields = [],
             schema = me.getSchema(),
-            url = mobile.data.serviceUrl + 'rest/db/' + schema.name;
+            url = mobile.data.srviceUrl + 'rest/db/' + schema.name;
 
         Ext.each(schema.fields, function (schemaItem) {
             if (!schemaItem.header) {
@@ -107,6 +107,7 @@ Ext.define("mobile.view.ContactList", {
                 me.deleteButton = true;
                 var del = me.del = Ext.create("Ext.Button", {
                     ui: "decline",
+                    cls: 'swipe-delete-button',
                     text: "Delete",
                     style: "position:absolute;right:0.125in; margin-top: -40px",
                     handler: function(btn, e) {

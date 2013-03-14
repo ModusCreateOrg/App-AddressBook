@@ -174,11 +174,12 @@
                 direction : direction
             });
             Ext.Function.defer(function () {
-                // mainPanel.showLogo();
+                
+                /* reset the the title, not showing logo anymore */
+                mainPanel.showLogo();
+
                 backButton.hide();
-                // rightButton.setIconCls('add');
-                // rightButton.setText('');
-                rightButton.setUi('action');
+                rightButton.setText('');
                 rightButton.setCls('mobile-add-contact-group-button');
                 rightButton.show();
                 mainPanel.removeAt(4);
@@ -205,10 +206,8 @@
             });
             Ext.Function.defer(function () {
                 titleBar.setTitle('Add Group');
-                // rightButton.setIconCls('');
-                // rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-group-button');
-                rightButton.setUi('confirm');
+                rightButton.setText('Add');
                 rightButton.show();
                 backButton.setCls('mobile-cancel-groups-editor-button');
                 backButton.setText('Cancel');
@@ -232,12 +231,10 @@
             });
             Ext.Function.defer(function () {
                 titleBar.setTitle(me.contactGroupSelected);
-                backButton.setText('Groups');
+                backButton.setText('');
                 backButton.setCls('mobile-cancel-groups-button');
                 backButton.show();
-                // rightButton.setIconCls('add');
-                // rightButton.setText('');
-                rightButton.setUi('action');
+                rightButton.setText('');
                 rightButton.setCls('mobile-add-contact-button');
                 rightButton.show();
                 mainPanel.removeAt(4);
@@ -263,12 +260,12 @@
 
             Ext.Function.defer(function () {
                 titleBar.setTitle('Contact Details');
-                backButton.setText('Contacts');
+                // backButton.setText('Contacts');
                 backButton.setCls('mobile-cancel-contact-button');
                 backButton.show();
                 rightButton.setIconCls('compose');
                 // rightButton.setText('');
-                rightButton.setUi('action');
+                // rightButton.setUi('action');
                 rightButton.setCls('mobile-edit-contact-button');
                 rightButton.show();
                 contactList.deselectAll();
@@ -297,12 +294,12 @@
             });
             Ext.Function.defer(function () {
                 titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Add Contact');
-                // rightButton.setText('Save');
                 // rightButton.setIconCls('');
-                rightButton.setUi('confirm');
+                // rightButton.setUi('confirm');
+                rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-button');
                 rightButton.show();
-                backButton.setText('Cancel');
+                // backButton.setText('Cancel');
                 if (me.selectedRecord) {
                     backButton.setCls('mobile-cancel-edit-contact-button');
                 }
@@ -310,6 +307,7 @@
                     backButton.setCls('mobile-cancel-add-contact-button');
                 }
 
+                backButton.setText('Cancel');
                 backButton.show();
             }, 260)
         },

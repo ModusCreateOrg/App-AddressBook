@@ -82,6 +82,7 @@ Ext.define('mobile.view.GroupList', {
                 me.del = Ext.create("Ext.Button", {
                     ui: "decline",
                     text: "Delete",
+                    cls: 'swipe-delete-button',
                     style: "position:absolute;right:0.125in; margin-top: -40px",
                     handler: function(btn, e) {
                         Ext.Msg.confirm('Delete ' + record.data.groupName, 'Are you sure?', function(btn) {
