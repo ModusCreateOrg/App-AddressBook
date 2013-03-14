@@ -3,7 +3,6 @@
  * User: mschwartz
  * Date: 3/6/13
  * Time: 6:23 AM
- * To change this template use File | Settings | File Templates.
  */
 
 Ext.define('mobile.view.ContactGroupEditor', {
@@ -21,17 +20,10 @@ Ext.define('mobile.view.ContactGroupEditor', {
             items: [
                 {
                     xtype: 'textfield',
-                    placeHolder: 'Group Name',
+                    placeHolder: 'Group Name (required)',
                     name: 'groupName'
                 }
             ]
         });
-//        me.add({
-//            xtype: 'button',
-//            ui: 'confirm',
-//            style: 'margin: 10px',
-//            text: 'Create Group',
-//            action: 'create-group'
-//        });
     }
 });

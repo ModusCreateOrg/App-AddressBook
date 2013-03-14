@@ -1,10 +1,3 @@
-/**
- * Created with JetBrains WebStorm.
- * User: mschwartz
- * Date: 2/14/13
- * Time: 7:10 AM
- */
-
 (function () {
 
     var /** @constant */ LOGO = 'resources/images/modus.png',
@@ -28,7 +21,8 @@
 
         config : {
             fullscreen : true,
-            title      : TITLE,
+            // title      : TITLE,
+            title      : "Address Book",
             layout     : {
                 type : 'card'
             },
@@ -51,11 +45,12 @@
                             cls    : 'back-button',
                             text   : 'Contacts',
                             hidden : true
-                        },
+                        }
+                        ,
                         {
                             align    : 'right',
-                            iconCls  : 'add',
-                            iconMask : true,
+                            // iconCls  : 'add',
+                            // iconMask : true,
                             action   : 'title-right',
                             cls      : 'mobile-add-contact-group-button',
                             hidden   : false
@@ -95,8 +90,8 @@
             me.callParent(arguments);
         },
 
-        showLogo : function () {
-            this.down('titlebar').setTitle(TITLE);
+        showLogo: function() {
+            this.down('titlebar').setTitle('Address Book');
         }
 
     });
