@@ -36,6 +36,10 @@
   }
 }
 
+.x-list-normal .x-list-item .x-dock-horizontal {
+  border-top: 1px solid #2c3f51;
+}
+
 .x-list-normal .x-list-item.x-item-pressed .x-dock-horizontal {
   background-image: none;
   background: #2b3e51;
@@ -55,3 +59,31 @@
     color: #00bd9c;
   }   
 }
+
+// Letter header
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
+  border-top: none;
+  border-bottom: none;
+  text-shadow: none;
+}
+// Letter header - color
+.x-list-grouped .x-list-header-wrap .x-list-header {
+  background: #00bd9c;
+}
+// Letter header - background
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
+  color: #33485f;
+}
+
+.x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
+  border-bottom: #263748;
+}
+
+.x-indexbar>div {
+  color: #FFF;
+}
+
+
+
+
+

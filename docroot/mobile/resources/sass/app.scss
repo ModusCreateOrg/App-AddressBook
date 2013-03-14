@@ -36,6 +36,9 @@ html {
 @import "include/base";
 @import "include/list";
 @import "include/toolbar";
+@import "include/search";
+@import "include/card";
+@import "include/button";
 
 @mixin photo {
   @include border-radius(5px);

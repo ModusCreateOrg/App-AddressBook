@@ -1,0 +1,19 @@
+.x-toolbar-dark .x-button {
+	background: #2C3E50;
+	border-radius: 0px;
+	border: none;
+	height: 35px;
+}
+
+.x-button.x-button-action {
+	background: #2C3E50;
+	border-radius: 0px;
+	border: none;
+	height: 35px;
+}
+.x-toolbar .x-button.x-button-action-small.x-button-forward:after {
+	background: #2C3E50;
+}
+.x-button-back:before {
+	background: #2C3E50;
+}

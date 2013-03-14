@@ -1,3 +1,22 @@
- .yes {
+// Search - background
+.x-toolbar-search.x-docked-top {
+	background: #BDC3C7 ;
+}
+
+.x-toolbar .x-field-search .x-component-outer {
+	-webkit-border-radius: none !important;
+	border-radius: none !important;
+	border: #000;
+	border-width: 2px;
+	-webkit-box-shadow: none;
+	box-shadow: none;
+}
+
+.x-toolbar .x-field-select .x-component-outer, .x-toolbar .x-field-search .x-component-outer {
+	-webkit-border-radius: none !important;
+	border-radius: none !important;
+}
+
+.yes {
    
  }

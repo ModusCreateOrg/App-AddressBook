@@ -1,0 +1,11 @@
+.person {
+  background: #33485f;
+  .name-title {
+  	color: #FFF;
+  }
+  .contact-methods a .untouched {
+  	background: #ECF0F1;
+  	border-radius: none;
+  	-webkit-border-radius: none;
+  }
+}
