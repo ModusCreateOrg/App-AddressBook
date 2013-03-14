@@ -53,6 +53,7 @@ Ext.application({
                 userId : 0
             }
         };
+        console.dir(mobile.data);
     },
 
     onUpdated : function () {

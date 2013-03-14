@@ -23,7 +23,7 @@ Ext.define("mobile.view.ContactList", {
         var me = this,
             fields = [],
             schema = me.getSchema(),
-            url = mobile.data.srviceUrl + 'rest/db/' + schema.name;
+            url = mobile.data.serviceUrl + 'rest/db/' + schema.name;
 
         Ext.each(schema.fields, function (schemaItem) {
             if (!schemaItem.header) {
