@@ -1,20 +1,16 @@
+/* setup some variables */
+$boundlist-background-color: red;
+
 $include-form-sliders : false;
-//$include-floating-panels : false;
 $include-top-tabs : false;
 $include-bottom-tabs : true ! default;
 
-//$base-color: #9E9E9E;
-//$base-gradient: 'glossy';
-$font-family : "Ubuntu" ! default;
+$font-family: 'Lato', sans-serif;
 
-//// Lists
-//$list-active-gradient: 'bevel';
-//$list-header-bg-color: '#999';
-$list-header-gradient: 'rmatte';
-//$list-bg-color: #eee;
-//$list-color: #333;
-//$list-pressed-color: #FFF;
-$list-active-gradient : 'rmatte';
+/* setup some colors */
+$darkBlue: #34495e;
+$lightBlue: #5dade2;
+$baseRed: #e74c3c;
 
 @import 'sencha-touch/default/all';
 
@@ -22,21 +18,28 @@ $list-active-gradient : 'rmatte';
 // do not use in order to create a smaller css file.
 @include sencha-panel;
 @include sencha-buttons;
-// @include sencha-sheet;
-// @include sencha-picker;
-// @include sencha-tabs;
 @include sencha-toolbar;
 @include sencha-toolbar-forms;
 @include sencha-indexbar;
 @include sencha-list;
 @include sencha-layout;
-// @include sencha-carousel;
 @include sencha-form;
 @include sencha-msgbox;
+
+
 
 html {
   -webkit-font-smoothing : antialiased;
 }
+
+/* setup our includes */
+@import "include/fontAwesome";
+@import "include/base";
+@import "include/list";
+@import "include/toolbar";
+@import "include/search";
+@import "include/card";
+@import "include/button";
 
 @mixin photo {
   @include border-radius(5px);
@@ -44,10 +47,6 @@ html {
   display         : inline-block;
   vertical-align  : middle;
   margin-right    : 10px;
-}
-
-.x-list-normal .x-list-header {
-  background-color : '#999';
 }
 
 .header-logo {
@@ -94,39 +93,39 @@ html {
       text-decoration : none;
       width           : 100%;
       display         : block;
-      color           : #333;
-      margin-bottom   : 5px;
-      overflow        : hidden;
-      background      : #fff;
-      padding         : 10px;
-      font-weight     : bold;
-      font-size       : 1.1em;
-      &.touched {
-        @include background(linear-gradient(top bottom, rgb(178,222,254), rgb(85,174,243)));
-        text-shadow : 0px 1px #fff;
-      }
-      .contact {
-        width           : 30px;
-        height          : 30px;
-        background-size : 30px 30px;
-        display         : inline-block;
-        margin-right    : 5px;
-        vertical-align  : middle;
-        &.phone {
-          background-image : url("../images/phone1.png");
+        color           : #333;
+        margin-bottom   : 5px;
+        overflow        : hidden;
+        background      : #fff;
+        padding         : 10px;
+        font-weight     : bold;
+        font-size       : 1.1em;
+        &.touched {
+          @include background(linear-gradient(top bottom, rgb(178,222,254), rgb(85,174,243)));
+          text-shadow : 0px 1px #fff;
         }
-        &.email {
-          background-image : url("../images/mail.png");
-        }
-        &.address {
-          background-image : url("../images/home.png");
-        }
-        &.twitter {
-          background-image : url("../images/twitter2.png");
-        }
-        &.skype {
-          background-image : url("../images/skype.png");
-        }
+        .contact {
+          width           : 30px;
+          height          : 30px;
+          background-size : 30px 30px;
+          display         : inline-block;
+          margin-right    : 5px;
+          vertical-align  : middle;
+          &.phone {
+            background-image : url("../images/phone1.png");
+          }
+          &.email {
+            background-image : url("../images/mail.png");
+          }
+          &.address {
+            background-image : url("../images/home.png");
+          }
+          &.twitter {
+            background-image : url("../images/twitter2.png");
+          }
+          &.skype {
+            background-image : url("../images/skype.png");
+          }
       }
     }
 
@@ -163,6 +162,8 @@ html {
     }
   }
 }
+
+
 
 .contact-rest {
   margin-bottom: 0;

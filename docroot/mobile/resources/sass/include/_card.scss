@@ -1,0 +1,25 @@
+.person {
+  background: #33485f;
+  .name-title {
+  	color: #FFF;
+  	.name {
+  		white-space: normal !important;
+  		font-size: 1.5em !important;
+  		width: 180px !important;
+  	}
+  }
+  .info-type {
+  	color: #FFF;
+  }
+  img {
+  	width: 100px !important;
+  	height: 100px !important;
+  }
+}
+
+.person .contact-methods a {
+	background: #ECF0F1 !important;
+	-webkit-border-radius: 0px !important;
+	border-radius: 0px !important;
+	padding: 10px 15px !important;
+}

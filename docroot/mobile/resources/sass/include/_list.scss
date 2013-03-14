@@ -1,0 +1,94 @@
+.x-list {
+  background: darken(#2b3e51, 5);
+}
+
+.x-list-normal .x-list-header {
+  background-color : '#999';
+}
+
+.x-list-normal .x-list-item .x-dock-horizontal {
+  border-top: 2px solid #2c3f51;
+}
+
+.x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
+  border-bottom: 2px solid #2c3f51;
+}
+
+.x-list-item-body { 
+  padding: 12px;
+}
+
+.x-list-item {
+  background: #33485f;
+  .x-list-item-inner {
+    color: white;
+    font-weight: 700;
+  }
+
+  &.x-item-selected {
+    background-image: none;
+    background: #2b3e51;
+    box-shadow: none;
+    border: none;
+    .x-list-item-inner {
+      color: #00bd9c;
+    }
+  }
+}
+
+.x-list-normal .x-list-item .x-dock-horizontal {
+  border-top: 1px solid #2c3f51;
+}
+
+.x-list-normal .x-list-item.x-item-pressed .x-dock-horizontal {
+  background-image: none;
+  background: #2b3e51;
+  box-shadow: none;
+  border-color: #2b3e51;
+  .x-list-item-inner {
+    color: #00bd9c;
+  }   
+}
+
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+  background-image: none;
+  background: #263748;
+  box-shadow: none;
+  border-color: #263748;
+  .x-list-item-inner {
+    color: #00bd9c;
+  }   
+}
+
+// Letter header
+.x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
+  border-top: none;
+  border-bottom: none;
+  text-shadow: none;
+}
+
+.x-list-header-swap {
+  background: #2C3E50 !important;
+  background-color: #2C3E50 !important;
+  background-image: #2C3E50 !important;
+}
+
+
+// Letter header - Background
+.x-list-grouped .x-list-header-wrap .x-list-header {
+  background: #2C3E50;
+  color: #6184a9;
+}
+
+.x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
+  border-bottom: #263748;
+}
+
+.x-indexbar>div {
+  color: #FFF;
+}
+
+
+
+
+

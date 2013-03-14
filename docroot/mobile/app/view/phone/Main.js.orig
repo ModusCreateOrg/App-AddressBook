@@ -28,7 +28,7 @@
 
         config : {
             fullscreen : true,
-            title      : 'Address Book',
+            title      : TITLE,
             layout     : {
                 type : 'card'
             },
@@ -42,16 +42,20 @@
             me.add([
                 {
                     xtype  : 'titlebar',
-                    title  : 'Address Book',
+                    title  : me.getTitle(),
                     docked : 'top',
                     items  : [
                         {
                             align  : 'left',
+                            ui     : 'back',
                             cls    : 'back-button',
+                            text   : 'Contacts',
                             hidden : true
                         },
                         {
                             align    : 'right',
+                            iconCls  : 'add',
+                            iconMask : true,
                             action   : 'title-right',
                             cls      : 'mobile-add-contact-group-button',
                             hidden   : false
@@ -68,7 +72,6 @@
                             xtype  : 'toolbar',
                             docked : 'top',
                             ui     : 'search',
-                            cls    : 'search-field',
                             items  : [
                                 {
                                     xtype       : 'searchfield',
@@ -93,7 +96,7 @@
         },
 
         showLogo : function () {
-            this.down('titlebar').setTitle('Address Book');
+            this.down('titlebar').setTitle(TITLE);
         }
 
     });

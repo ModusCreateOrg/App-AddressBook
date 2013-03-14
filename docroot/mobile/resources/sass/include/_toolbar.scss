@@ -1,0 +1,16 @@
+.x-toolbar {
+  background-image: none;
+  background: #1ABC9C;
+  border: none !important;
+  box-shadow: none !important;
+  &.x-docked-top {
+    border: none;
+  }
+}
+
+.x-title .x-innerhtml {
+  text-shadow: none;
+  color: #34495e;
+  font-size: 20px;
+  font-weight: 900;
+}
