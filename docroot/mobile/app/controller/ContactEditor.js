@@ -43,6 +43,7 @@
             schema = mobile.schemas.Contacts,
             groupIds = [];
 
+        console.dir(record);
         if (record.groups) {
             Ext.iterate(record.groups, function (group) {
                 if (group.checked) {

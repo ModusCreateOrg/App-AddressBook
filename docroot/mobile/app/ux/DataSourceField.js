@@ -6,43 +6,51 @@
  */
 
 Ext.define('mobile.ux.DataSourceField', {
-    extend: 'Ext.form.FieldSet',
-    xtype: 'datasourcefield',
-    requires: [
+    extend   : 'Ext.form.FieldSet',
+    xtype    : 'datasourcefield',
+    isField: true,
+    requires : [
         'Ext.field.Checkbox'
     ],
-    
+
     config : {
-          title: 'Data Source Field',
-          value : null
+        title : 'Data Source Field',
+        value : null
     },
 
-    initialize: function() {
+    initialize : function() {
         var me = this,
             items = [];
 
         console.log('init', this.$className);
         Ext.iterate(me.getValue(), function(item) {
             items.push({
-                id: me.id + '-' + item.value,
-                checked: item.checked,
-                valueItem: item,
-                boxLabel: item.display,
-//                name: id,
-                inputValue: item.value,
-                listeners: {
-                    change: function(cb, newValue, oldValue, eOpts) {
-                        console.log(newValue + ' ' + oldValue);
-                        if (initialized) {
-                            console.log('initialized');
-                            cb.valueItem.checked = newValue;
-                        }
+                xtype      : 'checkboxfield',
+                checked    : item.checked,
+                valueItem  : item,
+                label      : item.display,
+                inputValue : item.value,
+                listeners  : {
+                    change : function(cb, newValue, oldValue, eOpts) {
+                        cb.valueItem.checked = newValue;
                     }
                 }
             });
         });
         me.setItems(items);
-        console.dir(items);
         me.callParent(arguments);
+    },
+
+    getValue: function() {
+        console.log('datasourcefield getvalue');
+        var me = this;
+        console.dir(me._value);
+        return me._value;
+    },
+
+    getName: function() {
+        var me = this;
+        return me.name;
     }
+
 });
