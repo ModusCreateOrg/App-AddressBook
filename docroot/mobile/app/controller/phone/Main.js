@@ -114,103 +114,6 @@
             }
         },
 
-<<<<<<< HEAD
-        mainPanel.animateActiveItem(0, {
-            type      : 'slide',
-            duration  : 250,
-            direction : direction
-        });
-        Ext.Function.defer(function () {
-            mainPanel.showLogo();
-            backButton.hide();
-            rightButton.setText('');
-            rightButton.setUi('action');
-            rightButton.setCls('mobile-add-contact-group-button');
-            rightButton.show();
-            console.dir(mainPanel.getAt(4));
-            mainPanel.removeAt(4);
-        }, 260);
-        delete me.selectedRecord;
-    },
-
-    showContactGroupsEditorCard : function (direction) {
-        direction = direction || 'up';
-        var me = this,
-            mainPanel = me.getMainPanel(),
-            titleBar = me.getTitleBar(),
-            backButton = me.getBackButton(),
-            rightButton = me.getRightButton();
-
-        mainPanel.insert(4, {
-            xtype: 'contact_group_editor'
-        });
-
-        mainPanel.animateActiveItem(3, {
-            type      : 'slide',
-            duration  : 250,
-            direction : direction
-        });
-        Ext.Function.defer(function () {
-            titleBar.setTitle('Add Group');
-            rightButton.setIconCls('');
-            rightButton.setText('Save');
-            rightButton.setCls('mobile-save-contact-group-button');
-            rightButton.setUi('confirm');
-            rightButton.show();
-            backButton.setCls('mobile-cancel-groups-editor-button');
-            backButton.setText('Cancel');
-            backButton.show();
-        }, 260)
-        delete me.selectedRecord;
-    },
-
-    showContactsCard : function (direction) {
-        console.dir(direction);
-        direction = direction || 'right';
-        var me = this,
-            mainPanel = me.getMainPanel(),
-            titleBar = me.getTitleBar(),
-            rightButton = me.getRightButton(),
-            backButton = me.getBackButton();
-
-        console.dir(direction);
-        mainPanel.animateActiveItem(1, {
-            type      : 'slide',
-            duration  : 250,
-            direction : direction
-        });
-        Ext.Function.defer(function () {
-            titleBar.setTitle(me.contactGroupSelected);
-            backButton.setText('Groups');
-            backButton.setCls('mobile-cancel-groups-button');
-            backButton.show();
-            rightButton.setIconCls('add');
-            // rightButton.setText('');
-            rightButton.setUi('action');
-            rightButton.setCls('mobile-add-contact-button');
-            rightButton.show();
-            console.dir(mainPanel.getAt(4));
-            mainPanel.removeAt(4);
-        }, 260)
-        delete me.selectedRecord;
-    },
-
-    showContactDetailsCard : function (direction) {
-        direction = direction || 'left';
-
-        var me = this,
-            contactList = me.getContactList(),
-            mainPanel = me.getMainPanel(),
-            titleBar = me.getTitleBar(),
-            rightButton = me.getRightButton(),
-            backButton = me.getBackButton();
-
-        mainPanel.animateActiveItem(2, {
-            type      : 'slide',
-            duration  : 250,
-            direction : direction
-        });
-=======
         init : function () {
             console.log('init ' + this.$className);
             this.callParent(arguments);
@@ -220,7 +123,6 @@
             var me = this,
                 searchField = me.getSearchField(),
                 contactList = me.getContactList();
->>>>>>> d273d040b1b14f2aee5f6be18cf07a087f23084c
 
             contactList.search = searchField.getValue();
             contactList.getStore().load();
@@ -272,7 +174,7 @@
                 direction : direction
             });
             Ext.Function.defer(function () {
-                mainPanel.showLogo();
+                // mainPanel.showLogo();
                 backButton.hide();
                 rightButton.setIconCls('add');
                 rightButton.setText('');

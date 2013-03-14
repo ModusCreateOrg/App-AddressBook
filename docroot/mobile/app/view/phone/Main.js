@@ -42,7 +42,7 @@
             me.add([
                 {
                     xtype  : 'titlebar',
-                    title  : me.getTitle(),
+                    title  : 'Address Book',
                     docked : 'top',
                     items  : [
                         {
@@ -54,8 +54,6 @@
                         },
                         {
                             align    : 'right',
-                            iconCls  : 'add',
-                            iconMask : true,
                             action   : 'title-right',
                             cls      : 'mobile-add-contact-group-button',
                             hidden   : false
@@ -96,7 +94,7 @@
         },
 
         showLogo : function () {
-            this.down('titlebar').setTitle(TITLE);
+            this.down('titlebar').setTitle('Address Book');
         }
 
     });
