@@ -80,6 +80,7 @@
         extend : 'Ext.app.Controller',
 
         requires : [
+            'mobile.ux.DataSourceField',
             'Ext.MessageBox'
         ],
         config   : {
