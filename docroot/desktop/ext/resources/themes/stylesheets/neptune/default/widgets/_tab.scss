@@ -50,7 +50,7 @@
             color: $tab-color;
 
             @extend .outline-none;
-            @extend .ellipsis;
+            @extend .ellipsis !optional;
 
             &::-moz-focus-inner {
                 border: 0;

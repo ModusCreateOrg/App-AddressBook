@@ -1,4 +1,21 @@
+/* setup some base variables */
+$color: #333;
+$font-family: "Lato", "Helvetica Neue", sans-serif;
+$ui-font-family: "Lato", "Helvetica Neue", sans-serif;
+
+$base-color: #227fbb; // Momentum blue
+$base-light-color: #2c97de;
+$base-dark-color: darken(#227fbb, 10);
+
+$confirm-color: #1aaf5d;
+$bright-color: #e94b35;;
+$drastic-color: #c23824;
+
+/* make things flat? */
+$include-highlights: false;
+$base-gradient: flat;
+
 @import 'compass';
-@import 'ext4/default/all';
+@import 'neptune/default/all';
 
 // Your custom code goes here...
