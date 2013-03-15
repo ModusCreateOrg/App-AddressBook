@@ -3,6 +3,9 @@
 	border-radius: 6px;
 	border: none;
 	height: 30px;
+	&.x-button-pressing {
+		background: #6184a9;
+	}
 }
 
 .x-button.x-button-action {

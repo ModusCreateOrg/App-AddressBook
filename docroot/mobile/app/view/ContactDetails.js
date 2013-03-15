@@ -11,7 +11,11 @@ Ext.define("mobile.view.ContactDetails", {
         data : {},
         tpl: [
             '<tpl if="values.firstName || values.lastName">',
-                '<img src="{imageUrl}" style="width: 35px; height: 35px; vertical-align: top; border: 2px solid white; margin-left: 10px; margin-right: 10px;"/>',
+
+                '<div class="photo">',
+                    '<img src="{imageUrl}" />',
+                '</div>',
+
                 '<div class="name-title">',
                     '<div class="name">{firstName} {lastName}</div>',
                     '<div class="title">{title}</div>',
@@ -19,13 +23,13 @@ Ext.define("mobile.view.ContactDetails", {
 
                 '<tpl if="values.twitter">',
                     '<div class="contact-methods">',
-                        '<a class="contact untouched" target="_blank" href="twitter:{twitter}" class="value"><span class="contact twitter"></span> {twitter}</a>',
+                        '<a class="contact untouched" target="_blank" href="twitter:{twitter}" class="value"><i class="icon-twitter"></i> {twitter}</a>',
                     '</div>',
                 '</tpl>',
 
                 '<tpl if="values.skype">',
                     '<div class="contact-methods">',
-                        '<a class="contact untouched" target="_blank" href="skype:{skype}" class="value"><span class="contact skype"></span> {skype}</a>',
+                        '<a class="contact untouched" target="_blank" href="skype:{skype}" class="value"><i class="icon-rss"></i> {skype}</a>',
                     '</div>',
                 '</tpl>',
 
@@ -42,18 +46,18 @@ Ext.define("mobile.view.ContactDetails", {
                         '<div class="info-type">{infoType}</div>',
 
                         '<tpl if="values.phone">',
-                            '<a class="contact untouched" target="_blank" href="tel:{phone}" class="value"><span class="contact phone"></span> {phone}</a>',
+                            '<a class="contact untouched" target="_blank" href="tel:{phone}" class="value"><i class="icon-phone"></i> {phone}</a>',
                         '</tpl>',
 
                         '<tpl if="values.email">',
-                            '<a class="contact untouched" target="_blank" href="mailto:{email}" class="value"><span class="contact email"></span> {email}</a>',
+                            '<a class="contact untouched" target="_blank" href="mailto:{email}" class="value"><i class="icon-envelope"></i> {email}</a>',
                         '</tpl>',
 
                         '<tpl if="values.address && values.city && values.state && values.zip">',
                             // TODO: optimize
                             // TODO: Fix issue with tap
                             '<a class="contact" sclass="contact-address" target="_blank" href="http://maps.google.com/?q={address} {city} {state} {zip}">',
-                                '<span class="contact address"></span><span style="margin-bottom: -5px;">{address}</span>',
+                                '<i class="icon-home"></i><span style="margin-bottom: -5px;">{address}</span>',
                                 '<div class="contact-rest">{city}, {state} {zip}</div>',
                                 '<div class="contact-rest">{country}</div>',
                             '</a>',
