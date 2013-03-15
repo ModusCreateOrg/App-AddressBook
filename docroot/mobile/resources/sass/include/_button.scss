@@ -8,6 +8,18 @@
 	}
 }
 
+/* confirm button is the */
+.x-button.x-button-confirm, {
+	background: #1aaf5d;
+	background-image: none;
+	border: none;
+	border-radius: 4px;
+	padding: 10px;
+	&.x-button-pressing {
+		background: #16974f;
+	}
+}
+
 .x-button.x-button-action {
 	background: #33485f;
 	border-radius: 0px;

@@ -3,7 +3,6 @@
 }
 
 .x-form-field {
-  // @include border-radius(6px);
   border: 1px solid rgba(236, 240, 241, 0);
   background: white;
   color: #42566b;
@@ -24,6 +23,9 @@
   .x-field {
     border: none;
     margin-bottom: 5px;
+    &.login-input {
+      margin-bottom: 0;
+    }
   }
 }
 
