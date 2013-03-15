@@ -24,16 +24,17 @@
 .mobile-add-contact-group-button, 
 .mobile-add-contact-button
   {
-	background: none !important;
+	background: #b53428 !important;
 	border: none !important;
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f067";
-		color: #b53428;
+		color: #FFF;
 	}
 	&.x-button-pressing {
+		background: #3c7aeb !important;
 		&:before {
-			color: darken(#b53428,5);
+			color: #FFF;
 		}		
 	}
 }
@@ -44,16 +45,17 @@
 .mobile-cancel-add-contact-button,
 .mobile-cancel-edit-contact-button,
 .mobile-cancel-groups-editor-button {
-	background: none !important;
+	background: #b53428 !important;
 	border: none !important;
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f060";
-		color: #b53428;
+		color: #FFF;
 	}
 	&.x-button-pressing {
+		background: #3c7aeb !important;
 		&:before {
-			color: #6184a9;
+			color: #FFF;
 		}		
 	}	
 }

@@ -83,12 +83,12 @@
 // Selected
 .x-list .x-list-item.x-item-selected .x-dock-horizontal {
   background-image: none;
-  background: #EEE;
+  background: #3c7aeb;
   box-shadow: none;
-  border-color: #EEE;
+  border-color: #3c7aeb;
   text-shadow: none;
   .x-list-item-inner {
-    color: darken(#3c7aeb, 10);
+    color: #FFF;
   }
 }
 
