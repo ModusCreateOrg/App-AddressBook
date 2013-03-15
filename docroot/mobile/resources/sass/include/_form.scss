@@ -25,10 +25,12 @@
 
 .x-form-fieldset-title {
   margin-left: 3px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
   text-shadow: none !important;
   .x-innerhtml {
     font-weight: 800;
-    color: #BDC3C7;
-  }  
+    color: #00bd9c;
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
 }

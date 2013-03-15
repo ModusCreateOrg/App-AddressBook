@@ -1,8 +1,11 @@
 .x-toolbar-dark .x-button {
 	background: #33485f;
-	border-radius: 0px;
+	border-radius: 6px;
 	border: none;
 	height: 30px;
+	&.x-button-pressing {
+		background: #6184a9;
+	}
 }
 
 .x-button.x-button-action {
@@ -19,7 +22,8 @@
 }
 
 .mobile-add-contact-group-button, 
-.mobile-add-contact-button  {
+.mobile-add-contact-button
+  {
 	background: none !important;
 	border: none !important;
 	&:before {
@@ -35,7 +39,11 @@
 }
 
 /* back button */
-.mobile-cancel-groups-button {
+.mobile-cancel-groups-button,
+.mobile-cancel-contact-button,
+.mobile-cancel-add-contact-button,
+.mobile-cancel-edit-contact-button,
+.mobile-cancel-groups-editor-button {
 	background: none !important;
 	border: none !important;
 	&:before {

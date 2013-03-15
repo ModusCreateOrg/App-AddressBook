@@ -15,7 +15,7 @@ Ext.define("mobile.view.ContactList", {
         itemTpl : ''.concat(
 //            '<div class="contact">',
 //                '<div class="photo" style="background-image: url(http://src.sencha.io/30/{imageUrl});"></div>',
-            '{firstName} <span class="last_name">{lastName}</span>'
+            '<span class="first_name">{firstName}</span> <span class="last_name">{lastName}</span>'
 //            '</div>'
         )
     },
