@@ -50,10 +50,15 @@
   background-image: #EEE !important;
 }
 
+.x-list-normal .x-list-header {
+  background: #EEE;
+  color: #999;
+}
+
 // Letter header - Background
 .x-list-grouped .x-list-header-wrap .x-list-header {
   background: #EEE;
-  color: #6184a9;
+  color: #999;
 }
 
 .x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
