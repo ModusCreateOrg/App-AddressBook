@@ -1,10 +1,10 @@
 .x-toolbar-dark .x-button {
-	background: #33485f;
-	border-radius: 6px;
+	background: #3c7aeb;
+	border-radius: 3px;
 	border: none;
 	height: 30px;
 	&.x-button-pressing {
-		background: #6184a9;
+		background: darken(#3c7aeb, 10);
 	}
 }
 
@@ -63,7 +63,7 @@
 /* swipe to delete button */
 .swipe-delete-button {
 	@include border-radius(3px);
-	background-color: #e94b35 !important;
+	background-color: #b53428 !important;
 	border: none !important;
 	background-image: none !important;
 }
