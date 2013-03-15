@@ -1,7 +1,7 @@
+// Behind the list
 .x-list {
-  background: darken(#2b3e51, 5);
+  background: #FFF;
 }
-
 .x-list-normal .x-list-header {
   background-color : '#999';
 }
@@ -18,48 +18,24 @@
   padding: 12px;
 }
 
+// List items
 .x-list-item {
-  background: #33485f;
+  background: #FFF;
   .x-list-item-inner {
-    color: white;
-    font-weight: 700;
+    color: #000;
+    font-weight: 300;
   }
 
   &.x-item-selected {
     background-image: none;
-    background: #2b3e51;
+    background: #DDD;
     box-shadow: none;
     border: none;
     .x-list-item-inner {
-      color: #00bd9c;
+      color: #b53428;
     }
   }
 }
-
-.x-list-normal .x-list-item .x-dock-horizontal {
-  border-top: 1px solid #2c3f51;
-}
-
-.x-list-normal .x-list-item.x-item-pressed .x-dock-horizontal {
-  background-image: none;
-  background: #2b3e51;
-  box-shadow: none;
-  border-color: #2b3e51;
-  .x-list-item-inner {
-    color: #00bd9c;
-  }   
-}
-
-.x-list .x-list-item.x-item-selected .x-dock-horizontal {
-  background-image: none;
-  background: #263748;
-  box-shadow: none;
-  border-color: #263748;
-  .x-list-item-inner {
-    color: #00bd9c;
-  }   
-}
-
 // Letter header
 .x-list-normal .x-list-header-wrap .x-item-header, .x-list-normal .x-list-header {
   border-top: none;
@@ -67,28 +43,63 @@
   text-shadow: none;
 }
 
+// Swapped letter header
 .x-list-header-swap {
-  background: #2C3E50 !important;
-  background-color: #2C3E50 !important;
-  background-image: #2C3E50 !important;
+  background: #EEE !important;
+  background-color: #EEE !important;
+  background-image: #EEE !important;
 }
-
 
 // Letter header - Background
 .x-list-grouped .x-list-header-wrap .x-list-header {
-  background: #2C3E50;
+  background: #EEE;
   color: #6184a9;
 }
 
 .x-list-normal .x-list-item.x-list-footer-wrap .x-dock-horizontal {
-  border-bottom: #263748;
+  border-bottom: #EEE;
 }
 
+.x-list-normal .x-list-item .x-dock-horizontal {
+  border-top: 1px solid #EEE;
+}
+
+// Pressed down
+.x-list-normal .x-list-item.x-item-pressed .x-dock-horizontal {
+  background-image: none;
+  background: #DDD;
+  box-shadow: none;
+  border-color: #DDD;
+  .x-list-item-inner {
+    color: #00bd9c;
+  }   
+}
+
+// Selected
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+  background-image: none;
+  background: #EEE;
+  box-shadow: none;
+  border-color: #EEE;
+  .x-list-item-inner {
+    color: #3c7aeb;
+  }   
+}
+
+
+// Letter scroller
 .x-indexbar>div {
-  color: #FFF;
+  color: #000;
+  padding-bottom: 4px;
+}
+.x-indexbar-pressed {
+  background: rgba(200, 200, 200, 0.8);
 }
 
-
+// Scroller
+.x-scroll-indicator {
+  background: rgb(194, 194, 194);
+}
 
 
 
