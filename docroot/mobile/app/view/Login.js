@@ -25,6 +25,7 @@ Ext.define('mobile.view.Login', {
         this.add([
             {
                 xtype    : 'fieldset',
+                cls      : 'login-screen',
                 defaults : {
                     autoComplete: false,
                     autoCorrect: false,
@@ -36,7 +37,7 @@ Ext.define('mobile.view.Login', {
                     {
                         xtype : 'textfield',
                         name  : 'username',
-                        placeHolder: 'Username'
+                        placeHolder: 'Username',
                     },
                     {
                         xtype : 'passwordfield',

@@ -5,7 +5,7 @@
 .x-form-field {
   border: 1px solid rgba(236, 240, 241, 0);
   background: white;
-  color: #42566b;
+  color: #666;
   &:focus {
     @include transition(all .2s ease);
     border: 1px solid rgba(60, 122, 235, 1.0);
@@ -17,14 +17,22 @@
 }
 
 .x-form-fieldset .x-form-fieldset-inner {
+  border-radius: 0px;
   background: transparent;
   margin-bottom: 5px;
   border: none;
+  .x-field:first-child { border-radius: 0px; }
   .x-field {
     border: none;
     margin-bottom: 5px;
     &.login-input {
-      margin-bottom: 0;
+      .x-form-field {
+        @include border-top-radius(6px);
+        margin-bottom: 0;
+        &:focus {
+          border: 1px solid transparent;
+        }      
+      }
     }
   }
 }
