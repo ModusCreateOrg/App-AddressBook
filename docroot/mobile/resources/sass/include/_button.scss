@@ -63,6 +63,8 @@
 		font-family: "FontAwesome";
 		content: "\f060";
 		color: #FFF;
+		position: relative;
+		top: -1px;		
 	}
 	&.x-button-pressing {
 		background: #3c7aeb !important;
