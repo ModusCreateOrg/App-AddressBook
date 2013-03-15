@@ -29,11 +29,11 @@
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f067";
-		color: #33485f;
+		color: #b53428;
 	}
 	&.x-button-pressing {
 		&:before {
-			color: #6184a9;
+			color: darken(#b53428,5);
 		}		
 	}
 }
@@ -49,7 +49,7 @@
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f060";
-		color: #33485f;
+		color: #b53428;
 	}
 	&.x-button-pressing {
 		&:before {

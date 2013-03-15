@@ -81,9 +81,14 @@
   background: #EEE;
   box-shadow: none;
   border-color: #EEE;
+  text-shadow: none;
   .x-list-item-inner {
-    color: #3c7aeb;
-  }   
+    color: darken(#3c7aeb, 10);
+  }
+}
+
+.x-list .x-list-item.x-item-selected .x-dock-horizontal {
+  text-shadow: none;
 }
 
 
