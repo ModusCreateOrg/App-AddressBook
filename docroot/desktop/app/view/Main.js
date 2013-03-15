@@ -263,14 +263,16 @@
         dockedItems : {
             xtype  : 'toolbar',
             dock   : 'top',
-            height : 34,
+            height : 100,
+            cls    : 'header-bar',
             itemId : 'header-bar',
             items  : [
                 {
                     xtype : 'component',
+                    cls   : 'logo-text',
                     width : 400,
-                    html  : '<img style="margin: 0 5px 0 5px; float: left;" src="../img/Modus-create-logo-only.png" />' +
-                        '<span style="font-size: 24px;">Modus Create Address Book</span>'
+                    html  : '<img class="logo" src="../img/Modus-create-logo-only.png" />' +
+                        '<span class="text">Modus Create Address Book</span>'
 
                 },
                 '->',

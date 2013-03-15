@@ -1,0 +1,14 @@
+.header-bar {
+  background: #f1f1f1;
+  .logo-text {
+    @include clearfix;
+    .logo {
+      float: left; 
+      margin-right: 5px;
+    }
+    .text {
+      font-size: 24px;
+      font-weight: 800;
+    }
+  }
+}

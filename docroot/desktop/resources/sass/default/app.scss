@@ -3,6 +3,7 @@ $color: #333;
 $font-family: "Lato", "Helvetica Neue", sans-serif;
 $ui-font-family: "Lato", "Helvetica Neue", sans-serif;
 
+/* setup colors */
 $base-color: #227fbb; // Momentum blue
 $base-light-color: #2c97de;
 $base-dark-color: darken(#227fbb, 10);
@@ -11,9 +12,18 @@ $confirm-color: #1aaf5d;
 $bright-color: #e94b35;;
 $drastic-color: #c23824;
 
+$neutral-color: #eaf1f6;
+$neutral-dark-color: darken($neutral-color, 14);
+$neutral-light-color: lighten($neutral-color, 4);
+
 /* make things flat? */
 $include-highlights: false;
 $base-gradient: flat;
+
+/* setup more variable imports that override defaults */
+@import 'include/mixins';
+@import 'include/header';
+@import 'include/grid';
 
 @import 'compass';
 @import 'neptune/default/all';
