@@ -21,7 +21,7 @@ Ext.define("mobile.view.tablet.Main", {
 
     config : {
         fullscreen : true,
-        title      : '<div style="background-image: url(resources/images/modus.png)" class="header-logo"></div>',
+        title      : 'Address Book',
         layout     : {
             type : 'hbox'
         },
@@ -112,8 +112,7 @@ Ext.define("mobile.view.tablet.Main", {
                                 items  : [
                                     {
                                         xtype    : 'selectfield',
-//                                        width    : '90%',
-//                                        centered : true,
+                                        cls      : 'group-select-field',
                                         options  : [
                                             { text : 'All Contacts' },
                                             { text : 'Group 1' },
