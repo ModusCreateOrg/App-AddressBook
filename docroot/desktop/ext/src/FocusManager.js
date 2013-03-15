@@ -171,22 +171,6 @@ Ext.define('Ext.FocusManager', {
 
         // Setup some ComponentQuery pseudos
         Ext.apply(CQ.pseudos, {
-            focusable: function(cmps) {
-                var len = cmps.length,
-                    results = [],
-                    i = 0,
-                    c;
-
-                for (; i < len; i++) {
-                    c = cmps[i];
-                    if (c.isFocusable()) {
-                        results.push(c);
-                    }
-                }
-
-                return results;
-            },
-
             // Return the single next focusable sibling from the current idx in either direction (step -1 or 1)
             nextFocus: function(cmps, idx, step) {
                 step = step || 1;
@@ -330,8 +314,7 @@ Ext.define('Ext.FocusManager', {
     },
 
     getRootComponents: function() {
-        var me = this,
-            CQ = Ext.ComponentQuery,
+        var CQ = Ext.ComponentQuery,
             inline = CQ.query(':focusable:root:not([floating])'),
             floating = CQ.query(':focusable:root[floating]');
 
@@ -380,7 +363,7 @@ Ext.define('Ext.FocusManager', {
                 style: 'top: -100px; left: -100px;'
             });
             me.focusFrame.setVisibilityMode(Ext.Element.DISPLAY);
-            me.focusFrame.hide().setLeftTop(0, 0);
+            me.focusFrame.hide().setLocalXY(0, 0);
         }
     },
 
@@ -544,7 +527,6 @@ Ext.define('Ext.FocusManager', {
         var me = this,
             cls,
             ff,
-            fw,
             box,
             bt,
             bl,
@@ -566,7 +548,9 @@ Ext.define('Ext.FocusManager', {
         if (me.shouldShowFocusFrame(cmp)) {
             cls = '.' + me.focusFrameCls + '-';
             ff = me.focusFrame;
-            box = focusEl.getPageBox();
+            
+            // focusEl may in fact be a descendant component to which to delegate focus
+            box = (focusEl.dom ? focusEl : focusEl.el).getBox();
 
             // Size the focus frame's t/b/l/r according to the box
             // This leaves a hole in the middle of the frame so user
@@ -580,10 +564,10 @@ Ext.define('Ext.FocusManager', {
             fl = ff.child(cls + 'left');
             fr = ff.child(cls + 'right');
 
-            ft.setWidth(bw).setLeftTop(bl, bt);
-            fb.setWidth(bw).setLeftTop(bl, bt + bh - 2);
-            fl.setHeight(bh - 2).setLeftTop(bl, bt + 2);
-            fr.setHeight(bh - 2).setLeftTop(bl + bw - 2, bt + 2);
+            ft.setWidth(bw).setLocalXY(bl, bt);
+            fb.setWidth(bw).setLocalXY(bl, bt + bh - 2);
+            fl.setHeight(bh - 2).setLocalXY(bl, bt + 2);
+            fr.setHeight(bh - 2).setLocalXY(bl + bw - 2, bt + 2);
 
             ff.show();
         }
@@ -687,9 +671,7 @@ Ext.define('Ext.FocusManager', {
 
     shouldShowFocusFrame: function(cmp) {
         var me = this,
-            opts = me.options || {},
-            cmpFocusEl = cmp.getFocusEl(),
-            cmpFocusElTag = Ext.getDom(cmpFocusEl).tagName;
+            opts = me.options || {};
 
         // Do not show a focus frame if
         // 1. We are configured not to.

@@ -30,7 +30,7 @@ Ext.define('Ext.chart.Callout', {
             config = me.callouts,
             styles = config.styles,
             group = me.calloutsArray,
-            store = me.chart.store,
+            store = me.chart.getChartStore(),
             len = store.getCount(),
             ratio = items.length / len,
             previouslyPlacedCallouts = [],
@@ -49,7 +49,7 @@ Ext.define('Ext.chart.Callout', {
                 label = group[count];
                 storeItem = store.getAt(i);
                 
-                display = config.filter(storeItem);
+                display = (!config.filter || config.filter(storeItem));
                 
                 if (!display && !label) {
                     count++;
@@ -77,7 +77,9 @@ Ext.define('Ext.chart.Callout', {
                         }
                     }
                 }
-                config.renderer(label, storeItem);
+                if (config && config.renderer) {
+                    config.renderer(label, storeItem);
+                }
                 me.onPlaceCallout(label, storeItem, item, i, display, animate,
                                   j, count, previouslyPlacedCallouts);
                 previouslyPlacedCallouts.push(label);
@@ -91,9 +93,9 @@ Ext.define('Ext.chart.Callout', {
         var me = this,
             group = me.calloutsGroup,
             config = me.callouts,
-            styles = config.styles,
-            width = styles.width,
-            height = styles.height,
+            styles = (config ? config.styles : undefined),
+            width = (styles ? styles.width : 0),
+            height = (styles ? styles.height : 0),
             chart = me.chart,
             surface = chart.surface,
             calloutObj = {

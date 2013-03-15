@@ -19,9 +19,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.es.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} fila(s) seleccionada(s)"
+    Ext.define("Ext.locale.es.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} fila(s) seleccionada(s)"
     });
 
     // changing the msg text below will affect the LoadMask
@@ -143,6 +143,11 @@ Ext.onReady(function() {
         minText: "El valor mínimo para este campo es de {0}",
         maxText: "El valor máximo para este campo es de {0}",
         nanText: "{0} no es un número válido"
+    });
+
+    Ext.define("Ext.locale.es.form.field.File", { 
+        override: "Ext.form.field.File", 
+        buttonText: "Examinar..." 
     });
 
     Ext.define("Ext.locale.es.form.field.Date", {

@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.en_GB.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} selected row{1}"
+    Ext.define("Ext.locale.en_GB.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} selected row{1}"
     });
 
     // changing the msg text below will affect the LoadMask
@@ -30,6 +30,7 @@ Ext.onReady(function() {
     });
 
     if (Ext.Date) {
+        Ext.Date.defaultDateFormat = "d/m/Y";
         Ext.Date.monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
         Ext.Date.getShortMonthName = function(month) {
@@ -77,7 +78,7 @@ Ext.onReady(function() {
         Ext.apply(Ext.util.Format, {
             thousandSeparator: ',',
             decimalSeparator: '.',
-            currencySign: '£',
+            currencySign: 'Â£',
             // UK Pound
             dateFormat: 'd/m/Y'
         });
@@ -262,6 +263,11 @@ Ext.onReady(function() {
         sortDescText: "Sort Descending",
         columnsText: "Columns"
     });
+    
+    Ext.define("Ext.locale.en_GB.grid.DateColumn", {        
+        override: "Ext.grid.DateColumn",       
+        format: 'd/m/Y'    
+    });  
 
     Ext.define("Ext.locale.en_GB.grid.GroupingFeature", {
         override: "Ext.grid.GroupingFeature",

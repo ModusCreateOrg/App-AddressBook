@@ -15,9 +15,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.he.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "שורות נבחרות {0}"
+    Ext.define("Ext.locale.he.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "שורות נבחרות {0}"
     });
 
     Ext.define("Ext.locale.he.TabPanelItem", {

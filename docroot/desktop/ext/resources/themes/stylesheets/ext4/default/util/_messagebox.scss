@@ -20,6 +20,17 @@
         background: transparent no-repeat top left;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl {
+            &.#{$prefix}message-box-info,
+            &.#{$prefix}message-box-warning,
+            &.#{$prefix}message-box-question,
+            &.#{$prefix}message-box-error {
+                background-position: top right;
+            }
+        }
+    }
+
     .#{$prefix}message-box .#{$prefix}msg-box-wait {
         background-image: theme-background-image($theme-name, 'shared/blue-loading.gif');
     }

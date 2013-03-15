@@ -134,24 +134,11 @@ Ext.define('Ext.layout.component.Component', {
 
         // lastBox is a copy of the defined props to allow save/restore of these (panel
         // collapse needs this)
-        owner.lastBox = lastBox = {};
-
-        v = props.x;
-        if (v !== undefined) {
-            lastBox.x = v;
-        }
-        v = props.y;
-        if (v !== undefined) {
-            lastBox.y = v;
-        }
-        v = props.width;
-        if (v !== undefined) {
-            lastBox.width = v;
-        }
-        v = props.height;
-        if (v !== undefined) {
-            lastBox.height = v;
-        }
+        lastBox = owner.lastBox || (owner.lastBox = {});
+        lastBox.x = props.x;
+        lastBox.y = props.y;
+        lastBox.width = props.width;
+        lastBox.height = props.height;
 
         me.callParent(arguments);
     },
@@ -263,7 +250,7 @@ Ext.define('Ext.layout.component.Component', {
                 } else {
                     if (zeroWidth) {
                         ready = true;
-                    } else if (!ownerContext.hasDomProp('containerChildrenDone')) {
+                    } else if (!ownerContext.hasDomProp('containerChildrenSizeDone')) {
                         ready = false;
                     } else if (isBoxParent || !boxParent || boxParent.widthModel.shrinkWrap) {
                         // if we have no boxParent, we are ready, but a shrinkWrap boxParent
@@ -352,7 +339,7 @@ Ext.define('Ext.layout.component.Component', {
                 } else {
                     if (zeroHeight) {
                         ready = true;
-                    } else if (!ownerContext.hasDomProp('containerChildrenDone')) {
+                    } else if (!ownerContext.hasDomProp('containerChildrenSizeDone')) {
                         ready = false;
                     } else if (owner.noWrap) {
                         ready = true;

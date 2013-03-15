@@ -59,6 +59,12 @@ Ext.define('Ext.container.DockingContainer', {
     },
 
     /**
+     * @private
+     * Number of dock 'left' and 'right' items.
+     */
+    horizontalDocks: 0,
+
+    /**
      * Adds docked item(s) to the container.
      *
      * @param {Object/Object[]} component The Component or array of components to add. The components
@@ -78,6 +84,9 @@ Ext.define('Ext.container.DockingContainer', {
         for (; i < length; i++) {
             item = items[i];
             item.dock = item.dock || 'top';
+            if (item.dock === 'left' || item.dock === 'right') {
+                me.horizontalDocks++;
+            }
 
             if (pos !== undefined) {
                 me.dockedItems.insert(pos + i, item);
@@ -234,6 +243,9 @@ Ext.define('Ext.container.DockingContainer', {
 
         if (!me.dockedItems.contains(item)) {
             return item;
+        }
+        if (item.dock === 'left' || item.dock === 'right') {
+            me.horizontalDocks--;
         }
 
         layout = me.componentLayout;

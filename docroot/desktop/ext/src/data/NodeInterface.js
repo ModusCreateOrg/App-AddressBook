@@ -117,6 +117,11 @@ Ext.define('Ext.data.NodeInterface', {
      */
 
     /**
+     * @cfg {Number} qshowDelay
+     * Tooltip showDelay.
+     */
+
+    /**
      * @cfg {String} text
      * The text for to show on node label.
      */
@@ -166,7 +171,7 @@ Ext.define('Ext.data.NodeInterface', {
          * @static
          */
         decorate: function(modelClass) {
-            var idName, idType;
+            var idName, idField, idType;
             
             // get the reference to the model class, in case the argument was a string or a record
             if (typeof modelClass == 'string') {
@@ -180,33 +185,35 @@ Ext.define('Ext.data.NodeInterface', {
                 return;
             }
 
-            idName = modelClass.prototype.idProperty;
+            idName  = modelClass.prototype.idProperty;
             idField = modelClass.prototype.fields.get(idName);
-            idType = modelClass.prototype.fields.get(idName).type.type;
+            idType  = modelClass.prototype.fields.get(idName).type.type;
+
             modelClass.override(this.getPrototypeBody());
             this.applyFields(modelClass, [
-                {name: 'parentId',   type: idType,    defaultValue: null, useNull: idField.useNull},
-                {name: 'index',      type: 'int',     defaultValue: null, persist: false},
-                {name: 'depth',      type: 'int',     defaultValue: 0, persist: false},
-                {name: 'expanded',   type: 'bool',    defaultValue: false, persist: false},
-                {name: 'expandable', type: 'bool',    defaultValue: true, persist: false},
-                {name: 'checked',    type: 'auto',    defaultValue: null, persist: false},
-                {name: 'leaf',       type: 'bool',    defaultValue: false},
-                {name: 'cls',        type: 'string',  defaultValue: null, persist: false},
-                {name: 'iconCls',    type: 'string',  defaultValue: null, persist: false},
-                {name: 'icon',       type: 'string',  defaultValue: null, persist: false},
-                {name: 'root',       type: 'boolean', defaultValue: false, persist: false},
-                {name: 'isLast',     type: 'boolean', defaultValue: false, persist: false},
-                {name: 'isFirst',    type: 'boolean', defaultValue: false, persist: false},
-                {name: 'allowDrop',  type: 'boolean', defaultValue: true, persist: false},
-                {name: 'allowDrag',  type: 'boolean', defaultValue: true, persist: false},
-                {name: 'loaded',     type: 'boolean', defaultValue: false, persist: false},
-                {name: 'loading',    type: 'boolean', defaultValue: false, persist: false},
-                {name: 'href',       type: 'string',  defaultValue: null, persist: false},
-                {name: 'hrefTarget', type: 'string',  defaultValue: null, persist: false},
-                {name: 'qtip',       type: 'string',  defaultValue: null, persist: false},
-                {name: 'qtitle',     type: 'string',  defaultValue: null, persist: false},
-                {name: 'children',   type: 'auto',   defaultValue: null, persist: false}
+                { name : 'parentId',   type : idType,    defaultValue : null,  useNull : idField.useNull },
+                { name : 'index',      type : 'int',     defaultValue : null,  persist : false           },
+                { name : 'depth',      type : 'int',     defaultValue : 0,     persist : false           },
+                { name : 'expanded',   type : 'bool',    defaultValue : false, persist : false           },
+                { name : 'expandable', type : 'bool',    defaultValue : true,  persist : false           },
+                { name : 'checked',    type : 'auto',    defaultValue : null,  persist : false           },
+                { name : 'leaf',       type : 'bool',    defaultValue : false                            },
+                { name : 'cls',        type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'iconCls',    type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'icon',       type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'root',       type : 'boolean', defaultValue : false, persist : false           },
+                { name : 'isLast',     type : 'boolean', defaultValue : false, persist : false           },
+                { name : 'isFirst',    type : 'boolean', defaultValue : false, persist : false           },
+                { name : 'allowDrop',  type : 'boolean', defaultValue : true,  persist : false           },
+                { name : 'allowDrag',  type : 'boolean', defaultValue : true,  persist : false           },
+                { name : 'loaded',     type : 'boolean', defaultValue : false, persist : false           },
+                { name : 'loading',    type : 'boolean', defaultValue : false, persist : false           },
+                { name : 'href',       type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'hrefTarget', type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'qtip',       type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'qtitle',     type : 'string',  defaultValue : null,  persist : false           },
+                { name : 'qshowDelay', type : 'int',     defaultValue : null,  persist : false           },
+                { name : 'children',   type : 'auto',    defaultValue : null,  persist : false           }
             ]);
         },
         
@@ -598,6 +605,30 @@ Ext.define('Ext.data.NodeInterface', {
                 },
 
                 /**
+                * Returns the tree this node is in.
+                * @return {Ext.tree.Panel} The tree panel which owns this node.
+                */
+                getOwnerTree: function() {
+                    var node = this,
+                        store;
+                        
+                    while (node.parentNode) {
+                        node = node.parentNode;
+                    }
+                    store = node.store;
+                    if (store) {
+                        if (store.treeStore) {
+                            store = store.treeStore;
+                        }
+                        
+                        if (store.tree) {
+                            return store.ownerTree;
+                        }
+                    }
+                    return undefined;
+                },
+
+                /**
                  * Removes a child node from this node.
                  * @param {Ext.data.NodeInterface} node The node to remove
                  * @param {Boolean} [destroy=false] True to destroy the node upon removal.
@@ -630,6 +661,7 @@ Ext.define('Ext.data.NodeInterface', {
                     if (node.nextSibling) {
                         node.nextSibling.previousSibling = node.previousSibling;
                     }
+                    node.nextSibling = node.previousSibling = null;
 
                     // update the info for all siblings starting at the index before the node's old index (or 0 if the removed node was the firstChild)
                     for(i = index > 0 ? index - 1 : 0, childCount = me.childNodes.length; i < childCount; i++) {
@@ -665,14 +697,14 @@ Ext.define('Ext.data.NodeInterface', {
                  */
                 copy: function(newId, deep) {
                     var me = this,
-                        result = me.callOverridden(arguments),
+                        result = me.callParent(arguments),
                         len = me.childNodes ? me.childNodes.length : 0,
                         i;
 
                     // Move child nodes across to the copy if required
                     if (deep) {
                         for (i = 0; i < len; i++) {
-                            result.appendChild(me.childNodes[i].copy(true));
+                            result.appendChild(me.childNodes[i].copy(undefined, true));
                         }
                     }
                     return result;
@@ -718,7 +750,7 @@ Ext.define('Ext.data.NodeInterface', {
 
                         me.childNodes = null;
                         delete me.destroyOptions;
-                        me.callOverridden([options]);
+                        me.callParent([options]);
                     } else {
                         me.destroyOptions = silent;
                         // overridden method will be called, since remove will end up calling destroy(true);
@@ -838,27 +870,69 @@ Ext.define('Ext.data.NodeInterface', {
                  * @return {Ext.data.NodeInterface} this
                  */
                 remove : function(destroy, suppressEvents) {
-                    var parentNode = this.parentNode;
+                    var me = this,
+                        parentNode = me.parentNode;
 
                     if (parentNode) {
-                        parentNode.removeChild(this, destroy, suppressEvents);
+                        parentNode.removeChild(me, destroy, suppressEvents);
+                    } else if (destroy) {
+                        // If we don't have a parent, just destroy it
+                        me.destroy(true);
                     }
-                    return this;
+                    return me;
                 },
 
                 /**
                  * Removes all child nodes from this node.
-                 * @param {Boolean} [destroy=false] <True to destroy the node upon removal.
+                 * @param {Boolean} [destroy=false] True to destroy the node upon removal.
                  * @return {Ext.data.NodeInterface} this
                  */
-                removeAll : function(destroy, suppressEvents) {
-                    var cn = this.childNodes,
-                        n;
+                removeAll : function(destroy, suppressEvents, fromParent) {
+                    // This method duplicates logic from removeChild for the sake of
+                    // speed since we can make a number of assumptions because we're
+                    // getting rid of everything
+                    var me = this,
+                        childNodes = this.childNodes,
+                        i = 0,
+                        len = childNodes.length,
+                        treeStore,
+                        node;
 
-                    while ((n = cn[0])) {
-                        this.removeChild(n, destroy, suppressEvents);
+
+                    fromParent = fromParent === true;
+                    if (!fromParent) {
+                        treeStore = me.store && me.store.treeStore;
+                        if (treeStore) {
+                            treeStore.beginBulkRemove();
+                        }
                     }
-                    return this;
+                    for (; i < len; ++i) {
+                        node = childNodes[i];
+                        node.previousSibling = node.nextSibling = node.parentNode = null;
+                        me.fireEvent('remove', me, node, false);
+                        if (destroy) {
+                            node.destroy(true);
+                        } else {
+                            node.removeAll(false, suppressEvents, true);
+                        }
+                    }
+                    
+                    me.firstChild = me.lastChild = null;
+                    if (fromParent) {
+                        // Removing from parent, clear children
+                        me.childNodes = null;
+                    } else {
+                        // clear array
+                        me.childNodes.length = 0;
+                    }
+                    if (!fromParent) {
+                        me.triggerUIUpdate();
+                        if (treeStore) {
+                            treeStore.endBulkRemove();
+                        }
+                    }
+                    
+                    return me;
                 },
 
                 /**

@@ -94,11 +94,16 @@ Ext.JSON = (new(function() {
         var cnewline = newline + '   ',
             sep = ',' + cnewline,
             a = ["{", cnewline], // Note newline in case there are no members
-            i;
+            i, val;
 
         for (i in o) {
+            val = o[i];
             if (!useHasOwn || o.hasOwnProperty(i)) {
-                a.push(Ext.JSON.encodeValue(i) + ': ' + Ext.JSON.encodeValue(o[i], cnewline), sep);
+                // To match JSON.stringify, we shouldn't encode functions or undefined
+                if (typeof val === 'function' || val === undefined) {
+                    continue;
+                }
+                a.push(Ext.JSON.encodeValue(i) + ': ' + Ext.JSON.encodeValue(val, cnewline), sep);
             }
         }
 
@@ -135,10 +140,16 @@ Ext.JSON = (new(function() {
         //</debug>
 
         var a = ["{", ""], // Note empty string in case there are no serializable members.
-            i;
+            i, val;
         for (i in o) {
+            val = o[i];
             if (!useHasOwn || o.hasOwnProperty(i)) {
-                a.push(Ext.JSON.encodeValue(i), ":", Ext.JSON.encodeValue(o[i]), ',');
+                // To match JSON.stringify, we shouldn't encode functions or undefined
+                if (typeof val === 'function' || val === undefined) {
+                    continue;
+                }
+                a.push(Ext.JSON.encodeValue(i), ":", Ext.JSON.encodeValue(val), ',');
+                
             }
         }
         // Overwrite trailing comma (or empty string)

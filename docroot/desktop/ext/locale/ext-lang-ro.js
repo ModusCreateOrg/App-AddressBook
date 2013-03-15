@@ -17,9 +17,9 @@ Ext.onReady(function() {
         Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">Încărcare...</div>';
     }
 
-    Ext.define("Ext.locale.ro.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} rând(uri) selectate"
+    Ext.define("Ext.locale.ro.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} rând(uri) selectate"
     });
 
     Ext.define("Ext.locale.ro.TabPanelItem", {

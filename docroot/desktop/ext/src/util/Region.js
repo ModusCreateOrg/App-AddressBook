@@ -18,7 +18,7 @@ Ext.define('Ext.util.Region', {
          * @returns {Ext.util.Region} region
          */
         getRegion: function(el) {
-            return Ext.fly(el).getPageBox(true);
+            return Ext.fly(el).getRegion();
         },
 
         /**

@@ -9,8 +9,7 @@ $grid-base-color: $base-color !default;
 $grid-header-background-color: adjust-color($neutral-color, $hue: 0deg, $saturation: 0%, $lightness: -16.078%) !default;
 $grid-header-background-gradient: 'grid-header' !default;
 $grid-header-border-color: $neutral-color !default;
-$grid-header-over-border-color: adjust-color($base-color, $hue: -0.175deg, $saturation: 25.296%, $lightness: -2.549%) !default;
-$grid-header-over-background-color: $grid-header-over-border-color !default;
+$grid-header-over-background-color: adjust-color($base-color, $hue: -0.175deg, $saturation: 25.296%, $lightness: -2.549%) !default;
 $grid-header-over-background-gradient: 'grid-header-over' !default;
 $grid-header-background-color: $grid-base-color !default;
 $grid-header-line-height: 15px !default;
@@ -18,6 +17,7 @@ $grid-header-padding: 3px 6px 4px !default;
 $grid-header-trigger-height: 22px !default;
 $grid-header-trigger-width: 14px !default;
 $grid-header-color: null !default;
+$grid-header-sort-icon-width: 9px !default;
 
 // ===============================
 // ========= GRID ROWS ===========
@@ -36,7 +36,7 @@ $grid-row-wrap-border-style: solid !default;
 
 //row body
 $grid-row-body-font: normal 11px/13px $font-family !default;
-$grid-row-body-padding: 4px !default;
+$grid-row-body-padding: 0 !default;
 
 //row cell
 $grid-row-cell-background: #fff !default;

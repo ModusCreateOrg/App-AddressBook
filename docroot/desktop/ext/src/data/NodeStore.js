@@ -8,6 +8,12 @@ Ext.define('Ext.data.NodeStore', {
     requires: ['Ext.data.NodeInterface'],
 
     /**
+     * @property {Boolean} isNodeStore
+     * `true` in this class to identify an object as an instantiated NodeStore, or subclass thereof.
+     */
+    isNodeStore: true,
+
+    /**
      * @cfg {Ext.data.Model} node
      * The Record you want to bind this Store to. Note that
      * this record will be decorated with the Ext.data.NodeInterface if this is not the
@@ -25,17 +31,19 @@ Ext.define('Ext.data.NodeStore', {
      * updated in this Store's internal flat data structure.
      */
     recursive: false,
-    
-    /** 
+
+    /**
      * @cfg {Boolean} rootVisible
      * False to not include the root node in this Stores collection.
-     */    
+     */
     rootVisible: false,
 
     /**
      * @cfg {Ext.data.TreeStore} treeStore
      * The TreeStore that is used by this NodeStore's Ext.tree.View.
      */
+
+    collapseCount: 0,
 
     constructor: function(config) {
         var me = this,
@@ -156,6 +164,7 @@ Ext.define('Ext.data.NodeStore', {
         var me = this,
             ln = records.length,
             collapseIndex = me.indexOf(parent) + 1,
+            isTopLevel = me.collapseCount === 0,
             i, record;
 
         if (!me.recursive && parent !== me.node) {
@@ -166,6 +175,11 @@ Ext.define('Ext.data.NodeStore', {
             return;
         }
 
+        ++me.collapseCount;
+        if (isTopLevel) {
+            // internal event
+            me.fireEvent('collapsestart', me, parent);
+        }
         for (i = 0; i < ln; i++) {
             record = records[i];
             me.remove(record);
@@ -173,6 +187,11 @@ Ext.define('Ext.data.NodeStore', {
                 me.onNodeCollapse(record, record.childNodes, true);
             }
         }
+        if (isTopLevel) {
+            // internal event
+            me.fireEvent('collapsecomplete', me, parent)
+        }
+        --me.collapseCount;
 
         if (!suppressEvent) {
             me.fireEvent('collapse', parent, records, collapseIndex);

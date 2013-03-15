@@ -12,6 +12,10 @@ Ext.define('Ext.layout.component.Draw', {
 
     extend: 'Ext.layout.component.Auto',
 
+    setHeightInDom: true,
+
+    setWidthInDom: true,
+
     /* End Definitions */
 
     type: 'draw',

@@ -109,7 +109,7 @@ Ext.define('Ext.util.ClickRepeater', {
             this.el.on('mousedown', this.handleMouseDown, this);
             // IE versions will detect clicks as in sequence as dblclicks
             // if they happen in quick succession
-            if (Ext.isIE && !(Ext.isStrict && Ext.isIE9)){
+            if (Ext.isIE && !(Ext.isIE10p || (Ext.isStrict && Ext.isIE9))){
                 this.el.on('dblclick', this.handleDblClick, this);
             }
             if(this.preventDefault || this.stopDefault){
@@ -151,7 +151,7 @@ Ext.define('Ext.util.ClickRepeater', {
         }
     },
 
-    // private
+    // @private
     destroy : function() {
         this.disable(true);
         Ext.destroy(this.el);
@@ -166,7 +166,7 @@ Ext.define('Ext.util.ClickRepeater', {
         this.fireEvent("click", this, e);
     },
 
-    // private
+    // @private
     handleMouseDown : function(e){
         clearTimeout(this.timer);
         this.el.blur();
@@ -193,7 +193,7 @@ Ext.define('Ext.util.ClickRepeater', {
         this.timer =  Ext.defer(this.click, this.delay || this.interval, this, [e]);
     },
 
-    // private
+    // @private
     click : function(e){
         this.fireEvent("click", this, e);
         this.timer =  Ext.defer(this.click, this.accelerate ?
@@ -208,7 +208,7 @@ Ext.define('Ext.util.ClickRepeater', {
         return (t==d) ? b+c : c * (-Math.pow(2, -10 * t/d) + 1) + b;
     },
 
-    // private
+    // @private
     handleMouseOut : function(){
         clearTimeout(this.timer);
         if(this.pressedCls){
@@ -217,7 +217,7 @@ Ext.define('Ext.util.ClickRepeater', {
         this.el.on("mouseover", this.handleMouseReturn, this);
     },
 
-    // private
+    // @private
     handleMouseReturn : function(){
         this.el.un("mouseover", this.handleMouseReturn, this);
         if(this.pressedCls){
@@ -226,7 +226,7 @@ Ext.define('Ext.util.ClickRepeater', {
         this.click();
     },
 
-    // private
+    // @private
     handleMouseUp : function(e){
         clearTimeout(this.timer);
         this.el.un("mouseover", this.handleMouseReturn, this);

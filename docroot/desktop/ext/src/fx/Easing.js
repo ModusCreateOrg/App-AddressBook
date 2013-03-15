@@ -1,4 +1,5 @@
 //@define Ext.fx.Easing
+
 /**
  * @class Ext.fx.Easing
  *
@@ -27,8 +28,6 @@
  *
  * @singleton
  */
-Ext.ns('Ext.fx');
-
 Ext.require('Ext.fx.CubicBezier', function() {
     var math = Math,
         pi = math.PI,
@@ -37,21 +36,11 @@ Ext.require('Ext.fx.CubicBezier', function() {
         sqrt = math.sqrt,
         abs = math.abs,
         backInSeed = 1.70158;
-    Ext.fx.Easing = {
-        // ease: Ext.fx.CubicBezier.cubicBezier(0.25, 0.1, 0.25, 1),
-        // linear: Ext.fx.CubicBezier.cubicBezier(0, 0, 1, 1),
-        // 'ease-in': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
-        // 'ease-out': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
-        // 'ease-in-out': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1),
-        // 'easeIn': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 1, 1),
-        // 'easeOut': Ext.fx.CubicBezier.cubicBezier(0, 0.58, 1, 1),
-        // 'easeInOut': Ext.fx.CubicBezier.cubicBezier(0.42, 0, 0.58, 1)
-    };
-
-    Ext.apply(Ext.fx.Easing, {
-        linear: function(n) {
-            return n;
-        },
+        
+    Ext.define('Ext.fx.Easing', {
+        singleton: true,
+        
+        linear: Ext.identityFn,
         ease: function(n) {
             var q = 0.07813 - n / 2,
                 alpha = -0.25,
@@ -122,16 +111,20 @@ Ext.require('Ext.fx.CubicBezier', function() {
             }
             return l;
         }
-    });
-    Ext.apply(Ext.fx.Easing, {
-        'back-in': Ext.fx.Easing.backIn,
-        'back-out': Ext.fx.Easing.backOut,
-        'ease-in': Ext.fx.Easing.easeIn,
-        'ease-out': Ext.fx.Easing.easeOut,
-        'elastic-in': Ext.fx.Easing.elasticIn,
-        'elastic-out': Ext.fx.Easing.elasticIn,
-        'bounce-in': Ext.fx.Easing.bounceIn,
-        'bounce-out': Ext.fx.Easing.bounceOut,
-        'ease-in-out': Ext.fx.Easing.easeInOut
+    }, function(){
+        var easing = Ext.fx.Easing.self,
+            proto = easing.prototype;
+            
+        easing.implement({
+            'back-in': proto.backIn,
+            'back-out': proto.backOut,
+            'ease-in': proto.easeIn,
+            'ease-out': proto.easeOut,
+            'elastic-in': proto.elasticIn,
+            'elastic-out': proto.elasticOut,
+            'bounce-in': proto.bounceIn,
+            'bounce-out': proto.bounceOut,
+            'ease-in-out': proto.easeInOut
+        });        
     });
 });

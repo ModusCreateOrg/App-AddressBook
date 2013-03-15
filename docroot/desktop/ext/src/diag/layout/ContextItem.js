@@ -1,10 +1,11 @@
+// This override adds diagnostics to the Ext.layout.ContextItem class.
+
 /**
- * This override adds diagnostics to the {@link Ext.layout.ContextItem} class.
  */
 Ext.define('Ext.diag.layout.ContextItem', {
-
     override: 'Ext.layout.ContextItem',
 
+    /** @ignore */
     requires: [
         'Ext.layout.Context',
         'Ext.diag.layout.Context'

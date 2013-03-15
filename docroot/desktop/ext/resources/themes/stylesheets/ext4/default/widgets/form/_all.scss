@@ -73,7 +73,6 @@
         display: block;
         padding: 3px 0 0;
         font-size: $form-label-font-size;
-        @include no-select;
     }
 
     .#{$prefix}form-item-label-top {

@@ -101,8 +101,7 @@ Ext.define('Ext.view.DragZone', {
             data = me.dragData,
             view = data.view,
             selectionModel = view.getSelectionModel(),
-            record = view.getRecord(data.item),
-            e = data.event;
+            record = view.getRecord(data.item);
 
         // Update the selection to match what would have been selected if the user had
         // done a full click on the target node rather than starting a drag from it

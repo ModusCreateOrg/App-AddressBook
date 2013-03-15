@@ -71,7 +71,7 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
 
         box = new Ext.util.Region(top, right, bottom, left);
 
-        me.constraintAdjusters[splitter.collapseDirection](box, minRange, maxRange, splitter);
+        me.constraintAdjusters[me.getCollapseDirection()](box, minRange, maxRange, splitter);
 
         me.dragInfo = {
             minRange: minRange,
@@ -105,7 +105,7 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
         // splitter is to the left of the box
         right: function (box, minRange, maxRange, splitter) {
             box.right = box.left - minRange;
-            box.left -= maxRange + splitter.getWidth();
+            box[0] = box.x = box.left = box.x - maxRange + splitter.getWidth();
         }
     },
 
@@ -206,5 +206,9 @@ Ext.define('Ext.resizer.BorderSplitterTracker', {
                 target.setSize(undefined, targetSize + delta);
             }
         }
+    },
+
+    getCollapseDirection: function() {
+        return this.splitter.collapseDirection;
     }
 });

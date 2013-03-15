@@ -14,16 +14,12 @@ Ext.define('Ext.resizer.Handle', {
 
         me.callParent();
 
+        me.protoEl.unselectable();
+
         me.addCls(
             me.baseHandleCls,
             me.baseHandleCls + '-' + me.region,
             me.handleCls
         );
-    },
-
-    onRender: function() {
-        this.callParent(arguments);
-
-        this.el.unselectable();
     }
 });

@@ -9,14 +9,14 @@
         border-color: $tip-border-color;
 
         .#{$prefix}tip-header {
-            .#{$prefix}box-item {
-                padding: $tip-header-padding;
-            }
-
             .#{$prefix}tool {
                 padding: 0px 1px 0 0 !important;
             }
         }
+    }
+
+    .#{$prefix}tip-header-body {
+        padding: $tip-header-body-padding;
     }
 
     @include x-frame(
@@ -29,8 +29,6 @@
     );
 
     .#{$prefix}tip-header-text {
-        @include no-select;
-
         color: $tip-header-color;
         font-size: $tip-header-font-size;
         font-weight: $tip-header-font-weight;

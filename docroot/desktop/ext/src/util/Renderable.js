@@ -65,40 +65,28 @@ Ext.define('Ext.util.Renderable', {
 
     frameIdRegex: /[\-]frame\d+[TMB][LCR]$/,
 
-    frameElementCls: {
-        tl: [],
-        tc: [],
-        tr: [],
-        ml: [],
-        mc: [],
-        mr: [],
-        bl: [],
-        bc: [],
-        br: []
-    },
-
     frameElNames: ['TL','TC','TR','ML','MC','MR','BL','BC','BR'],
 
     frameTpl: [
         '{%this.renderDockedItems(out,values,0);%}',
         '<tpl if="top">',
-            '<tpl if="left"><div id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl>" style="background-position: {tl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-                '<tpl if="right"><div id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl>" style="background-position: {tr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                    '<div id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></div>',
+            '<tpl if="left"><div id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+                '<tpl if="right"><div id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                    '<div id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></div>',
                 '<tpl if="right"></div></tpl>',
             '<tpl if="left"></div></tpl>',
         '</tpl>',
-        '<tpl if="left"><div id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-            '<tpl if="right"><div id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl>" style="background-position: {mr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                '<div id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl>" role="presentation">',
+        '<tpl if="left"><div id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+            '<tpl if="right"><div id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {mr}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                '<div id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" role="presentation">',
                     '{%this.applyRenderTpl(out, values)%}',
                 '</div>',
             '<tpl if="right"></div></tpl>',
         '<tpl if="left"></div></tpl>',
         '<tpl if="bottom">',
-            '<tpl if="left"><div id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
-                '<tpl if="right"><div id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl>" style="background-position: {br}; padding-right: {frameWidth}px" role="presentation"></tpl>',
-                    '<div id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></div>',
+            '<tpl if="left"><div id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></tpl>',
+                '<tpl if="right"><div id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {br}; padding-right: {frameWidth}px" role="presentation"></tpl>',
+                    '<div id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></div>',
                 '<tpl if="right"></div></tpl>',
             '<tpl if="left"></div></tpl>',
         '</tpl>',
@@ -110,23 +98,23 @@ Ext.define('Ext.util.Renderable', {
         '<table><tbody>',
             '<tpl if="top">',
                 '<tr>',
-                    '<tpl if="left"><td id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl>" style="background-position: {tl}; padding-left:{frameWidth}px" role="presentation"></td></tpl>',
-                    '<td id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></td>',
-                    '<tpl if="right"><td id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl>" style="background-position: {tr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<tpl if="left"><td id="{fgid}TL" class="{frameCls}-tl {baseCls}-tl {baseCls}-{ui}-tl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tl</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tl}; padding-left:{frameWidth}px" role="presentation"></td></tpl>',
+                    '<td id="{fgid}TC" class="{frameCls}-tc {baseCls}-tc {baseCls}-{ui}-tc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tc}; height: {frameWidth}px" role="presentation"></td>',
+                    '<tpl if="right"><td id="{fgid}TR" class="{frameCls}-tr {baseCls}-tr {baseCls}-{ui}-tr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-tr</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {tr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
                 '</tr>',
             '</tpl>',
             '<tr>',
-                '<tpl if="left"><td id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
-                '<td id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl>" style="background-position: 0 0;" role="presentation">',
+                '<tpl if="left"><td id="{fgid}ML" class="{frameCls}-ml {baseCls}-ml {baseCls}-{ui}-ml<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-ml</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {ml}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                '<td id="{fgid}MC" class="{frameCls}-mc {baseCls}-mc {baseCls}-{ui}-mc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: 0 0;" role="presentation">',
                     '{%this.applyRenderTpl(out, values)%}',
                 '</td>',
-                '<tpl if="right"><td id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl>" style="background-position: {mr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                '<tpl if="right"><td id="{fgid}MR" class="{frameCls}-mr {baseCls}-mr {baseCls}-{ui}-mr<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-mr</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {mr}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
             '</tr>',
             '<tpl if="bottom">',
                 '<tr>',
-                    '<tpl if="left"><td id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
-                    '<td id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></td>',
-                    '<tpl if="right"><td id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl>" style="background-position: {br}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<tpl if="left"><td id="{fgid}BL" class="{frameCls}-bl {baseCls}-bl {baseCls}-{ui}-bl<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bl</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {bl}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
+                    '<td id="{fgid}BC" class="{frameCls}-bc {baseCls}-bc {baseCls}-{ui}-bc<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-bc</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {bc}; height: {frameWidth}px" role="presentation"></td>',
+                    '<tpl if="right"><td id="{fgid}BR" class="{frameCls}-br {baseCls}-br {baseCls}-{ui}-br<tpl for="uiCls"> {parent.baseCls}-{parent.ui}-{.}-br</tpl><tpl if="frameElCls"> {frameElCls}</tpl>" style="background-position: {br}; padding-left: {frameWidth}px" role="presentation"></td></tpl>',
                 '</tr>',
             '</tpl>',
         '</tbody></table>',
@@ -145,13 +133,23 @@ Ext.define('Ext.util.Renderable', {
         var me = this,
             data = {},
             protoEl = me.protoEl,
-            target = me.getTargetEl(),
-            item;
+            target = me.el,
+            item, pre, hide, contentEl;
 
         me.finishRenderChildren();
+        
+        // We need to do the contentEl here because it depends on the layout items (inner/outerCt)
+        // to be rendered before we can put it in
+        if (me.contentEl) {
+            pre = Ext.baseCSSPrefix;
+            hide = pre + 'hide-';
+            contentEl = Ext.get(me.contentEl);
+            contentEl.removeCls([pre+'hidden', hide+'display', hide+'offsets', hide+'nosize']);
+            me.getContentTarget().appendChild(contentEl.dom);
+        }
 
         if (me.styleHtmlContent) {
-            target.addCls(me.styleHtmlCls);
+            me.getTargetEl().addCls(me.styleHtmlCls);
         }
         
         protoEl.writeTo(data);
@@ -184,9 +182,18 @@ Ext.define('Ext.util.Renderable', {
 
     afterFirstLayout : function(width, height) {
         var me = this,
-            hasX = Ext.isDefined(me.x),
-            hasY = Ext.isDefined(me.y),
+            x = me.x,
+            y = me.y,
+            hasX,
+            hasY,
             pos, xy;
+
+        // We only have to set absolute position here if there is no ownerlayout which should take responsibility.
+        // Consider the example of rendered components outside of a viewport - these might need their positions setting.
+        if (!me.ownerLayout) {
+            hasX = Ext.isDefined(x);
+            hasY = Ext.isDefined(y);
+        }
 
         // For floaters, calculate x and y if they aren't defined by aligning
         // the sized element to the center of either the container or the ownerCt
@@ -194,19 +201,19 @@ Ext.define('Ext.util.Renderable', {
             if (me.floatParent) {
                 pos = me.floatParent.getTargetEl().getViewRegion();
                 xy = me.el.getAlignToXY(me.floatParent.getTargetEl(), 'c-c');
-                pos.left = xy[0] - pos.left;
-                pos.top =  xy[1] - pos.top;
+                pos.x = xy[0] - pos.x;
+                pos.y = xy[1] - pos.y;
             } else {
                 xy = me.el.getAlignToXY(me.container, 'c-c');
-                pos = me.container.translatePoints(xy[0], xy[1]);
+                pos = me.container.translateXY(xy[0], xy[1]);
             }
-            me.x = hasX ? me.x : pos.left;
-            me.y = hasY ? me.y : pos.top;
+            x = hasX ? x : pos.x;
+            y = hasY ? y : pos.y;
             hasX = hasY = true;
         }
 
         if (hasX || hasY) {
-            me.setPosition(me.x, me.y);
+            me.setPosition(x, y);
         }
         me.onBoxReady(width, height);
         if (me.hasListeners.boxready) {
@@ -245,7 +252,9 @@ Ext.define('Ext.util.Renderable', {
     beforeRender: function () {
         var me = this,
             target = me.getTargetEl(),
-            layout = me.getComponentLayout();
+            layout = me.getComponentLayout(),
+            // Call the style calculation early which sets the public scrollFlags property
+            overflowStyle = me.getOverflowStyle();
 
         // Just before rendering, set the frame flag if we are an always-framed component like Window or Tip.
         me.frame = me.frame || me.alwaysFramed;
@@ -257,7 +266,7 @@ Ext.define('Ext.util.Renderable', {
         // Attempt to set overflow style prior to render if the targetEl can be accessed.
         // If the targetEl does not exist yet, this will take place in finishRender
         if (target) {
-            target.setStyle(me.getOverflowStyle());
+            target.setStyle(overflowStyle);
             me.overflowStyleSet = true;
         }
 
@@ -360,7 +369,7 @@ Ext.define('Ext.util.Renderable', {
      */
     finishRender: function(containerIdx) {
         var me = this,
-            tpl, data, contentEl, el, pre, hide;
+            tpl, data, el;
 
         // We are typically called w/me.el==null as a child of some ownerCt that is being
         // rendered. We are also called by render for a normal component (w/o a configured
@@ -414,10 +423,10 @@ Ext.define('Ext.util.Renderable', {
             me.container.addCls(me.ctCls);
         }
 
-        // Sets the rendered flag and clears the redering flag
+        // Sets the rendered flag and clears the rendering flag
         me.onRender(me.container, containerIdx);
 
-        // If we could not access a target protoEl in bewforeRender, we have to set the overflow styles here.
+        // If we could not access a target protoEl in beforeRender, we have to set the overflow styles here.
         if (!me.overflowStyleSet) {
             me.getTargetEl().setStyle(me.getOverflowStyle());
         }
@@ -432,14 +441,6 @@ Ext.define('Ext.util.Renderable', {
 
         if (me.hasListeners.render) {
             me.fireEvent('render', me);
-        }
-
-        if (me.contentEl) {
-            pre = Ext.baseCSSPrefix;
-            hide = pre + 'hide-';
-            contentEl = Ext.get(me.contentEl);
-            contentEl.removeCls([pre+'hidden', hide+'display', hide+'offsets', hide+'nosize']);
-            me.getTargetEl().appendChild(contentEl.dom);
         }
 
         me.afterRender(); // this can cause a layout
@@ -505,6 +506,9 @@ Ext.define('Ext.util.Renderable', {
                     left:       !!frameInfo.left,
                     right:      !!frameInfo.right,
                     bottom:     !!frameInfo.bottom,
+                    // getFrameElCls() can optionally be implmented by a subclass or override
+                    // to return an extra class to be applied to all framing elements
+                    frameElCls: me.getFrameElCls ? me.getFrameElCls() : '',
                     renderData: me.initRenderData()
                 }, me.getFramePositions(frameInfo));
 
@@ -530,7 +534,7 @@ Ext.define('Ext.util.Renderable', {
     // Create the framingTpl from the string.
     // Poke in a reference to applyRenderTpl(frameInfo, out)
     initFramingTpl: function(table) {
-        var tpl = table ? this.getTpl('frameTableTpl') : this.getTpl('frameTpl');
+        var tpl = this.getFrameTpl(table);
 
         if (tpl && !tpl.applyRenderTpl) {
             this.setupFramingTpl(tpl);
@@ -614,7 +618,7 @@ Ext.define('Ext.util.Renderable', {
     /**
      * Initialized the renderData to be used when rendering the renderTpl.
      * @return {Object} Object with keys and values that are going to be applied to the renderTpl
-     * @private
+     * @protected
      */
     initRenderData: function() {
         var me = this;
@@ -664,14 +668,15 @@ Ext.define('Ext.util.Renderable', {
         var me = this,
             x = me.x,
             y = me.y,
-            lastBox, width, height,
+            lastBox = null,
+            width, height,
             el = me.el,
-            body = Ext.getBody().dom;
+            body;
 
         // Wrap this Component in a reset wraper if necessary
         if (Ext.scopeResetCSS && !me.ownerCt) {
             // If this component's el is the body element, we add the reset class to the html tag
-            if (el.dom === body) {
+            if (el.dom === (body = Ext.getBody().dom)) {
                 el.parent().addCls(Ext.resetCls);
             }
             // Otherwise, we ensure that there is a wrapper which has the reset class
@@ -692,20 +697,16 @@ Ext.define('Ext.util.Renderable', {
 
         // Flag set on getRenderTree to flag to the layout's postprocessing routine that
         // the Component is in the process of being rendered and needs postprocessing.
-        delete me.rendering;
+        me.rendering = null;
 
         me.rendered = true;
 
         // We need to remember these to avoid writing them during the initial layout:
-        lastBox = null;
-
-        if (x !== undefined) {
-            lastBox = lastBox || {};
-            lastBox.x = x;
+        if (x != null) {
+            lastBox = {x:x};
         }
-        if (y !== undefined) {
-            lastBox = lastBox || {};
-            lastBox.y = y;
+        if (y != null) {
+            (lastBox = lastBox || {}).y = y;
         }
         // Framed components need their width/height to apply to the frame, which is
         // best handled in layout at present.
@@ -714,17 +715,17 @@ Ext.define('Ext.util.Renderable', {
             width = me.width;
             height = me.height;
 
-            if (typeof width == 'number') {
+            if (typeof width === 'number') {
                 lastBox = lastBox || {};
                 lastBox.width = width;
             }
-            if (typeof height == 'number') {
+            if (typeof height === 'number') {
                 lastBox = lastBox || {};
                 lastBox.height = height;
             }
         }
 
-        me.lastBox = me.el.lastBox = lastBox;
+        me.lastBox = el.lastBox = lastBox;
     },
 
     /**
@@ -787,6 +788,7 @@ Ext.define('Ext.util.Renderable', {
             }
         } else {
             if (!me.hasListeners.beforerender || me.fireEvent('beforerender', me) !== false) {
+                me.beforeRender();
                 // Set configured styles on pre-rendered Component's element
                 me.initStyles(el);
                 if (me.allowDomMove !== false) {
@@ -880,7 +882,10 @@ Ext.define('Ext.util.Renderable', {
                 top:        !!frameInfo.top,
                 left:       !!frameInfo.left,
                 right:      !!frameInfo.right,
-                bottom:     !!frameInfo.bottom
+                bottom:     !!frameInfo.bottom,
+                // getFrameElCls() can optionally be implmented by a subclass or override
+                // to return an extra class to be applied to all framing elements
+                frameElCls: me.getFrameElCls ? me.getFrameElCls() : ''
             }, me.getFramePositions(frameInfo)));
 
             // The frameBody is returned in getTargetEl, so that layouts render items to the correct target.
@@ -1066,17 +1071,10 @@ Ext.define('Ext.util.Renderable', {
         var me = this,
             frameWidth = frameInfo.maxWidth,
             dock = me.dock,
-            positions, tc, bc, ml, mr;
+            vertCenterPositions, positions, ml, mr;
 
         if (frameInfo.vertical) {
-            tc = '0 -' + (frameWidth * 0) + 'px';
-            bc = '0 -' + (frameWidth * 1) + 'px';
-
-            if (dock && dock == "right") {
-                tc = 'right -' + (frameWidth * 0) + 'px';
-                bc = 'right -' + (frameWidth * 1) + 'px';
-            }
-
+            vertCenterPositions = me.getVertCenterFramePositions(frameWidth, dock);
             positions = {
                 tl: '0 -' + (frameWidth * 0) + 'px',
                 tr: '0 -' + (frameWidth * 1) + 'px',
@@ -1086,8 +1084,8 @@ Ext.define('Ext.util.Renderable', {
                 ml: '-' + (frameWidth * 1) + 'px 0',
                 mr: 'right 0',
 
-                tc: tc,
-                bc: bc
+                tc: vertCenterPositions.tc,
+                bc: vertCenterPositions.bc
             };
         } else {
             ml = '-' + (frameWidth * 0) + 'px 0';
@@ -1113,6 +1111,23 @@ Ext.define('Ext.util.Renderable', {
         }
 
         return positions;
+    },
+
+    getVertCenterFramePositions: function(frameWidth, dock) {
+        var tc, bc;
+
+        if (dock && dock == "right") {
+            tc = 'right 0';
+            bc = 'right -' + frameWidth + 'px';
+        } else {
+            tc = '0 0';
+            bc = '0 -' + frameWidth + 'px';
+        }
+
+        return {
+            tc: tc,
+            bc: bc
+        };
     },
 
     /**

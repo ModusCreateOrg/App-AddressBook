@@ -48,7 +48,7 @@ Ext.define('Ext.grid.CellEditor', {
                 me.cellTextValue = textNode.nodeValue;
                 // The text node has to have at least one character in it, or the cell borders
                 // in IE quirks mode will not show correctly, so let's use a non-breaking space.
-                textNode.nodeValue = '\u00a0';
+                textNode.nodeValue = me.emptyText;
             }
         }
         me.callParent(arguments);
@@ -60,10 +60,15 @@ Ext.define('Ext.grid.CellEditor', {
      */
     onHide: function() {
         var me = this,
-            innerCell = me.boundEl.first();
+            innerCell = me.boundEl.first(),
+            node = me.cellTextNode;
 
-        if (innerCell && me.cellTextNode) {
-            me.cellTextNode.nodeValue = me.cellTextValue;
+        if (innerCell && node) {
+            // The value may have changed since we started, so only restore it
+            // if the value is the same as our space we set earlier
+            if (node.nodeValue == me.emptyText) {
+                node.nodeValue = me.cellTextValue;
+            }
             delete me.cellTextNode;
             delete me.cellTextValue;
         }
@@ -163,6 +168,8 @@ Ext.define('Ext.grid.CellEditor', {
             field.onEditorTab(e);
         }
     },
+    
+    emptyText: '\u00a0',
 
     alignment: "tl-tl",
     hideEl : false,

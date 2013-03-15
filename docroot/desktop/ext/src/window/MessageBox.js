@@ -111,13 +111,14 @@ Ext.define('Ext.window.MessageBox', {
 
     width: 600,
     height: 500,
-    minWidth: 250,
-    maxWidth: 600,
-    minHeight: 110,
-    maxHeight: 500,
+    
+    defaultMinWidth: 250,
+    defaultMaxWidth: 600,
+    defaultMinHeight: 110,
+    defaultMaxHeight: 500,
     constrain: true,
 
-    cls: Ext.baseCSSPrefix + 'message-box',
+    cls: [Ext.baseCSSPrefix + 'message-box', Ext.baseCSSPrefix + 'hide-offsets'],
 
     layout: {
         type: 'vbox',
@@ -221,6 +222,12 @@ Ext.define('Ext.window.MessageBox', {
             tbLayout;
 
         me.title = '&#160;';
+        
+        me.minWidth = me.defaultMinWidth;
+        me.maxWidth = me.defaultMaxWidth;
+        me.minHeight = me.defaultMinHeight;
+        me.maxHeight = me.defaultMaxHeight;
+        
 
         me.topContainer = new Ext.container.Container({
             layout: 'hbox',
@@ -245,7 +252,7 @@ Ext.define('Ext.window.MessageBox', {
                             cls: me.baseCls + '-text'
                         }),
                         me.textField = new Ext.form.field.Text({
-                            id: baseId + '-testfield',
+                            id: baseId + '-textfield',
                             anchor: '100%',
                             enableKeyEvents: true,
                             listeners: {
@@ -345,6 +352,11 @@ Ext.define('Ext.window.MessageBox', {
         if (cfg.width) {
             initialWidth = cfg.width;
         }
+        
+        me.minWidth = cfg.minWidth || me.defaultMinWidth;
+        me.maxWidth = cfg.maxWidth || me.defaultMaxWidth;
+        me.minHeight = cfg.minHeight || me.defaultMinHeight;
+        me.maxHeight = cfg.maxHeight || me.defaultMaxHeight;
 
         // Default to allowing the Window to take focus.
         delete me.defaultFocus;
@@ -355,10 +367,9 @@ Ext.define('Ext.window.MessageBox', {
         // Defaults to modal
         me.modal = cfg.modal !== false;
 
-        // Show the title
-        if (cfg.title) {
-            me.setTitle(cfg.title||'&#160;');
-        }
+        // Show the title/icon
+        me.setTitle(cfg.title || '');
+        me.setIconCls(cfg.iconCls || '');
 
         // Extract button configs
         if (Ext.isObject(cfg.buttons)) {
@@ -382,17 +393,27 @@ Ext.define('Ext.window.MessageBox', {
         me.hidden = false;
         if (!me.rendered) {
             me.width = initialWidth;
+
+            // The Window is rendered with the x-hide-offsets class in the el.
+            // But it isn't hidden, so it gets a layout so it can be measured. The Layer constructor explicitly *shows*
+            // the element, so get the render process to set the el up with visibility mode DISPLAY so that it doesn't
+            // move it into view.
+            me.hideMode = 'display';
             me.render(Ext.getBody());
+
+            // Reset back to the correct settings.
+            delete me.hideMode;
+            me.el.setVisibilityMode(Ext.Element.OFFSETS)
         } else {
             me.setSize(initialWidth, me.maxHeight);
         }
 
         // Hide or show the close tool
-        me.closable = cfg.closable && !cfg.wait;
-        me.header.child('[type=close]').setVisible(cfg.closable !== false);
+        me.closable = cfg.closable !== false && !cfg.wait;
+        me.header.child('[type=close]').setVisible(me.closable);
 
         // Hide or show the header
-        if (!cfg.title && !me.closable) {
+        if (!cfg.title && !me.closable && !cfg.iconCls) {
             me.header.hide();
         } else {
             me.header.show();
@@ -645,11 +666,28 @@ Ext.define('Ext.window.MessageBox', {
      * @return {Ext.window.MessageBox} this
      */
     show: function(cfg) {
-        var me = this;
+        var me = this,
+            visibleFocusables;
+
+        // If called during global layout suspension, make the call after layout resumption
+        if (Ext.AbstractComponent.layoutSuspendCount) {
+            Ext.on({
+                resumelayouts: function() {
+                    me.show(cfg);
+                },
+                single: true
+            });
+            return me;
+        }
 
         me.reconfigure(cfg);
         me.addCls(cfg.cls);
         me.doAutoSize();
+
+        // Do not steal focus from anything that may be focused if the MessageBox has no visible focusable
+        // items. For example, a "wait" message box should not get focus.
+        visibleFocusables = me.query('textfield:not([hidden]),textarea:not([hidden]),button:not([hidden])');
+        me.preventFocusOnActivate = !visibleFocusables.length;
 
         // Set the flag, so that the parent show method performs the show procedure that we need.
         // ie: animation from animTarget, onShow processing and focusing.

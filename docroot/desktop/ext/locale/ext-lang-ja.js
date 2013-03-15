@@ -8,7 +8,8 @@
  */
 Ext.onReady(function() {
     var cm = Ext.ClassManager,
-        exists = Ext.Function.bind(cm.get, cm);
+        exists = Ext.Function.bind(cm.get, cm),
+        parseCodes;
 
     if (Ext.Updater) {
         Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">読み込み中...</div>';
@@ -19,9 +20,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.ja.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} 行選択"
+    Ext.define("Ext.locale.ja.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} 行選択"
     });
 
     // changing the msg text below will affect the LoadMask
@@ -65,6 +66,17 @@ Ext.onReady(function() {
 
         Ext.Date.formatCodes.a = "(this.getHours() < 12 ? '午前' : '午後')";
         Ext.Date.formatCodes.A = "(this.getHours() < 12 ? '午前' : '午後')"; // no case difference
+        
+        parseCodes = {
+            g: 1,
+            c: "if (/(午前)/i.test(results[{0}])) {\n"
+                + "if (!h || h == 12) { h = 0; }\n"
+                + "} else { if (!h || h < 12) { h = (h || 0) + 12; }}",
+            s: "(午前|午後)",
+            calcAtEnd: true
+        };
+
+        Ext.Date.parseCodes.a = Ext.Date.parseCodes.A = parseCodes;
     }
 
     if (Ext.MessageBox) {

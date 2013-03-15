@@ -28,12 +28,23 @@
             compile
                 --ignore=diag
                 --options=debug:true
+                    exclude
+                        -namespace
+                        Ext.rtl
+                    and
                     concatenate
                         -out=${build.dir}/ext-all-dev.js
                     and
                     concatenate
                         -sandbox=Ext4:x4-
                         -out=${build.dir}/builds/ext-all-sandbox-dev.js
+                    and
+                    include
+                        -namespace
+                        Ext.rtl
+                    and
+                    concatenate
+                        -out=${build.dir}/ext-all-rtl-dev.js
                     and
                     union
                         -tag=core
@@ -60,6 +71,13 @@
                     concatenate
                         -sandbox=Ext4:x4-
                         -out=${build.dir}/builds/ext-all-sandbox-debug-w-comments.js
+                    and
+                    include
+                        -namespace
+                        Ext.rtl
+                    and
+                    concatenate
+                        -out=${build.dir}/ext-all-rtl-debug-w-comments.js
                     and
                     union
                         -tag=core
@@ -115,6 +133,9 @@
         <x-strip-js srcfile="${build.dir}/ext-all-debug-w-comments.js"
                     outfile="${build.dir}/ext-all-debug.js"/>
 
+        <x-strip-js srcfile="${build.dir}/ext-all-rtl-debug-w-comments.js"
+                    outfile="${build.dir}/ext-all-rtl-debug.js"/>
+
         <x-strip-js srcfile="${build.dir}/ext-debug-w-comments.js"
                     outfile="${build.dir}/ext-debug.js"/>
 
@@ -136,6 +157,10 @@
         <x-compress-js
                 srcfile="${build.dir}/ext-debug.js"
                 outfile="${build.dir}/ext.js"/>
+
+        <x-compress-js
+                srcfile="${build.dir}/ext-all-rtl-debug.js"
+                outfile="${build.dir}/ext-all-trl.js"/>
 
         <x-compress-js
                 srcfile="${build.dir}/builds/ext-core-debug.js"

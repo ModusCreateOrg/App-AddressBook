@@ -20,7 +20,7 @@ Ext.define('Ext.layout.component.Button', {
     constructor: function () {
         this.callParent(arguments);
 
-        this.hackWidth = Ext.isIE && (!Ext.isStrict || Ext.isIE6 || Ext.isIE7 || Ext.isIE8);
+        this.hackWidth = Ext.isIEQuirks || Ext.isIE8m;
         this.heightIncludesPadding = Ext.isIE6 && Ext.isStrict;
     },
 

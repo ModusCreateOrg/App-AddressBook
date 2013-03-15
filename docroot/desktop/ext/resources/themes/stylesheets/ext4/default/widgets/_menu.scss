@@ -4,18 +4,8 @@
  */
 @mixin extjs-menu {
     .#{$prefix}menu-body {
-        @include no-select;
         background: $menu-background-color !important;
         padding: $menu-padding;
-    }
-
-    .#{$prefix}menu-item .#{$prefix}form-text {
-        user-select: text;
-        -webkit-user-select: text;
-        -o-user-select: text;
-        -ie-user-select: text;
-        -moz-user-select: text;
-        -ie-user-select: text;
     }
 
     .#{$prefix}menu-icon-separator {
@@ -26,7 +16,16 @@
         border-left: solid 1px $menu-separator-border-color;
         background-color: $menu-separator-background-color;
         width: 2px;
+        height: 100%;
         overflow: hidden;
+        height: 100%;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}menu .#{$prefix}menu-icon-separator {
+            right: $menu-item-indent;
+            left: auto;
+        }
     }
 
     .#{$prefix}menu-plain {
@@ -63,6 +62,12 @@
         cursor: default;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}menu-item-link {
+            padding: rtl($menu-link-padding);
+        }
+    }
+
     @if $include-opera {
         .#{$prefix}opera {
             // Opera 10.5 absolute positioning of submenu arrow has issues
@@ -82,6 +87,13 @@
         background: no-repeat center center;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}menu-item-icon {
+            right: 4px;
+            left: auto;
+        }
+    }
+
     // For when an icon needs to be used in the right position where a submenu arrow usually goes.
     // eg: When a CheckItem needs an icon. The left icon position is a checkbox, so the icon is moved to the right.
     .#{$prefix}menu-item-icon-right {
@@ -89,7 +101,7 @@
         height: 16px;
         position: absolute;
         top: 6px;
-        right: 4px;
+        right: 2px;
         background: no-repeat center center;
     }
 
@@ -98,8 +110,12 @@
         color: $menu-text-color;
     }
 
+    .#{$prefix}right-check-item-text {
+        padding-right: 22px;
+    }
+
     .#{$prefix}menu-item-checked {
-        .#{$prefix}menu-item-icon {
+        .#{$prefix}menu-item-icon, .#{$prefix}menu-item-icon-right {
             background-image: theme-background-image($theme-name, $menu-icon-checked);
         }
         .#{$prefix}menu-group-icon {
@@ -108,7 +124,7 @@
     }
 
     .#{$prefix}menu-item-unchecked {
-        .#{$prefix}menu-item-icon {
+        .#{$prefix}menu-item-icon, .#{$prefix}menu-item-icon-right {
             background-image: theme-background-image($theme-name, $menu-icon-unchecked);
         }
         .#{$prefix}menu-group-icon {
@@ -134,6 +150,14 @@
         background-image: theme-background-image($theme-name, $menu-icon-arrow);
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}menu-item-arrow {
+            left: 0;
+            right: auto;
+            background-image: theme-background-image($theme-name, $menu-icon-arrow-left);
+        }
+    }
+
     .#{$prefix}menu-item-indent {
         margin-left: $menu-item-indent + $menu-padding + 2px; /* The 2px is the width of the seperator */
     }
@@ -155,6 +179,16 @@
     }
 
     @if $include-ie {
+      .#{$prefix}strict .#{$prefix}ie7m {
+            .#{$prefix}menu-icon-separator {
+                width: 1px;
+            }
+
+            .#{$prefix}menu-item-separator {
+                height: 1px;
+            }
+        }
+        
         .#{$prefix}ie {
             .#{$prefix}menu-item-disabled {
                 .#{$prefix}menu-item-icon {
@@ -164,16 +198,6 @@
                 .#{$prefix}menu-item-text {
                     // IE opacity/cleartype bug workaround
                     background-color: transparent;
-                }
-            }
-
-            .#{$prefix}strict .#{$prefix}ie7m & {
-                .#{$prefix}menu-icon-separator {
-                    width: 1px;
-                }
-
-                .#{$prefix}menu-item-separator {
-                    height: 1px;
                 }
             }
         }
@@ -198,5 +222,15 @@
 
     .#{$prefix}menu-date-item {
         border-color: #99BBE8;
+    }
+
+    // When Fields are added to Menus...
+    .#{$prefix}menu-item .#{$prefix}field-label-cell {
+        vertical-align: middle;
+    }
+    .#{$prefix}menu-item .#{$prefix}form-item-label {
+        font-size: ceil($font-size * .9);
+        color: $menu-text-color;
+        padding-left: 34px;
     }
 }

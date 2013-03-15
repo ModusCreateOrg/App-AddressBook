@@ -292,9 +292,7 @@ Ext.define('Ext.ElementLoader', {
             me.addMask(mask);
         }
 
-        request = Ext.Ajax.request(options);
         me.active = {
-            request: request,
             options: options,
             mask: mask,
             scope: scope,
@@ -304,6 +302,7 @@ Ext.define('Ext.ElementLoader', {
             renderer: options.renderer || me.renderer,
             scripts: Ext.isDefined(options.scripts) ? options.scripts : me.scripts
         };
+        me.active.request = Ext.Ajax.request(options);
         me.setOptions(me.active, options);
     },
 

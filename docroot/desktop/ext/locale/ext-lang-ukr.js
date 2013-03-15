@@ -20,9 +20,9 @@ Ext.onReady(function() {
         emptyText: "<Порожньо>"
     });
 
-    Ext.define("Ext.locale.ukr.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} обраних рядків"
+    Ext.define("Ext.locale.ukr.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} обраних рядків"
     });
 
     Ext.define("Ext.locale.ukr.TabPanelItem", {

@@ -71,6 +71,30 @@ Ext.define('Ext.util.Filter', {
      * Optional root property. This is mostly useful when filtering a Store, in which case we set the root to 'data' to
      * make the filter pull the {@link #property} out of the data object of each item
      */
+    
+    statics: {
+        /**
+         * Creates a single filter function which encapsulates the passed Filter array.
+         * @param {Ext.util.Filter[]} filters The filter set for which to create a filter function
+         * @return {Function} a function, which when passed a candidate object returns `true` if
+         * the candidate passes all the specified Filters.
+         */
+        createFilterFn: function(filters) {
+            return filters && filters.length ? function(candidate) {
+                var isMatch = true,
+                    length = filters.length,
+                    i, filter;
+
+                for (i = 0; isMatch && i < length; i++) {
+                    filter = filters[i];
+                    isMatch = isMatch && filter.filterFn.call(filter.scope, candidate);
+                }
+                return isMatch;
+            } : function() {
+                return true;
+            };
+        }
+    },
 
     /**
      * Creates new Filter.
@@ -108,7 +132,7 @@ Ext.define('Ext.util.Filter', {
             property = me.property;
         
         return function(item) {
-            var value = me.getRoot.call(me, item)[property];
+            var value = me.getRoot(item)[property];
             return matcher === null ? value === null : matcher.test(value);
         };
     },

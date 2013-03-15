@@ -356,7 +356,7 @@ Ext.define('Ext.toolbar.Paging', {
 
         me.bindStore(me.store || 'ext-empty-store', true);
     },
-    // private
+    // @private
     updateInfo : function(){
         var me = this,
             displayItem = me.child('#displayItem'),
@@ -380,7 +380,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-    // private
+    // @private
     onLoad : function(){
         var me = this,
             pageData,
@@ -419,7 +419,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-    // private
+    // @private
     getPageData : function(){
         var store = this.store,
             totalCount = store.getTotalCount();
@@ -434,7 +434,7 @@ Ext.define('Ext.toolbar.Paging', {
         };
     },
 
-    // private
+    // @private
     onLoadError : function(){
         if (!this.rendered) {
             return;
@@ -442,7 +442,7 @@ Ext.define('Ext.toolbar.Paging', {
         this.child('#refresh').enable();
     },
 
-    // private
+    // @private
     readPageFromInput : function(pageData){
         var v = this.child('#inputItem').getValue(),
             pageNum = parseInt(v, 10);
@@ -458,13 +458,13 @@ Ext.define('Ext.toolbar.Paging', {
         this.child('#inputItem').select();
     },
 
-    //private
+    // @private
     onPagingBlur : function(e){
         var curPage = this.getPageData().currentPage;
         this.child('#inputItem').setValue(curPage);
     },
 
-    // private
+    // @private
     onPagingKeyDown : function(field, e){
         var me = this,
             k = e.getKey(),
@@ -500,7 +500,7 @@ Ext.define('Ext.toolbar.Paging', {
         }
     },
 
-    // private
+    // @private
     beforeLoad : function(){
         if(this.rendered && this.refresh){
             this.refresh.disable();
@@ -593,7 +593,7 @@ Ext.define('Ext.toolbar.Paging', {
         this.bindStore(store);
     },
 
-    // private
+    // @private
     onDestroy : function(){
         this.unbind();
         this.callParent();

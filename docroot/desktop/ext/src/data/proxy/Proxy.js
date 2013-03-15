@@ -36,6 +36,11 @@ Ext.define('Ext.data.proxy.Proxy', {
     alias: 'proxy.proxy',
     alternateClassName: ['Ext.data.DataProxy', 'Ext.data.Proxy'],
 
+    requires: [
+        'Ext.data.reader.Json',
+        'Ext.data.writer.Json'
+    ],
+
     uses: [
         'Ext.data.Batch',
         'Ext.data.Operation',
@@ -102,16 +107,22 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
+        var me = this;
+        
         config = config || {};
 
-        if (config.model === undefined) {
-            delete config.model;
-        }
+        me.mixins.observable.constructor.call(me, config);
 
-        this.mixins.observable.constructor.call(this, config);
-
-        if (this.model !== undefined && !(this.model instanceof Ext.data.Model)) {
-            this.setModel(this.model);
+        if (me.model !== undefined && !(me.model instanceof Ext.data.Model)) {
+            me.setModel(me.model);
+        } else {
+            if (me.reader) {
+                me.setReader(me.reader);
+            }
+            
+            if (me.writer) {
+                me.setWriter(me.writer);
+            }
         }
 
         /**
@@ -134,16 +145,15 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Boolean} setOnStore Sets the new model on the associated Store, if one is present
      */
     setModel: function(model, setOnStore) {
-        this.model = Ext.ModelManager.getModel(model);
+        var me = this;
+        
+        me.model = Ext.ModelManager.getModel(model);
 
-        var reader = this.reader,
-            writer = this.writer;
+        me.setReader(this.reader);
+        me.setWriter(this.writer);
 
-        this.setReader(reader);
-        this.setWriter(writer);
-
-        if (setOnStore && this.store) {
-            this.store.setModel(this.model);
+        if (setOnStore && me.store) {
+            me.store.setModel(me.model);
         }
     },
 
@@ -164,7 +174,8 @@ Ext.define('Ext.data.proxy.Proxy', {
      */
     setReader: function(reader) {
         var me = this,
-            needsCopy = true;
+            needsCopy = true,
+            current = me.reader;
 
         if (reader === undefined || typeof reader == 'string') {
             reader = {
@@ -188,7 +199,7 @@ Ext.define('Ext.data.proxy.Proxy', {
             reader = Ext.createByAlias('reader.' + reader.type, reader);
         }
 
-        if (reader.onMetaChange) {
+        if (reader !== current && reader.onMetaChange) {
             reader.onMetaChange = Ext.Function.createSequence(reader.onMetaChange, this.onMetaChange, this);
         }
 
@@ -438,7 +449,4 @@ Ext.define('Ext.data.proxy.Proxy', {
             Ext.callback(batchOptions.callback, scope, [batch, batchOptions]);
         }
     }
-}, function() {
-    //backwards compatibility
-    Ext.data.DataProxy = this;
 });

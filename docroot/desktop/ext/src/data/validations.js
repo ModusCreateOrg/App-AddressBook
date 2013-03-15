@@ -66,7 +66,7 @@ Ext.define('Ext.data.validations', {
         }
         
         //we need an additional check for zero here because zero is an acceptable form of present data
-        return !!value || value === 0;
+        return !!value || value === 0 || value === false;
     },
     
     /**

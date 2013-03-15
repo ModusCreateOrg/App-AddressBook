@@ -17,9 +17,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.th.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} àÅ×Í¡áÅéÇ·Ñé§ËÁŽá¶Ç"
+    Ext.define("Ext.locale.th.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} àÅ×Í¡áÅéÇ·Ñé§ËÁŽá¶Ç"
     });
 
     Ext.define("Ext.locale.th.TabPanelItem", {

@@ -45,18 +45,12 @@ Ext.define('Ext.layout.container.Anchor', {
     /* Begin Definitions */
 
     alias: 'layout.anchor',
-    extend: 'Ext.layout.container.Container',
+    extend: 'Ext.layout.container.Auto',
     alternateClassName: 'Ext.layout.AnchorLayout',
 
     /* End Definitions */
 
     type: 'anchor',
-
-    manageOverflow: 2,
-
-    renderTpl: [
-        '{%this.renderBody(out,values);this.renderPadder(out,values)%}'
-    ],
 
     /**
      * @cfg {String} anchor
@@ -114,7 +108,9 @@ Ext.define('Ext.layout.container.Anchor', {
 
     parseAnchorRE: /^(r|right|b|bottom)$/i,
 
-    beginLayout: function (ownerContext) {
+    manageOverflow: true,
+
+    beginLayoutCycle: function (ownerContext) {
         var me = this,
             dimensions = 0,
             anchorSpec, childContext, childItems, i, length, target;
@@ -144,47 +140,12 @@ Ext.define('Ext.layout.container.Anchor', {
 
         ownerContext.anchorDimensions = dimensions;
 
-        // Work around WebKit RightMargin bug. We're going to inline-block all the children
-        // only ONCE and remove it when we're done
-        if (!Ext.supports.RightMargin && !me.rightMarginCleanerFn) {
-            target = ownerContext.targetContext.el; // targetContext is added by superclass
-
-            me.rightMarginCleanerFn = Ext.Element.getRightMarginFixCleaner(target);
-            target.addCls(Ext.baseCSSPrefix + 'inline-children');
-        }
-
         //<debug>
         me.sanityCheck(ownerContext);
         //</debug>
     },
 
-    calculate: function (ownerContext) {
-        var me = this,
-            containerSize = me.getContainerSize(ownerContext);
-
-        if (ownerContext.anchorDimensions !== ownerContext.state.calculatedAnchors) {
-            me.calculateAnchors(ownerContext, containerSize);
-        }
-
-        if (ownerContext.hasDomProp('containerChildrenDone')) {
-            // Once the child layouts are done we can determine the content sizes...
-
-            if (!containerSize.gotAll) {
-                me.done = false;
-            }
-
-            me.calculateContentSize(ownerContext, ownerContext.anchorDimensions);
-
-            if (me.done) {
-                me.calculateOverflow(ownerContext, containerSize, ownerContext.anchorDimensions);
-                return;
-            }
-        }
-
-        me.done = false;
-    },
-
-    calculateAnchors: function (ownerContext, containerSize) {
+    calculateItems: function (ownerContext, containerSize) {
         var me = this,
             childItems = ownerContext.childItems,
             length = childItems.length,
@@ -192,11 +153,13 @@ Ext.define('Ext.layout.container.Anchor', {
             gotWidth = containerSize.gotWidth,
             ownerHeight = containerSize.height,
             ownerWidth = containerSize.width,
-            state = ownerContext.state,
-            calculatedAnchors = (gotWidth ? 1 : 0) | (gotHeight ? 2 : 0),
+            knownDimensions = (gotWidth ? 1 : 0) | (gotHeight ? 2 : 0),
+            anchorDimensions = ownerContext.anchorDimensions,
             anchorSpec, childContext, childMargins, height, i, width;
 
-        state.calculatedAnchors = (state.calculatedAnchors || 0) | calculatedAnchors;
+        if (!anchorDimensions) {
+            return true;
+        }
 
         for (i = 0; i < length; i++) {
             childContext = childItems[i];
@@ -222,16 +185,9 @@ Ext.define('Ext.layout.container.Anchor', {
                 childContext.setHeight(height);
             }
         }
-    },
 
-    finishedLayout: function (ownerContext) {
-        var cleanerFn = this.rightMarginCleanerFn;
-
-        if (cleanerFn) {
-            delete this.rightMarginCleanerFn;
-            ownerContext.targetContext.el.removeCls(Ext.baseCSSPrefix + 'inline-children');
-            cleanerFn();
-        }
+        // If all required dimensions are known, we're done
+        return (knownDimensions & anchorDimensions) === anchorDimensions;
     },
 
     //<debug>

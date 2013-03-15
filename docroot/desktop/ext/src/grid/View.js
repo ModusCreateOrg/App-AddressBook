@@ -31,7 +31,7 @@ Ext.define('Ext.grid.View', {
     alias: 'widget.gridview',
 
     /**
-     * @cfg
+     * @cfg {Boolean}
      * True to stripe the rows.
      *
      * This causes the CSS class **`x-grid-row-alt`** to be added to alternate rows of the grid. A default CSS rule is

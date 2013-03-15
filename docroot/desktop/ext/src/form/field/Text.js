@@ -130,6 +130,14 @@ Ext.define('Ext.form.field.Text', {
      * Specify false to validate that the value's length is > 0
      */
     allowBlank : true,
+    
+    /**
+     * @cfg {Boolean} allowOnlyWhitespace
+     * Specify false to automatically trim the value before validating
+     * the whether the value is blank. Setting this to false automatically
+     * sets {@link #allowBlank} to false.
+     */
+    allowOnlyWhitespace: true,
 
     /**
      * @cfg {Number} minLength
@@ -153,11 +161,11 @@ Ext.define('Ext.form.field.Text', {
      * True to set the maxLength property on the underlying input field. Defaults to false
      */
 
+    //<locale>
     /**
      * @cfg {String} minLengthText
      * Error text to display if the **{@link #minLength minimum length}** validation fails.
      */
-    //<locale>
     minLengthText : 'The minimum length for this field is {0}',
     //</locale>
 
@@ -253,6 +261,10 @@ Ext.define('Ext.form.field.Text', {
 
     initComponent: function () {
         var me = this;
+        
+        if (me.allowOnlyWhitespace === false) {
+            me.allowBlank = false;
+        }
 
         me.callParent();
 
@@ -483,7 +495,7 @@ Ext.define('Ext.form.field.Text', {
     },
     
     // private
-    preFocus : function(){
+    beforeFocus : function(){
         var me = this,
             inputEl = me.inputEl,
             emptyText = me.emptyText,
@@ -499,8 +511,26 @@ Ext.define('Ext.form.field.Text', {
             me.inputEl.removeCls(me.emptyCls);
         }
         if (me.selectOnFocus || isEmpty) {
-            inputEl.dom.select();
+            // see: http://code.google.com/p/chromium/issues/detail?id=4505
+            if (Ext.isWebKit) {
+                if (!me.inputFocusTask) {
+                    me.inputFocusTask = new Ext.util.DelayedTask(me.focusInput, me);
+                }
+                me.inputFocusTask.delay(1);
+            } else {
+                inputEl.dom.select();
+            }
         }
+    },
+    
+    focusInput: function(){
+        var input = this.inputEl;
+        if (input) {
+            input = input.dom;
+            if (input) {
+                input.select();
+            }
+        }    
     },
 
     onFocus: function() {
@@ -653,7 +683,7 @@ Ext.define('Ext.form.field.Text', {
             vtypes = Ext.form.field.VTypes,
             regex = me.regex,
             format = Ext.String.format,
-            msg;
+            msg, trimmed;
 
         value = value || me.processRawValue(me.getRawValue());
 
@@ -663,8 +693,10 @@ Ext.define('Ext.form.field.Text', {
                 errors.push(msg);
             }
         }
+        
+        trimmed = me.allowOnlyWhitespace ? value : Ext.String.trim(value);
 
-        if (value.length < 1 || (value === me.emptyText && me.valueContainsPlaceholder)) {
+        if (trimmed.length < 1 || (value === me.emptyText && me.valueContainsPlaceholder)) {
             if (!allowBlank) {
                 errors.push(me.blankText);
             }
@@ -749,6 +781,16 @@ Ext.define('Ext.form.field.Text', {
                 me.lastInputWidth = width;
                 delete me.autoSizing;
             }
+        }
+    },
+    
+    onDestroy: function(){
+        var me = this;
+        me.callParent();
+        
+        if (me.inputFocusTask) {
+            me.inputFocusTask.cancel();
+            me.inputFocusTask = null;
         }
     }
 });

@@ -16,9 +16,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.fa.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} رکورد انتخاب شده"
+    Ext.define("Ext.locale.fa.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} رکورد انتخاب شده"
     });
 
     Ext.define("Ext.locale.fa.TabPanelItem", {

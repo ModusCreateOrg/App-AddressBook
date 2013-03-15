@@ -42,6 +42,12 @@ Ext.define('Ext.grid.RowNumberer', {
      */
     draggable: false,
 
+    // Flag to Lockable to move instances of this column to the locked side.
+    autoLock: true,
+
+    // May not be moved from its preferred locked side when grid is enableLocking:true
+    lockable: false,
+
     align: 'right',
 
     constructor : function(config){
@@ -66,11 +72,12 @@ Ext.define('Ext.grid.RowNumberer', {
 
     // private
     renderer: function(value, metaData, record, rowIdx, colIdx, store) {
-        if (this.rowspan){
-            metaData.cellAttr = 'rowspan="'+this.rowspan+'"';
+        var rowspan = this.rowspan;
+        if (rowspan) {
+            metaData.tdAttr = 'rowspan="' + rowspan + '"';
         }
 
         metaData.tdCls = Ext.baseCSSPrefix + 'grid-cell-special';
-        return store.indexOfTotal(record) + 1;
+        return rowIdx + 1;
     }
 });

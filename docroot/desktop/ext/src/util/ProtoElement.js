@@ -70,6 +70,7 @@ Ext.define('Ext.util.ProtoElement', (function () {
             this.removedClasses = {};
             // clear the style, it will be recreated if we add anything new
             delete this.style;
+            delete this.unselectableAttr;
         },
 
         /**
@@ -79,7 +80,7 @@ Ext.define('Ext.util.ProtoElement', (function () {
          */
         addCls: function (cls) {
             var me = this,
-                add = splitWords(cls),
+                add = (typeof cls === 'string') ? splitWords(cls) : cls,
                 length = add.length,
                 list = me.classList,
                 map = me.classMap,
@@ -167,6 +168,15 @@ Ext.define('Ext.util.ProtoElement', (function () {
             return me;
         },
 
+        unselectable: function() {
+            // See Ext.dom.Element.unselectable for an explanation of what is required to make an element unselectable
+            this.addCls(Ext.dom.Element.unselectableCls);
+
+            if (Ext.isOpera) {
+                this.unselectableAttr = true;
+            }
+        },
+
         /**
          * Writes style and class properties to given object.
          * Styles will be written to {@link #styleProp} and class names to {@link #clsProp}.
@@ -197,6 +207,10 @@ Ext.define('Ext.util.ProtoElement', (function () {
                 if (removedClasses.length) {
                     to[me.removedProp] = removedClasses.join(' ');
                 }
+            }
+
+            if (me.unselectableAttr) {
+                to.unselectable = 'on';
             }
 
             return to;

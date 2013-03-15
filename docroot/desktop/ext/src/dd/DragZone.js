@@ -65,9 +65,17 @@ Ext.define('Ext.dd.DragZone', {
      * @param {Object} config
      */
     constructor : function(el, config){
-        this.callParent([el, config]);
-        if (this.containerScroll) {
-            Ext.dd.ScrollManager.register(this.el);
+        var me = this,
+            scroll = me.containerScroll;
+        
+        me.callParent([el, config]);
+        if (scroll) {
+            el = me.scrollEl || el;
+            el = Ext.get(el);
+            if (Ext.isObject(scroll)) {
+                el.ddScrollConfig = scroll;
+            }
+            Ext.dd.ScrollManager.register(el);
         }
     },
 
@@ -79,8 +87,15 @@ Ext.define('Ext.dd.DragZone', {
      */
 
     /**
-     * @cfg {Boolean} containerScroll
+     * @cfg {Object/Boolean} containerScroll
      * True to register this container with the Scrollmanager for auto scrolling during drag operations.
+     * A {@link Ext.dd.ScrollManager} configuration may also be passed.
+     */
+    
+    /**
+     * @cfg {String/HTMLElement/Ext.dom.Element} scrollEl
+     * An element to register with the ScrollManager if {@link #containerScroll}
+     * is set. Defaults to the drag element.
      */
 
     /**
@@ -106,18 +121,6 @@ Ext.define('Ext.dd.DragZone', {
         this.proxy.update(this.dragData.ddel.cloneNode(true));
         this.onStartDrag(x, y);
         return true;
-    },
-
-    /**
-     * Called after a repair of an invalid drop. By default, highlights this.dragData.ddel
-     * @template
-     */
-    afterRepair : function(){
-        var me = this;
-        if (Ext.enableFx) {
-            Ext.fly(me.dragData.ddel).highlight(me.repairHighlightColor);
-        }
-        me.dragging = false;
     },
 
     /**

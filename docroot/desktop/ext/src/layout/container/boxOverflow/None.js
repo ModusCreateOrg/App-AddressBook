@@ -18,9 +18,8 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
 
     beginLayout: Ext.emptyFn,
     beginLayoutCycle: Ext.emptyFn,
-    finishedLayout: Ext.emptyFn,
 
-    completeLayout: function (ownerContext) {
+    calculate: function(ownerContext) {
         var me = this,
             plan = ownerContext.state.boxPlan,
             overflow;
@@ -46,6 +45,25 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
             }
         } else {
             me.clearOverflow();
+        }
+    },
+
+    completeLayout: Ext.emptyFn,
+
+    finishedLayout: function (ownerContext) {
+        var me = this,
+            owner = me.layout.owner,
+            hiddens,
+            hiddenCount;
+
+        // Only count hidden children if someone is interested when the overflow state changes
+        if (owner.hasListeners.overflowchange) {
+            hiddens = owner.query('>[hidden]');
+            hiddenCount = hiddens.length;
+            if (hiddenCount !== me.lastHiddenCount) {
+                owner.fireEvent('overflowchange', me.lastHiddenCount, hiddenCount, hiddens);
+                me.lastHiddenCount = hiddenCount;
+            }
         }
     },
 

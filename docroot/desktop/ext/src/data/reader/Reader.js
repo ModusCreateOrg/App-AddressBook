@@ -168,7 +168,7 @@ Ext.define('Ext.data.reader.Reader', {
     /**
      * @cfg {String} idProperty
      * Name of the property within a row object that contains a record identifier value. Defaults to the id of the
-     * model. If an idProperty is explicitly specified it will override the idProperty defined on the model.
+     * model. If an idProperty is explicitly specified it will take precedence over idProperty defined on the model.
      */
 
     /**
@@ -293,7 +293,9 @@ Ext.define('Ext.data.reader.Reader', {
         var me = this;
         
         me.model = Ext.ModelManager.getModel(model);
-        me.buildExtractors(true);
+        if (model) {
+            me.buildExtractors(true);
+        }
         
         if (setOnProxy && me.proxy) {
             me.proxy.setModel(me.model, true);
@@ -507,9 +509,7 @@ Ext.define('Ext.data.reader.Reader', {
      * @param {Object} data The data object
      * @return {Object} The normalized data object
      */
-    getData: function(data) {
-        return data;
-    },
+    getData: Ext.identityFn,
 
     /**
      * @private
@@ -519,9 +519,7 @@ Ext.define('Ext.data.reader.Reader', {
      * @param {Object} data The data object
      * @return {Object} The same data object
      */
-    getRoot: function(data) {
-        return data;
-    },
+    getRoot: Ext.identityFn,
 
     /**
      * Takes a raw response object (as passed to the {@link #read} method) and returns the useful data
@@ -678,7 +676,7 @@ Ext.define('Ext.data.reader.Reader', {
                 '<tpl else>',
         '        dest["{name}"] = value;\n',
                 '</tpl>',
-        '    };',
+        '    };\n',
 
         // Code for processing a source property value when there is no default value
             '<tpl else>',
@@ -751,7 +749,8 @@ Ext.define('Ext.data.reader.Reader', {
             total  : 0,
             count  : 0,
             records: [],
-            success: true
+            success: true,
+            message: ''
         }),
         recordDataExtractorTemplate: new Ext.XTemplate(proto.recordDataExtractorTemplate)
     });

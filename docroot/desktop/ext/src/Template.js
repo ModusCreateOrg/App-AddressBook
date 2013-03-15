@@ -1,3 +1,4 @@
+//@tag core
 /**
  * Represents an HTML fragment template. Templates may be {@link #compile precompiled} for greater performance.
  *

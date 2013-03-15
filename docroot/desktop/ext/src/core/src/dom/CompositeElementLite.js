@@ -1,6 +1,4 @@
 //@tag dom,core
-//@require Ext.dom.Element-traversal
-
 /**
  * This class encapsulates a *collection* of DOM elements, providing methods to filter members, or to perform collective
  * actions upon the whole set.
@@ -174,6 +172,16 @@ Ext.define('Ext.dom.CompositeElementLite', {
         return out;
     },
 
+    /**
+     * Gets a range nodes.
+     * @param {Number} start (optional) The index of the first node in the range
+     * @param {Number} end (optional) The index of the last node in the range
+     * @return {HTMLElement[]} An array of nodes
+     */
+    slice: function() {
+        return this.elements.slice.apply(this.elements, arguments);
+    },
+
     // fixes scope with flyweight
     addListener: function(eventName, handler, scope, opt) {
         var els = this.elements,
@@ -228,6 +236,10 @@ Ext.define('Ext.dom.CompositeElementLite', {
         me.elements = [];
         me.add(els);
         return me;
+    },
+
+    insert: function(index, nodes) {
+        Ext.Array.insert(this.elements, index, nodes);
     },
 
     /**
@@ -304,9 +316,19 @@ Ext.define('Ext.dom.CompositeElementLite', {
     },
 
     /**
-     * Removes all elements.
+     * Removes all elements from this Composite.
+     * @param {Boolean} [removeDom] True to also remove the elements from the document.
      */
-    clear: function() {
+    clear: function(removeDom) {
+        var me  = this,
+            els = me.elements,
+            i = els.length - 1;
+        
+        if (removeDom) {
+            for (; i >= 0; i--) {
+                Ext.removeNode(els[i]);
+            }
+        }
         this.elements = [];
     },
 
@@ -347,7 +369,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
     },
 
     /**
-     * Returns true if this composite contains the passed element
+     * Returns true if this composite contains the passed element.
      * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, or an Ext.Element, or an HtmlElement to
      * find within the composite collection.
      * @return {Boolean}
@@ -360,7 +382,7 @@ Ext.define('Ext.dom.CompositeElementLite', {
      * Removes the specified element(s).
      * @param {String/HTMLElement/Ext.Element/Number} el The id of an element, the Element itself, the index of the
      * element in this composite or an array of any of those.
-     * @param {Boolean} [removeDom] True to also remove the element from the document
+     * @param {Boolean} [removeDom] True to also remove the element from the document.
      * @return {Ext.dom.CompositeElement} this
      */
     removeElement: function(keys, removeDom) {

@@ -20,9 +20,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.hu.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} kiválasztott sor"
+    Ext.define("Ext.locale.hu.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} kiválasztott sor"
     });
 
     Ext.define("Ext.locale.hu.TabPanelItem", {

@@ -22,9 +22,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.en.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} selected row{1}"
+    Ext.define("Ext.locale.en.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} selected row{1}"
     });
 
     // changing the msg text below will affect the LoadMask

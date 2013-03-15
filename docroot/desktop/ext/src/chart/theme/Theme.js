@@ -5,44 +5,10 @@
  * 
  * Used as mixins by Ext.chart.Chart.
  */
-Ext.define('Ext.chart.theme.Theme', {
+Ext.chart = Ext.chart || {};
 
-    /* Begin Definitions */
+Ext.define('Ext.chart.theme.Theme', (
 
-    requires: ['Ext.draw.Color'],
-
-    /* End Definitions */
-
-    theme: 'Base',
-    themeAttrs: false,
-    
-    initTheme: function(theme) {
-        var me = this,
-            themes = Ext.chart.theme,
-            key, gradients;
-        if (theme) {
-            theme = theme.split(':');
-            for (key in themes) {
-                if (key == theme[0]) {
-                    gradients = theme[1] == 'gradients';
-                    me.themeAttrs = new themes[key]({
-                        useGradients: gradients
-                    });
-                    if (gradients) {
-                        me.gradients = me.themeAttrs.gradients;
-                    }
-                    if (me.themeAttrs.background) {
-                        me.background = me.themeAttrs.background;
-                    }
-                    return;
-                }
-            }
-            //<debug>
-            Ext.Error.raise('No theme found named "' + theme + '"');
-            //</debug>
-        }
-    }
-}, 
 // This callback is executed right after when the class is created. This scope refers to the newly created class itself
 function() {
    /* Theme constructor: takes either a complex object with styles like:
@@ -250,4 +216,44 @@ function() {
         Ext.apply(this, base);
     };
 }());
-});
+
+return {
+
+    /* Begin Definitions */
+
+    requires: ['Ext.draw.Color'],
+
+    /* End Definitions */
+
+    theme: 'Base',
+    themeAttrs: false,
+
+    initTheme: function(theme) {
+        var me = this,
+            themes = Ext.chart.theme,
+            key, gradients;
+        if (theme) {
+            theme = theme.split(':');
+            for (key in themes) {
+                if (key == theme[0]) {
+                    gradients = theme[1] == 'gradients';
+                    me.themeAttrs = new themes[key]({
+                        useGradients: gradients
+                    });
+                    if (gradients) {
+                        me.gradients = me.themeAttrs.gradients;
+                    }
+                    if (me.themeAttrs.background) {
+                        me.background = me.themeAttrs.background;
+                    }
+                    return;
+                }
+            }
+            //<debug>
+            Ext.Error.raise('No theme found named "' + theme + '"');
+            //</debug>
+        }
+    }
+};
+
+})());

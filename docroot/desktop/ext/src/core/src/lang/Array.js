@@ -150,9 +150,16 @@
 
     function replaceNative (array, index, removeCount, insert) {
         if (insert && insert.length) {
-            if (index < array.length) {
+            // Inserting at index zero with no removing: use unshift
+            if (index === 0 && !removeCount) {
+                array.unshift.apply(array, insert);
+            }
+            // Inserting/replacing in middle of array
+            else if (index < array.length) {
                 array.splice.apply(array, [index, removeCount].concat(insert));
-            } else {
+            }
+            // Appending to array
+            else {
                 array.push.apply(array, insert);
             }
         } else {
@@ -276,7 +283,7 @@
          * @param {Object} scope (Optional) The execution scope (`this`) in which the specified function is executed.
          */
         forEach: supportsForEach ? function(array, fn, scope) {
-            return array.forEach(fn, scope);
+            array.forEach(fn, scope);
         } : function(array, fn, scope) {
             var i = 0,
                 ln = array.length;
@@ -296,7 +303,7 @@
          * @return {Number} The index of item in the array (or -1 if it is not found)
          */
         indexOf: supportsIndexOf ? function(array, item, from) {
-            return array.indexOf(item, from);
+            return arrayPrototype.indexOf.call(array, item, from);
          } : function(array, item, from) {
             var i, length = array.length;
 
@@ -317,7 +324,7 @@
          * @return {Boolean} True if the array contains the item, false otherwise
          */
         contains: supportsIndexOf ? function(array, item) {
-            return array.indexOf(item) !== -1;
+            return arrayPrototype.indexOf.call(array, item) !== -1;
         } : function(array, item) {
             var i, ln;
 
@@ -504,6 +511,35 @@
 
             return false;
         },
+        
+        /**
+         * Shallow compares the contents of 2 arrays using strict equality.
+         * @param {Array} array1
+         * @param {Array} array2
+         * @return {Boolean} `true` if the arrays are equal.
+         */
+        equals: function(array1, array2) {
+            var len1 = array1.length,
+                len2 = array2.length,
+                i;
+                
+            // Short circuit if the same array is passed twice
+            if (array1 === array2) {
+                return true;
+            }
+                
+            if (len1 !== len2) {
+                return false;
+            }
+            
+            for (i = 0; i < len1; ++i) {
+                if (array1[i] !== array2[i]) {
+                    return false;
+                }
+            }
+            
+            return true;
+        },
 
         /**
          * Filter through an array and remove empty item as defined in {@link Ext#isEmpty Ext.isEmpty}
@@ -565,14 +601,14 @@
         filter: supportsFilter ? function(array, fn, scope) {
             //<debug>
             if (!fn) {
-                Ext.Error.raise('Ext.Array.filter must have a callback function passed as second argument.');
+                Ext.Error.raise('Ext.Array.filter must have a filter function passed as second argument.');
             }
             //</debug>
             return array.filter(fn, scope);
         } : function(array, fn, scope) {
             //<debug>
             if (!fn) {
-                Ext.Error.raise('Ext.Array.filter must have a callback function passed as second argument.');
+                Ext.Error.raise('Ext.Array.filter must have a filter function passed as second argument.');
             }
             //</debug>
             var results = [],
@@ -586,6 +622,30 @@
             }
 
             return results;
+        },
+
+        /**
+        * Returns the first item in the array which elicits a true return value from the
+        * passed selection function.
+        * @param {Array} array The array to search
+        * @param {Function} fn The selection function to execute for each item.
+        * @param {Mixed} fn.item The array item.
+        * @param {String} fn.index The index of the array item.
+        * @param {Object} scope (optional) The scope (<code>this</code> reference) in which the
+        * function is executed. Defaults to the array
+        * @return {Object} The first item in the array which returned true from the selection
+        * function, or null if none was found.
+        */
+        findBy : function(array, fn, scope) {
+            var i = 0,
+                len = array.length;
+
+            for (; i < len; i++) {
+                if (fn.call(scope || array, array[i], i)) {
+                    return array[i];
+                }
+            }
+            return null;
         },
 
         /**
@@ -1105,7 +1165,7 @@
             }
             for (; i < len; i++) {
                 newItem = arguments[i];
-                Array.prototype.push[Ext.isArray(newItem) ? 'apply' : 'call'](array, newItem);
+                Array.prototype.push[Ext.isIterable(newItem) ? 'apply' : 'call'](array, newItem);
             }
             return array;
         }

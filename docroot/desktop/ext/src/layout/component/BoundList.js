@@ -16,9 +16,10 @@ Ext.define('Ext.layout.component.BoundList', {
         me.callParent(arguments);
         
         if (owner.floating) {
-            ownerContext.savedXY = owner.el.getXY();
+            ownerContext.savedXY = owner.getXY();
             // move way offscreen to prevent any constraining
-            owner.el.setXY([-9999, -9999]);
+            // only move on the y axis to avoid triggering a horizontal scrollbar in rtl mode
+            owner.setXY([0, -9999]);
         }
         
         if (toolbar) {
@@ -56,7 +57,7 @@ Ext.define('Ext.layout.component.BoundList', {
         
         this.callParent(arguments);
         if (xy) {
-            this.owner.el.setXY(xy);
+            this.owner.setXY(xy);
         }
     },
     

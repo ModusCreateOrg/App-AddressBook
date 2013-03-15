@@ -16,9 +16,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.ko.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} 개가 선택되었습니다."
+    Ext.define("Ext.locale.ko.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} 개가 선택되었습니다."
     });
 
     Ext.define("Ext.locale.ko.TabPanelItem", {

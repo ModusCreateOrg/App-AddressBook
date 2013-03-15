@@ -52,7 +52,7 @@ Ext.define('Ext.view.View', {
     alternateClassName: 'Ext.DataView',
     alias: 'widget.dataview',
 
-    deferHighlight: (Ext.isIE6 || Ext.isIE7) ? 100 : 0,
+    deferHighlight: Ext.isIE7m ? 100 : 0,
 
     inputTagRe: /^textarea$|^input$/i,
 
@@ -402,7 +402,7 @@ Ext.define('Ext.view.View', {
         return this.getTargetEl();
     },
 
-    // private
+    // @private
     afterRender: function(){
         var me = this;
         me.callParent();
@@ -420,9 +420,16 @@ Ext.define('Ext.view.View', {
             mouseup: me.handleEvent,
             dblclick: me.handleEvent,
             contextmenu: me.handleEvent,
-            mouseover: me.handleEvent,
-            mouseout: me.handleEvent,
-            keydown: me.handleEvent
+            keydown: me.handleEvent,
+            // Buffer expensive events so that fast scrolling doesn't trigger them.
+            mouseover: {
+                fn: me.handleEvent,
+                buffer: 50
+            },
+            mouseout: {
+                fn: me.handleEvent,
+                buffer: 50
+            }
         });
     },
 
@@ -489,26 +496,27 @@ Ext.define('Ext.view.View', {
             if (type == 'keydown') {
                 record = me.getSelectionModel().getLastSelected();
                 if (record) {
-                    item = me.getNode(record);
+                    item = me.getNode(record, true);
                 }
             }
         }
 
         if (item) {
-            index = me.indexOf(item);
+            // Convert mouseover/mouseout to mouseenter and mouseleave if we changed items
+            newType = me.isNewItemEvent(item, e);
+            if (newType === false) {
+                return false;
+            }
+
             if (!record) {
                 record = me.getRecord(item);
             }
+            index = me.indexInStore ? me.indexInStore(record) : me.indexOf(item);
 
             // It is possible for an event to arrive for which there is no record... this
             // can happen with dblclick where the clicks are on removal actions (think a
             // grid w/"delete row" action column)
             if (!record || me.processItemEvent(record, item, index, e) === false) {
-                return false;
-            }
-
-            newType = me.isNewItemEvent(item, e);
-            if (newType === false) {
                 return false;
             }
 
@@ -548,7 +556,7 @@ Ext.define('Ext.view.View', {
                 if (item === overItem) {
                     return false;
                 }
-                me.mouseOverItem = item;
+                me.mouseOverItem = me.getNode(item, true);
                 return 'mouseenter';
 
             case 'mouseout':
@@ -562,21 +570,21 @@ Ext.define('Ext.view.View', {
         return type;
     },
 
-    // private
+    // @private
     onItemMouseEnter: function(record, item, index, e) {
         if (this.trackOver) {
             this.highlightItem(item);
         }
     },
 
-    // private
+    // @private
     onItemMouseLeave : function(record, item, index, e) {
         if (this.trackOver) {
             this.clearHighlight();
         }
     },
 
-    // @private, template methods
+    // private, template methods
     onItemMouseDown: Ext.emptyFn,
     onItemMouseUp: Ext.emptyFn,
     onItemFocus: Ext.emptyFn,
@@ -594,7 +602,7 @@ Ext.define('Ext.view.View', {
     onBeforeItemContextMenu: Ext.emptyFn,
     onBeforeItemKeyDown: Ext.emptyFn,
 
-    // @private, template methods
+    // private, template methods
     onContainerMouseDown: Ext.emptyFn,
     onContainerMouseUp: Ext.emptyFn,
     onContainerMouseOver: Ext.emptyFn,
@@ -612,7 +620,7 @@ Ext.define('Ext.view.View', {
     onBeforeContainerContextMenu: Ext.emptyFn,
     onBeforeContainerKeyDown: Ext.emptyFn,
 
-    //private
+    // @private
     setHighlightedItem: function(item){
         var me = this,
             highlighted = me.highlightedItem;
@@ -626,7 +634,6 @@ Ext.define('Ext.view.View', {
             me.highlightedItem = item;
 
             if (item) {
-                //console.log(item.viewIndex);
                 Ext.fly(item).addCls(me.overItemCls);
                 me.fireEvent('highlightitem', me, item);
             }
@@ -673,5 +680,47 @@ Ext.define('Ext.view.View', {
     refresh: function() {
         this.clearHighlight();
         this.callParent(arguments);
+    },
+    
+    /**
+     * Focuses a node in the view.
+     * @param {Ext.data.Model} rec The record associated to the node that is to be focused.
+     */
+    focusNode: function(rec){
+        var me          = this,
+            node        = me.getNode(rec, true),
+            el          = me.el,
+            adjustmentY = 0,
+            adjustmentX = 0,
+            elRegion    = el.getRegion(),
+            nodeRegion;
+
+        // Viewable region must not include scrollbars, so use
+        // DOM client dimensions
+        elRegion.bottom = elRegion.top + el.dom.clientHeight;
+        elRegion.right = elRegion.left + el.dom.clientWidth;
+        if (node) {
+            nodeRegion = Ext.fly(node).getRegion();
+            // node is above
+            if (nodeRegion.top < elRegion.top) {
+                adjustmentY = nodeRegion.top - elRegion.top;
+            // node is below
+            } else if (nodeRegion.bottom > elRegion.bottom) {
+                adjustmentY = nodeRegion.bottom - elRegion.bottom;
+            }
+
+            // node is left
+            if (nodeRegion.left < elRegion.left) {
+                adjustmentX = nodeRegion.left - elRegion.left;
+            // node is right
+            } else if (nodeRegion.right > elRegion.right) {
+                adjustmentX = nodeRegion.right - elRegion.right;
+            }
+
+            if (adjustmentX || adjustmentY) {
+                me.scrollBy(adjustmentX, adjustmentY, false);
+            }
+            el.focus();
+        }
     }
 });

@@ -1,27 +1,24 @@
 //@tag dom,core
-//@require AbstractHelper.js
 //@require Ext.Supports
-//@require Ext.EventManager
-//@define Ext.dom.AbstractElement
 
 /**
- * @class Ext.dom.AbstractElement
- * @extend Ext.Base
  * @private
  */
-(function() {
-
-var document = window.document,
-    trimRe = /^\s+|\s+$/g,
-    whitespaceRe = /\s/;
-
-if (!Ext.cache){
-    Ext.cache = {};
-}
-
 Ext.define('Ext.dom.AbstractElement', {
+    requires: [
+        'Ext.EventManager',
+        'Ext.dom.AbstractElement_static',
+        'Ext.dom.AbstractElement_insertion',
+        'Ext.dom.AbstractElement_style',
+        'Ext.dom.AbstractElement_traversal'
+    ],
 
+    trimRe: /^\s+|\s+$/g,
+    whitespaceRe: /\s/,
+    
     inheritableStatics: {
+        trimRe: /^\s+|\s+$/g,
+        whitespaceRe: /\s/,
 
         /**
          * Retrieves Ext.dom.Element objects. {@link Ext#get} is alias for {@link Ext.dom.Element#get}.
@@ -39,14 +36,21 @@ Ext.define('Ext.dom.AbstractElement', {
          */
         get: function(el) {
             var me = this,
+                document = window.document,
                 El = Ext.dom.Element,
                 cacheItem,
+                docEl,
                 extEl,
                 dom,
                 id;
 
             if (!el) {
                 return null;
+            }
+
+            // Ext.get(flyweight) must return an Element instance, not the flyweight
+            if (el.isFly) {
+                el = el.dom;
             }
 
             if (typeof el == "string") { // element id
@@ -107,10 +111,14 @@ Ext.define('Ext.dom.AbstractElement', {
             } else if (el === document) {
                 // create a bogus element object representing the document object
                 if (!me.docEl) {
-                    me.docEl = Ext.Object.chain(El.prototype);
-                    me.docEl.dom = document;
-                    me.docEl.id = Ext.id(document);
-                    me.addToCache(me.docEl);
+                    docEl = me.docEl = Ext.Object.chain(El.prototype);
+                    docEl.dom = document;
+                    // set an "el" property on the element that references itself.
+                    // This allows Ext.util.Positionable methods to operate on
+                    // this.el.dom since it gets mixed into both Element and Component
+                    docEl.el = docEl;
+                    docEl.id = Ext.id(document);
+                    me.addToCache(docEl);
                 }
                 return me.docEl;
             } else if (el === window) {
@@ -152,7 +160,9 @@ myElement.dom.className = Ext.core.Element.mergeClsList(this.initialClasses, 'x-
         mergeClsList: function() {
             var clsList, clsHash = {},
                 i, length, j, listLength, clsName, result = [],
-                changed = false;
+                changed = false,
+                trimRe = this.trimRe,
+                whitespaceRe = this.whitespaceRe;
 
             for (i = 0, length = arguments.length; i < length; i++) {
                 clsList = arguments[i];
@@ -195,11 +205,12 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         removeCls: function(existingClsList, removeClsList) {
             var clsHash = {},
                 i, length, clsName, result = [],
-                changed = false;
+                changed = false,
+                whitespaceRe = this.whitespaceRe;
 
             if (existingClsList) {
                 if (Ext.isString(existingClsList)) {
-                    existingClsList = existingClsList.replace(trimRe, '').split(whitespaceRe);
+                    existingClsList = existingClsList.replace(this.trimRe, '').split(whitespaceRe);
                 }
                 for (i = 0, length = existingClsList.length; i < length; i++) {
                     clsHash[existingClsList[i]] = true;
@@ -225,7 +236,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         },
 
         /**
-         * @property
+         * @property {Number}
          * Visibility mode constant for use with {@link Ext.dom.Element#setVisibilityMode}. 
          * Use the CSS 'visibility' property to hide the element.
          *
@@ -238,7 +249,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         VISIBILITY: 1,
 
         /**
-         * @property
+         * @property {Number}
          * Visibility mode constant for use with {@link Ext.dom.Element#setVisibilityMode}. 
          * Use the CSS 'display' property to hide the element.
          * @static
@@ -247,7 +258,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         DISPLAY: 2,
 
         /**
-         * @property
+         * @property {Number}
          * Visibility mode constant for use with {@link Ext.dom.Element#setVisibilityMode}. 
          * Use CSS absolute positioning and top/left offsets to hide the element.
          * @static
@@ -256,7 +267,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         OFFSETS: 3,
 
         /**
-         * @property
+         * @property {Number}
          * Visibility mode constant for use with {@link Ext.dom.Element#setVisibilityMode}. 
          * Add or remove the {@link Ext.Layer#visibilityCls} class to hide the element.
          * @static
@@ -271,6 +282,11 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
                 ? document.getElementById(element)
                 : element,
             id;
+
+        // set an "el" property that references "this".  This allows
+        // Ext.util.Positionable methods to operate on this.el.dom since it
+        // gets mixed into both Element and Component
+        me.el = me;
 
         if (!dom) {
             return null;
@@ -363,7 +379,11 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
      */
     remove: function() {
         var me = this,
-        dom = me.dom;
+            dom = me.dom;
+            
+        if (me.isAnimate) {
+            me.stopAnimation();
+        }
 
         if (dom) {
             Ext.removeNode(dom);
@@ -512,14 +532,14 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
             id = me.dom.id || Ext.id(me.dom);
 
         // Note that we do not assign an ID to the calling object here.
-        // An Ext.dom.Element will have one assigned at construction, and an Ext.dom.AbstractElement.Fly must not have one.
+        // An Ext.dom.Element will have one assigned at construction, and an Ext.dom.Element.Fly must not have one.
         // We assign an ID to the DOM element if it does not have one.
         me.$cache = Ext.cache[id] || Ext.addCacheEntry(id, null, me.dom);
             
         return me.$cache;
     }
-    
-}, function() {
+},
+function() {
     var AbstractElement = this;
 
     /**
@@ -564,8 +584,9 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
 
     this.addStatics({
         /**
-         * @class Ext.dom.AbstractElement.Fly
-         * @extends Ext.dom.AbstractElement
+         * @class Ext.dom.Element.Fly
+         * @alternateClassName Ext.dom.AbstractElement.Fly
+         * @extends Ext.dom.Element
          *
          * A non-persistent wrapper for a DOM element which may be used to execute methods of {@link Ext.dom.Element}
          * upon a DOM element without creating an instance of {@link Ext.dom.Element}.
@@ -577,6 +598,10 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
          * may themselves make use of {@link Ext#fly} and may change the DOM element to which the instance refers.
          */
         Fly: new Ext.Class({
+            // Although here the class is extending from AbstractElement,
+            // the class will be overwritten by Element definition with
+            // a class extending from Element instead.
+            // Therefore above we document it as extending Ext.Element.
             extend: AbstractElement,
 
             /**
@@ -587,6 +612,10 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
 
             constructor: function(dom) {
                 this.dom = dom;
+                // set an "el" property that references "this".  This allows
+                // Ext.util.Positionable methods to operate on this.el.dom since it
+                // gets mixed into both Element and Component
+                this.el = this;
             },
 
             /**
@@ -609,7 +638,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         _flyweights: {},
 
         /**
-         * Gets the singleton {@link Ext.dom.AbstractElement.Fly flyweight} element, with the passed node as the active element.
+         * Gets the singleton {@link Ext.dom.Element.Fly flyweight} element, with the passed node as the active element.
          * 
          * Because it is a singleton, this Flyweight does not have an ID, and must be used and discarded in a single line.
          * You may not keep and use the reference to this singleton over multiple lines because methods that you call
@@ -625,7 +654,7 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
          * @param {String/HTMLElement} dom The dom node or id
          * @param {String} [named] Allows for creation of named reusable flyweights to prevent conflicts (e.g.
          * internally Ext uses "_global")
-         * @return {Ext.dom.AbstractElement.Fly} The singleton flyweight object (or null if no matching element was found)
+         * @return {Ext.dom.Element.Fly} The singleton flyweight object (or null if no matching element was found)
          * @static
          * @member Ext.dom.AbstractElement
          */
@@ -693,5 +722,3 @@ myElement.dom.className = Ext.core.Element.removeCls(this.initialClasses, 'x-inv
         }
     }(this.prototype));
 });
-
-}());

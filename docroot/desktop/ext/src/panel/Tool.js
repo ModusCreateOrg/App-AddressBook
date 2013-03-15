@@ -37,6 +37,12 @@ Ext.define('Ext.panel.Tool', {
     requires: ['Ext.tip.QuickTipManager'],
     alias: 'widget.tool',
 
+    /**
+     * @property {Boolean} isTool
+     * `true` in this class to identify an object as an instantiated Tool, or subclass thereof.
+     */
+    isTool: true,
+
     baseCls: Ext.baseCSSPrefix + 'tool',
     disabledCls: Ext.baseCSSPrefix + 'tool-disabled',
     
@@ -58,7 +64,8 @@ Ext.define('Ext.panel.Tool', {
     ],
 
     renderTpl: [
-        '<img id="{id}-toolEl" src="{blank}" class="{baseCls}-{type}" role="presentation"/>'
+        '<img id="{id}-toolEl" src="{blank}" class="{baseCls}-{type}',
+            '<tpl if="childElCls"> {childElCls}</tpl>" role="presentation"/>'
     ],
 
     /**
@@ -122,9 +129,10 @@ Ext.define('Ext.panel.Tool', {
      * Specify as false to allow click event to propagate.
      */
     stopEvent: true,
-    
-    height: 15,
-    width: 15,
+
+    // Tool size is fixed so that Box layout can avoid measurements.
+    height: 16,
+    width: 16,
 
     //<debug>
     _toolTypes: {
@@ -202,7 +210,7 @@ Ext.define('Ext.panel.Tool', {
 
         me.callParent(arguments);
         if (me.tooltip) {
-            if (Ext.isObject(me.tooltip)) {
+            if (Ext.quickTipsActive && Ext.isObject(me.tooltip)) {
                 Ext.tip.QuickTipManager.register(Ext.apply({
                     target: me.id
                 }, me.tooltip));
@@ -234,28 +242,17 @@ Ext.define('Ext.panel.Tool', {
     },
 
     /**
-     * Binds this tool to a component.
-     * @private
-     * @param {Ext.Component} component The component
-     */
-    bindTo: function(component) {
-        this.owner = component;
-    },
-
-    /**
      * Called when the tool element is clicked
      * @private
      * @param {Ext.EventObject} e
      * @param {HTMLElement} target The target element
      */
     onClick: function(e, target) {
-        var me = this,
-            owner;
+        var me = this;
 
         if (me.disabled) {
             return false;
         }
-        owner = me.owner || me.ownerCt;
 
         //remove the pressed + over class
         me.el.removeCls(me.toolPressedCls);
@@ -265,14 +262,14 @@ Ext.define('Ext.panel.Tool', {
             e.stopEvent();
         }
 
-        Ext.callback(me.handler, me.scope || me, [e, target, owner, me]);
+        Ext.callback(me.handler, me.scope || me, [e, target, me.ownerCt, me]);
         me.fireEvent('click', me, e);
         return true;
     },
 
     // inherit docs
     onDestroy: function(){
-        if (Ext.isObject(this.tooltip)) {
+        if (Ext.quickTipsActive && Ext.isObject(this.tooltip)) {
             Ext.tip.QuickTipManager.unregister(this.id);
         }
         this.callParent();

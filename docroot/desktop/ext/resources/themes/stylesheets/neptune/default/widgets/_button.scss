@@ -742,7 +742,7 @@
 
         .#{$prefix}btn-inner {
             @if $color-disabled != $color {
-                color: $color !important;
+                color: $color-disabled !important;
             }
             @if $font-weight-disabled != $font-weight {
                 font-weight: $font-weight-disabled;

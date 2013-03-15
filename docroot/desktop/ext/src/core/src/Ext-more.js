@@ -55,6 +55,15 @@ Ext.apply(Ext, {
      */
     enableListenerCollection: true,
 
+    /**
+     * @property {Object} rootHierarchyState the top level hierarchy state to which
+     * all other hierarchy states are chained.  If there is a viewport instance,
+     * this object becomes the viewport's heirarchyState. See also
+     * {@link Ext.AbstractComponent#getHierarchyState}
+     * @private
+     */
+    rootHierarchyState: {},
+
     addCacheEntry: function(id, el, dom) {
         dom = dom || el.dom;
 
@@ -65,8 +74,9 @@ Ext.apply(Ext, {
         }
         //</debug>
 
-        var key = id || (el && el.id) || dom.id,
-            entry = Ext.cache[key] || (Ext.cache[key] = {
+        var cache = Ext.cache,
+            key = id || (el && el.id) || dom.id,
+            entry = cache[key] || (cache[key] = {
                 data: {},
                 events: {},
 
@@ -85,7 +95,7 @@ Ext.apply(Ext, {
 
         return entry;
     },
-    
+
     updateCacheEntry: function(cacheItem, dom){
         cacheItem.dom = dom;
         if (cacheItem.el) {
@@ -173,18 +183,6 @@ Ext.apply(Ext, {
             return doc || (doc = Ext.get(document));
         };
     }()),
-
-    /**
-     * This is shorthand reference to {@link Ext.ComponentManager#get}.
-     * Looks up an existing {@link Ext.Component Component} by {@link Ext.Component#id id}
-     *
-     * @param {String} id The component {@link Ext.Component#id id}
-     * @return Ext.Component The Component, `undefined` if not found, or `null` if a
-     * Class was found.
-    */
-    getCmp: function(id) {
-        return Ext.ComponentManager.get(id);
-    },
 
     /**
      * Returns the current orientation of the mobile device
@@ -295,7 +293,8 @@ FF 5.0      - Mozilla/5.0 (Windows NT 6.1; WOW64; rv:5.0) Gecko/20100101 Firefox
 IE6         - Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1;)
 IE7         - Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; SV1;)
 IE8         - Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)
-IE9         - Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)
+IE9         - Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; WOW64; Trident/5.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E)]
+IE10        - Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; Media Center PC 6.0; .NET4.0C; .NET4.0E; MS-RTC LM 8)
 
 Chrome 11   - Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.60 Safari/534.24
 
@@ -323,9 +322,10 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
         isSafari5_0 = isSafari && check(/version\/5\.0/),
         isSafari5 = isSafari && check(/version\/5/),
         isIE = !isOpera && check(/msie/),
-        isIE7 = isIE && ((check(/msie 7/) && docMode != 8 && docMode != 9) || docMode == 7),
-        isIE8 = isIE && ((check(/msie 8/) && docMode != 7 && docMode != 9) || docMode == 8),
-        isIE9 = isIE && ((check(/msie 9/) && docMode != 7 && docMode != 8) || docMode == 9),
+        isIE7 = isIE && ((check(/msie 7/) && docMode != 8 && docMode != 9 && docMode != 10) || docMode == 7),
+        isIE8 = isIE && ((check(/msie 8/) && docMode != 7 && docMode != 9 && docMode != 10) || docMode == 8),
+        isIE9 = isIE && ((check(/msie 9/) && docMode != 7 && docMode != 8 && docMode != 10) || docMode == 9),
+        isIE10 = isIE && ((check(/msie 10/) && docMode != 7 && docMode != 8 && docMode != 9) || docMode == 10),
         isIE6 = isIE && check(/msie 6/),
         isGecko = !isWebKit && check(/gecko/),
         isGecko3 = isGecko && check(/rv:1\.9/),
@@ -519,7 +519,8 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
     nullLog = function () {};
     nullLog.info = nullLog.warn = nullLog.error = Ext.emptyFn;
 
-    Ext.setVersion('extjs', '4.1.1.1');
+    // also update Version.js
+    Ext.setVersion('extjs', '4.2.0');
     Ext.apply(Ext, {
         /**
          * @property {String} SSL_SECURE_URL
@@ -542,7 +543,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          * load your javascript, in which case it will be handled for you).
          */
         scopeResetCSS : Ext.buildSettings.scopeResetCSS,
-        
+
         /**
          * @property {String} resetCls
          * The css class used to wrap Ext components when the {@link #scopeResetCSS} option
@@ -671,7 +672,8 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
 
         isStrict: isStrict,
 
-        isIEQuirks: isIE && !isStrict,
+        // IE10 quirks behaves like Gecko/WebKit quirks, so don't include it here
+        isIEQuirks: isIE && (!isStrict && (isIE6 || isIE7 || isIE8 || isIE9)),
 
         /**
          * True if the detected browser is Opera.
@@ -753,16 +755,70 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
         isIE7 : isIE7,
 
         /**
+         * True if the detected browser is Internet Explorer 7.x or lower.
+         * @type Boolean
+         */
+        isIE7m : isIE6 || isIE7,
+
+        /**
+         * True if the detected browser is Internet Explorer 7.x or higher.
+         * @type Boolean
+         */
+        isIE7p : isIE && !isIE6,
+
+        /**
          * True if the detected browser is Internet Explorer 8.x.
          * @type Boolean
          */
         isIE8 : isIE8,
 
         /**
+         * True if the detected browser is Internet Explorer 8.x or lower.
+         * @type Boolean
+         */
+        isIE8m : isIE6 || isIE7 || isIE8,
+
+        /**
+         * True if the detected browser is Internet Explorer 8.x or higher.
+         * @type Boolean
+         */
+        isIE8p : isIE && !(isIE6 || isIE7),
+
+        /**
          * True if the detected browser is Internet Explorer 9.x.
          * @type Boolean
          */
         isIE9 : isIE9,
+
+        /**
+         * True if the detected browser is Internet Explorer 9.x or lower.
+         * @type Boolean
+         */
+        isIE9m : isIE6 || isIE7 || isIE8 || isIE9,
+
+        /**
+         * True if the detected browser is Internet Explorer 9.x or higher.
+         * @type Boolean
+         */
+        isIE9p : isIE && !(isIE6 || isIE7 || isIE8),
+        
+        /**  
+         * True if the detected browser is Internet Explorer 10.x.
+         * @type Boolean
+         */
+        isIE10 : isIE10, 
+ 
+        /**
+         * True if the detected browser is Internet Explorer 10.x or lower.
+         * @type Boolean
+         */
+        isIE10m : isIE6 || isIE7 || isIE8 || isIE9 || isIE10,
+ 
+        /**
+         * True if the detected browser is Internet Explorer 10.x or higher.
+         * @type Boolean
+         */
+        isIE10p : isIE && !(isIE6 || isIE7 || isIE8 || isIE9),
 
         /**
          * True if the detected browser uses the Gecko layout engine (e.g. Mozilla, Firefox).
@@ -894,7 +950,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
          * @type Boolean
          */
         isSecure: isSecure,
-        
+
         /**
          * URL to a 1x1 transparent gif image used by Ext to create inline icons with
          * CSS background images. In older versions of IE, this defaults to
@@ -1054,7 +1110,7 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
             }
 
             var n,
-                nLen = names.length,
+                nLen = names? names.length : 0,
                 name;
 
             for(n = 0; n < nLen; n++) {
@@ -1281,16 +1337,36 @@ Opera 11.11 - Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11
 }());
 
 /**
- * Loads Ext.app.Application class and starts it up with given configuration after the page is ready.
+ * Loads Ext.app.Application class and starts it up with given configuration after the
+ * page is ready.
  *
- * See Ext.app.Application for details.
+ * See `Ext.app.Application` for details.
  *
- * @param {Object} config
+ * @param {Object/String} Application config object or name of a class derived from Ext.app.Application.
  */
 Ext.application = function(config) {
-    Ext.require('Ext.app.Application');
+    var App;
+    
+    if (typeof config === "string") {
+        Ext.require(config, function(){
+            App = Ext.ClassManager.get(config);
+        });
+    }
+    else {
+        // Let Ext.define do the hard work but don't assign a class name.
+        //
+        Ext.define(config.name + ".$application", Ext.apply({
+                extend: 'Ext.app.Application' // can be replaced by config!
+            }, config),
+            // call here when the App class gets full defined
+            function () {
+                App = this;
+            });
+    }
 
     Ext.onReady(function() {
-        new Ext.app.Application(config);
+        // this won't be called until App has been created and its requires have been
+        // met...
+        Ext.app.Application.instance = new App();
     });
 };

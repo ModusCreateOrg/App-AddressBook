@@ -518,6 +518,13 @@ Ext.define('Ext.form.field.Date', {
             }
         });
     },
+    
+    onDownArrow: function(e) {
+        this.callParent(arguments);
+        if (this.isExpanded) {
+            this.getPicker().focus();
+        }
+    },
 
     onSelect: function(m, d) {
         var me = this;

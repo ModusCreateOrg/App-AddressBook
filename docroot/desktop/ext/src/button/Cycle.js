@@ -73,7 +73,7 @@ Ext.define('Ext.button.Cycle', {
      * available choices.
      */
 
-    // private
+    // @private
     getButtonText: function(item) {
         var me = this,
             text = '';
@@ -128,7 +128,7 @@ Ext.define('Ext.button.Cycle', {
         return this.activeItem;
     },
 
-    // private
+    // @private
     initComponent: function() {
         var me      = this,
             checked = 0,
@@ -192,7 +192,7 @@ Ext.define('Ext.button.Cycle', {
         }
     },
 
-    // private
+    // @private
     checkHandler: function(item, pressed) {
         if (pressed) {
             this.setActiveItem(item);

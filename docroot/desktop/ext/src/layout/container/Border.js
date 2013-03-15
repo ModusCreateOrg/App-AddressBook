@@ -254,7 +254,7 @@ Ext.define('Ext.layout.container.Border', {
         if (center) {
             target = center.target;
 
-            if (placeholder = target.placeholderFor) {
+            if ((placeholder = target.placeholderFor)) {
                 if (!centerFlex && isVert === placeholder.collapsedVertical()) {
                     // The center region is a placeholder, collapsed in this axis
                     centerFlex = 0;
@@ -305,6 +305,7 @@ Ext.define('Ext.layout.container.Border', {
             item = items[i];
             collapseTarget = me.getSplitterTarget(item);
             if (collapseTarget) {
+                doShow = undefined;
                 hidden = !!item.hidden;
                 if (!collapseTarget.split) {
                     if (collapseTarget.isCollapsingOrExpanding) {
@@ -549,6 +550,47 @@ Ext.define('Ext.layout.container.Border', {
             childContext.setProp('x', childContext.layoutPos.x + childContext.marginInfo.left);
             childContext.setProp('y', childContext.layoutPos.y + childContext.marginInfo.top);
         }
+    },
+
+    getLayoutItems: function() {
+        var owner = this.owner,
+            ownerItems = (owner && owner.items && owner.items.items) || [],
+            length = ownerItems.length,
+            items = [],
+            i = 0,
+            ownerItem, placeholderFor;
+
+        for (; i < length; i++) {
+            ownerItem = ownerItems[i];
+            placeholderFor = ownerItem.placeholderFor;
+            // There are a couple of scenarios where we do NOT want an item to
+            // be included in the layout items:
+            //
+            // 1. If the item is floated. This can happen when a region's header
+            // is clicked to "float" the item, then another region's header or
+            // is clicked quickly before the first floated region has had a
+            // chance to slide out. When this happens, the second click triggers
+            // a layout, the purpose of which is to determine what the size of the 
+            // second region will be after it is floated, so it can be animated
+            // to that size. In this case the existing floated item should not be
+            // included in the layout items because it will not be visible once
+            // it's slideout animation has completed.
+            //
+            // 2. If the item is a placeholder for a panel that is currently
+            // being expanded. Similar to scenario 1, a second layout can be
+            // triggered by another panel being expanded/collapsed/floated before
+            // the first panel has finished it's expand animation. If this is the
+            // case we do not want the placeholder to be included in the layout
+            // items because it will not be once the panel has finished expanding.
+            //
+            // If the component is hidden, we need none of these shenanigans
+            if (ownerItem.hidden || ((!ownerItem.floated || ownerItem.isCollapsingOrExpanding === 2) &&
+                !(placeholderFor && placeholderFor.isCollapsingOrExpanding === 2))) {
+                items.push(ownerItem);
+            } 
+        }
+
+        return items;
     },
 
     getPlaceholder: function (comp) {

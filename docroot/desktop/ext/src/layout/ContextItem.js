@@ -36,6 +36,7 @@ Ext.define('Ext.layout.ContextItem', {
     boxChildren: null,
 
     boxParent: null,
+    isBorderBoxValue: null,
 
     children: [],
 
@@ -59,9 +60,7 @@ Ext.define('Ext.layout.ContextItem', {
 
     ownerCtContext: null,
 
-    remainingChildLayouts: 0,
-    remainingComponentChildLayouts: 0,
-    remainingContainerChildLayouts: 0,
+    remainingChildDimensions: 0,
 
     // the current set of property values:
     props: null,
@@ -245,6 +244,13 @@ Ext.define('Ext.layout.ContextItem', {
 
             me.widthModel = sizeModel.width;
             me.heightModel = sizeModel.height;
+
+            // if we are a container child (not a docked item), and this is a full init,
+            // that means our parent was invalidated, and therefore both our width and our
+            // height are included in remainingChildDimensions
+            if (ownerCtContext && !target.dock) {
+                ownerCtContext.remainingChildDimensions += 2;
+            }
         } else if (oldProps) {
             // these are almost always calculated by the ownerCt (we might need to track
             // this at some point more carefully):
@@ -257,6 +263,15 @@ Ext.define('Ext.layout.ContextItem', {
             }
             if (me.heightModel.calculated) {
                 me.recoverProp('height', oldProps, oldDirty);
+            }
+
+            // if we are a container child (not a docked item) and this is not a full init,
+            // that means our parent was not invalidated, and therefore only the dimensions
+            // that were set last time, and removed from remainingChildDimensions last time,
+            // need to be added back to remainingChildDimensions.
+            if (ownerCtContext && !target.dock) {
+                ownerCtContext.remainingChildDimensions +=
+                    ('width' in oldProps) + ('height' in oldProps);
             }
         }
 
@@ -343,17 +358,14 @@ Ext.define('Ext.layout.ContextItem', {
     /**
      * @private
      */
-    initDone: function (full, componentChildrenDone, containerChildrenDone, containerLayoutDone) {
+    initDone: function (containerChildrenSizeDone, containerLayoutDone) {
         var me = this,
             props = me.props,
             state = me.state;
 
         // These properties are only set when they are true:
-        if (componentChildrenDone) {
-            props.componentChildrenDone = true;
-        }
-        if (containerChildrenDone) {
-            props.containerChildrenDone = true;
+        if (containerChildrenSizeDone) {
+            props.containerChildrenSizeDone = true;
         }
         if (containerLayoutDone) {
             props.containerLayoutDone = true;
@@ -453,6 +465,30 @@ Ext.define('Ext.layout.ContextItem', {
                 me.boxChildren = [ boxChildItem ];
             }
         }
+    },
+
+    /**
+     * Adds x and y values from a props object to a styles object as "left" and "top" values.
+     * Overridden to add the x property as "right" in rtl mode.
+     * @property {Object} styles A styles object for an Element
+     * @property {Object} props A ContextItem props object
+     * @return {Number} count The number of styles that were set.
+     * @private
+     */
+    addPositionStyles: function(styles, props) {
+        var x = props.x,
+            y = props.y,
+            count = 0;
+
+        if (x !== undefined) {
+            styles.left = x + 'px';
+            ++count;
+        }
+        if (y !== undefined) {
+            styles.top = y + 'px';
+            ++count;
+        }
+        return count;
     },
 
     /**
@@ -766,6 +802,13 @@ Ext.define('Ext.layout.ContextItem', {
      * Returns the context item for an owned element. This should only be called on a
      * component's item. The list of child items is used to manage invalidating calculated
      * results.
+     * @param {String/Ext.dom.Element} nameOrEl The element or the name of an owned element
+     * @param {Ext.layout.container.Container/Ext.Component} [owner] The owner of the
+     * named element if the passed "nameOrEl" parameter is a String. Defaults to this
+     * ContextItem's "target" property.  For more details on owned elements see
+     * {@link Ext.Component#childEls childEls} and
+     * {@link Ext.Component#renderSelectors renderSelectors}
+     * @return {Ext.layout.ContextItem}
      */
     getEl: function (nameOrEl, owner) {
         var me = this,
@@ -1206,6 +1249,44 @@ Ext.define('Ext.layout.ContextItem', {
         }
     },
 
+    /**
+     * Removes a cached ContextItem that was created using {@link #getEl}.  It may be
+     * necessary to call this method if the dom reference for owned element changes so 
+     * that {@link #getEl} can be called again to reinitialize the ContextItem with the
+     * new element.
+     * @param {String/Ext.dom.Element} nameOrEl The element or the name of an owned element
+     * @param {Ext.layout.container.Container/Ext.Component} [owner] The owner of the
+     * named element if the passed "nameOrEl" parameter is a String. Defaults to this
+     * ContextItem's "target" property.
+     */
+    removeEl: function(nameOrEl, owner) {
+        var me = this,
+            src, el;
+
+        if (nameOrEl) {
+            if (nameOrEl.dom) {
+                el = nameOrEl;
+            } else {
+                src = me.target;
+                if (owner) {
+                    src = owner;
+                }
+
+                el = src[nameOrEl];
+                if (typeof el == 'function') { // ex 'getTarget'
+                    el = el.call(src);
+                    if (el === me.el) {
+                        return this; // comp.getTarget() often returns comp.el
+                    }
+                }
+            }
+
+            if (el) {
+                me.context.removeEl(me, el);
+            }
+        }
+    },
+
     revertProps: function (props) {
         var name,
             flushed = this.flushedProps,
@@ -1343,7 +1424,7 @@ Ext.define('Ext.layout.ContextItem', {
 
                 if (propName == 'width' || propName == 'height') {
                     borderBox = me.isBorderBoxValue;
-                    if (borderBox == null) {
+                    if (borderBox === null) {
                         me.isBorderBoxValue = borderBox = !!me.el.isBorderBox();
                     }
 
@@ -1374,7 +1455,8 @@ Ext.define('Ext.layout.ContextItem', {
     setHeight: function (height, dirty /*, private {Boolean} force */) {
         var me = this,
             comp = me.target,
-            frameBody, frameInfo, padding;
+            ownerCtContext = me.ownerCtContext,
+            frameBody, frameInfo, oldHeight;
 
         if (height < 0) {
             height = 0;
@@ -1385,8 +1467,20 @@ Ext.define('Ext.layout.ContextItem', {
             }
         } else {
             height = Ext.Number.constrain(height, comp.minHeight || 0, comp.maxHeight);
+            oldHeight = me.props.height;
             if (!me.setProp('height', height, dirty)) {
                 return NaN;
+            }
+        
+            // if we are a container child (not a docked item), since the height is now
+            // known we can decrement the number of remainingChildDimensions that the 
+            // ownerCtContext is waiting on.
+            if (ownerCtContext && !comp.dock && (height !== oldHeight) &&
+                (! --ownerCtContext.remainingChildDimensions)) {
+                // if there are 0 remainingChildDimensions set containerChildrenSizeDone
+                // on the ownerCtContext to indicate that all of its children's dimensions
+                // are known
+                ownerCtContext.setProp('containerChildrenSizeDone', true);
             }
 
             frameBody = me.frameBodyContext;
@@ -1410,7 +1504,8 @@ Ext.define('Ext.layout.ContextItem', {
     setWidth: function (width, dirty /*, private {Boolean} force */) {
         var me = this,
             comp = me.target,
-            frameBody, frameInfo, padding;
+            ownerCtContext = me.ownerCtContext,
+            frameBody, frameInfo, oldWidth;
 
         if (width < 0) {
             width = 0;
@@ -1421,8 +1516,20 @@ Ext.define('Ext.layout.ContextItem', {
             }
         } else {
             width = Ext.Number.constrain(width, comp.minWidth || 0, comp.maxWidth);
+            oldWidth = me.props.width
             if (!me.setProp('width', width, dirty)) {
                 return NaN;
+            }
+
+            // if we are a container child (not a docked item), since the width is now
+            // known we can decrement the number of remainingChildDimensions that the 
+            // ownerCtContext is waiting on.
+            if (ownerCtContext && !comp.dock && (width !== oldWidth) &&
+                (! --ownerCtContext.remainingChildDimensions)) {
+                // if there are 0 remainingChildDimensions set containerChildrenSizeDone
+                // on the ownerCtContext to indicate that all of its children's dimensions
+                // are known
+                ownerCtContext.setProp('containerChildrenSizeDone', true);
             }
 
             //if ((frameBody = me.target.frameBody) && (frameBody = me.getEl(frameBody))){
@@ -1499,12 +1606,6 @@ Ext.define('Ext.layout.ContextItem', {
             info,
             propName,
             numericValue,
-            
-            dirtyX = 'x' in dirtyProps,
-            dirtyY = 'y' in dirtyProps,
-            x = dirtyProps.x,
-            y = dirtyProps.y,
-            
             width = dirtyProps.width,
             height = dirtyProps.height,
             isBorderBox = me.isBorderBoxValue,
@@ -1542,20 +1643,12 @@ Ext.define('Ext.layout.ContextItem', {
         }
 
         // convert x/y into setPosition (for a component) or left/top styles (for an el)
-        if (dirtyX || dirtyY) {
+        if ('x' in dirtyProps || 'y' in dirtyProps) {
             if (target.isComponent) {
-                // Ensure we always pass the current coordinate in if one coordinate has not been dirtied by a calculation cycle.
-                target.setPosition(x||me.props.x, y||me.props.y);
+                target.setPosition(dirtyProps.x, dirtyProps.y);
             } else {
                 // we wrap an element, so convert x/y to styles:
-                if (dirtyX) {
-                    styles.left = x + 'px';
-                    ++styleCount;
-                }
-                if (dirtyY) {
-                    styles.top = y + 'px';
-                    ++styleCount;
-                }
+                styleCount += me.addPositionStyles(styles, dirtyProps);
             }
         }
 
@@ -1648,9 +1741,7 @@ Ext.define('Ext.layout.ContextItem', {
     // decoding values read by getStyle and preparing values to pass to setStyle.
     //
     this.prototype.styleInfo = {
-        childrenDone:           faux,
-        componentChildrenDone:  faux,
-        containerChildrenDone:  faux,
+        containerChildrenSizeDone:  faux,
         containerLayoutDone:    faux,
         displayed:              faux,
         done:                   faux,

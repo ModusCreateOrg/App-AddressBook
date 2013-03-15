@@ -99,7 +99,7 @@ Ext.define('Ext.view.DropZone', {
         }
         var view = this.view,
             recordIndex = view.indexOf(record),
-            nodeBefore = view.getNode(recordIndex + offset),
+            nodeBefore = view.getNode(recordIndex + offset, true),
             recordBefore = nodeBefore ? view.getRecord(nodeBefore) : null;
 
         return recordBefore && Ext.Array.contains(records, recordBefore);
@@ -159,8 +159,8 @@ Ext.define('Ext.view.DropZone', {
         var me = this;
 
         me.callParent(arguments);
-        delete me.overRecord;
-        delete me.currentPosition;
+        me.overRecord = me.currentPosition = null
+        me.valid = false;
         if (me.indicator) {
             me.indicator.hide();
         }
@@ -170,17 +170,16 @@ Ext.define('Ext.view.DropZone', {
     onContainerOver : function(dd, e, data) {
         var me = this,
             view = me.view,
-            count = view.store.getCount();
+            count = view.dataSource.getCount();
 
         // There are records, so position after the last one
         if (count) {
-            me.positionIndicator(view.getNode(count - 1), data, e);
+            me.positionIndicator(view.all.last(), data, e);
         }
 
         // No records, position the indicator at the top
         else {
-            delete me.overRecord;
-            delete me.currentPosition;
+            me.overRecord = me.currentPosition = null;
             me.getIndicator().setWidth(Ext.fly(view.el).getWidth()).showAt(0, 0);
             me.valid = true;
         }
@@ -191,7 +190,7 @@ Ext.define('Ext.view.DropZone', {
         return this.onNodeDrop(dd, null, e, data);
     },
 
-    onNodeDrop: function(node, dragZone, e, data) {
+    onNodeDrop: function(targetNode, dragZone, e, data) {
         var me = this,
             dropHandled = false,
  
@@ -206,7 +205,7 @@ Ext.define('Ext.view.DropZone', {
                     me.invalidateDrop();
                     me.handleNodeDrop(data, me.overRecord, me.currentPosition);
                     dropHandled = true;
-                    me.fireViewEvent('drop', node, data, me.overRecord, me.currentPosition);
+                    me.fireViewEvent('drop', targetNode, data, me.overRecord, me.currentPosition);
                 },
  
                 cancelDrop: function() {
@@ -217,7 +216,7 @@ Ext.define('Ext.view.DropZone', {
             performOperation = false;
  
         if (me.valid) {
-            performOperation = me.fireViewEvent('beforedrop', node, data, me.overRecord, me.currentPosition, dropHandlers);
+            performOperation = me.fireViewEvent('beforedrop', targetNode, data, me.overRecord, me.currentPosition, dropHandlers);
             if (dropHandlers.wait) {
                 return;
             }

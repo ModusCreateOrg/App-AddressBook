@@ -125,7 +125,7 @@
                 },
                 preprocessors = [],
                 preprocessor, preprocessorsProperties,
-                i, ln, j, subLn, preprocessorProperty, process;
+                i, ln, j, subLn, preprocessorProperty;
 
             delete data.preprocessors;
 
@@ -161,18 +161,19 @@
             this.doProcess(Class, data, hooks);
         },
         
-        doProcess: function(Class, data, hooks){
+        doProcess: function(Class, data, hooks) {
             var me = this,
-                preprocessor = hooks.preprocessors.shift();
+                preprocessors = hooks.preprocessors,
+                preprocessor = preprocessors.shift(),
+                doProcess = me.doProcess;
 
-            if (!preprocessor) {
-                hooks.onBeforeCreated.apply(me, arguments);
-                return;
+            for ( ; preprocessor ; preprocessor = preprocessors.shift()) {
+                // Returning false signifies an asynchronous preprocessor - it will call doProcess when we can continue
+                if (preprocessor.call(me, Class, data, hooks, doProcess) === false) {
+                    return;
+                }
             }
-
-            if (preprocessor.call(me, Class, data, hooks, me.doProcess) !== false) {
-                me.doProcess(Class, data, hooks);
-            }
+            hooks.onBeforeCreated.apply(me, arguments);
         },
 
         /** @private */
@@ -664,5 +665,4 @@
         return cls;
     };
     //</feature>
-
 }());

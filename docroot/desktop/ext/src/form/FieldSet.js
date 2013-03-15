@@ -30,9 +30,6 @@
  *         width: 550,
  *         renderTo: Ext.getBody(),
  *         layout: 'column', // arrange fieldsets side by side
- *         defaults: {
- *             bodyPadding: 4
- *         },
  *         items: [{
  *             // Fieldset in Column 1 - collapsible via toggle button
  *             xtype:'fieldset',
@@ -69,6 +66,9 @@
  */
 Ext.define('Ext.form.FieldSet', {
     extend: 'Ext.container.Container',
+    mixins: {
+        fieldAncestor: 'Ext.form.FieldAncestor'
+    },
     alias: 'widget.fieldset',
     uses: ['Ext.form.field.Checkbox', 'Ext.panel.Tool', 'Ext.layout.container.Anchor', 'Ext.layout.component.FieldSet'],
 
@@ -125,7 +125,7 @@ Ext.define('Ext.form.FieldSet', {
     baseCls: Ext.baseCSSPrefix + 'fieldset',
 
     /**
-     * @cfg {String} layout
+     * @cfg {Ext.enums.Layout/Object} layout
      * The {@link Ext.container.Container#layout} for the fieldset's immediate child items.
      */
     layout: 'anchor',
@@ -142,7 +142,7 @@ Ext.define('Ext.form.FieldSet', {
 
     renderTpl: [
         '{%this.renderLegend(out,values);%}',
-        '<div id="{id}-body" class="{baseCls}-body">',
+        '<div id="{id}-body" class="{baseCls}-body {bodyTargetCls}"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
             '{%this.renderContainer(out,values);%}',
         '</div>'
     ],
@@ -169,6 +169,18 @@ Ext.define('Ext.form.FieldSet', {
             baseCls = me.baseCls;
 
         me.callParent();
+
+        // Fieldsets cannot support managePadding because the managePadding config causes
+        // the paddding to be added to the innerCt instead of the fieldset element.  The
+        // padding must be on the fieldset element because the horizontal position of the
+        // legend is determined by the fieldset element's padding
+        // 
+        // As a consequence of the inability to support managePadding, manageOverflow
+        // cannot be supported either because the correct overflow cannot be calculated
+        // without managePadding to adjust for cross-browser differences in the way
+        // padding is handled on overflowing elements.
+        // See Ext.layout.container.Auto for more info.
+        me.layout.managePadding = me.layout.manageOverflow = false;
 
         me.addEvents(
 
@@ -214,15 +226,54 @@ Ext.define('Ext.form.FieldSet', {
         }
     },
 
+    initPadding: function(targetEl) {
+        var me = this,
+            Element = Ext.Element,
+            body = me.getProtoBody(),
+            padding = me.padding,
+            bodyPadding;
+
+        if (padding !== undefined) {
+            if (Ext.isIEQuirks || Ext.isIE8m) {
+                // IE8 and below display fieldset top padding outside the border
+                // so we transfer the top padding to the body element.
+                padding = Element.parseBox(padding);
+                bodyPadding = Element.parseBox(0);
+                bodyPadding.top = padding.top;
+                padding.top = 0;
+                body.setStyle('padding', Element.unitizeBox(bodyPadding));
+            }
+
+            targetEl.setStyle('padding', Element.unitizeBox(padding));
+        }
+    },
+
+    getProtoBody: function () {
+        var me = this,
+            body = me.protoBody;
+
+        if (!body) {
+            me.protoBody = body = new Ext.util.ProtoElement({
+                styleProp: 'bodyStyle',
+                styleIsText: true
+            });
+        }
+
+        return body;
+    },
+
     /**
      * Initialized the renderData to be used when rendering the renderTpl.
      * @return {Object} Object with keys and values that are going to be applied to the renderTpl
      * @private
      */
     initRenderData: function() {
-        var data = this.callParent();
+        var me = this,
+            data = me.callParent();
 
-        data.baseCls = this.baseCls;
+        data.bodyTargetCls = me.bodyTargetCls;
+        me.protoBody.writeTo(data);
+        delete me.protoBody;
 
         return data;
     },
@@ -256,6 +307,7 @@ Ext.define('Ext.form.FieldSet', {
                 autoEl: 'legend',
                 items: items,
                 ownerCt: me,
+                shrinkWrap: true,
                 ownerLayout: me.componentLayout
             };
 
@@ -277,7 +329,7 @@ Ext.define('Ext.form.FieldSet', {
      * Creates the legend title component. This is only called internally, but could be overridden in subclasses to
      * customize the title component. If {@link #toggleOnTitleClick} is set to true, a listener for the click event
      * will toggle the collapsed state of the FieldSet.
-     * @return Ext.Component
+     * @return {Ext.Component}
      * @protected
      */
     createTitleCmp: function() {
@@ -291,9 +343,10 @@ Ext.define('Ext.form.FieldSet', {
 
         if (me.collapsible && me.toggleOnTitleClick) {
             cfg.listeners = {
-                el : {
+                click : {
+                    element: 'el',
                     scope : me,
-                    click : me.toggle
+                    fn : me.toggle
                 }
             };
             cfg.cls += ' ' + me.baseCls + '-header-text-collapsible';
@@ -311,7 +364,7 @@ Ext.define('Ext.form.FieldSet', {
     /**
      * Creates the checkbox component. This is only called internally, but could be overridden in subclasses to
      * customize the checkbox's configuration or even return an entirely different component type.
-     * @return Ext.Component
+     * @return {Ext.Component}
      * @protected
      */
     createCheckboxCmp: function() {
@@ -342,13 +395,15 @@ Ext.define('Ext.form.FieldSet', {
     /**
      * Creates the toggle button component. This is only called internally, but could be overridden in subclasses to
      * customize the toggle component.
-     * @return Ext.Component
+     * @return {Ext.Component}
      * @protected
      */
     createToggleCmp: function() {
         var me = this;
         me.toggleCmp = Ext.widget({
             xtype: 'tool',
+            height: 15,
+            width: 15,
             type: 'toggle',
             handler: me.toggle,
             id: me.id + '-legendToggle',
@@ -394,8 +449,8 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * Sets the title of this fieldset
-     * @param {String} title The new title
+     * Sets the title of this fieldset.
+     * @param {String} title The new title.
      * @return {Ext.form.FieldSet} this
      */
     setTitle: function(title) {
@@ -414,11 +469,15 @@ Ext.define('Ext.form.FieldSet', {
         return me;
     },
 
+    applyTargetCls: function(targetCls) {
+        this.bodyTargetCls = targetCls;
+    },
+
     getTargetEl : function() {
         return this.body || this.frameBody || this.el;
     },
 
-    getContentTarget: function() {
+    getDefaultContentTarget: function() {
         return this.body;
     },
 
@@ -439,7 +498,8 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * @private Collapse or expand the fieldset
+     * @private
+     * Collapse or expand the fieldset.
      */
     setExpanded: function(expanded) {
         var me = this,
@@ -485,7 +545,7 @@ Ext.define('Ext.form.FieldSet', {
     },
 
     /**
-     * Toggle the fieldset's collapsed state to the opposite of what it is currently
+     * Toggle the fieldset's collapsed state to the opposite of what it is currently.
      */
     toggle: function() {
         this.setExpanded(!!this.collapsed);
@@ -493,7 +553,7 @@ Ext.define('Ext.form.FieldSet', {
 
     /**
      * @private
-     * Handle changes in the checkbox checked state
+     * Handle changes in the checkbox checked state.
      */
     onCheckChange: function(cmp, checked) {
         this.setExpanded(checked);

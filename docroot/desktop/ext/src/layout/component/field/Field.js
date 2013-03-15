@@ -38,7 +38,7 @@ Ext.define('Ext.layout.component.field.Field', {
 
         // width:100% on an element inside a table in IE6/7 "strict" sizes the content box.
         // store the input element's border and padding info so that subclasses can take it into consideration if needed
-        if ((Ext.isIE6 || Ext.isIE7) && Ext.isStrict && ownerContext.inputContext) {
+        if (Ext.isIE7m && Ext.isStrict && ownerContext.inputContext) {
             me.ieInputWidthAdjustment = ownerContext.inputContext.getPaddingInfo().width + ownerContext.inputContext.getBorderInfo().width;
         }
 
@@ -74,8 +74,12 @@ Ext.define('Ext.layout.component.field.Field', {
 
         owner.el.setStyle('table-layout', 'fixed');
         owner.bodyEl.setStyle('width', width + suffix);
-        if (inputEl && inputWidth) {
-            inputEl.setStyle('width', inputWidth + 'px');
+        if (inputEl) {
+            if (inputWidth) {
+                inputEl.setStyle('width', inputWidth + 'px');
+            } else {
+                inputEl.setStyle('width', owner.stretchInputElFixed ? '100%' : '');
+            }
         }
         ownerContext.isFixed = true;
     },
@@ -89,6 +93,8 @@ Ext.define('Ext.layout.component.field.Field', {
             inputEl.dom.removeAttribute('size');
             if (inputWidth) {
                 inputEl.setStyle('width', inputWidth + 'px');
+            } else {
+                inputEl.setStyle('width', '');
             }
         }
         owner.el.setStyle('table-layout', 'auto');
@@ -315,7 +321,7 @@ Ext.define('Ext.layout.component.field.Field', {
             qtip: applyIf({
                 prepare: function(ownerContext, owner) {
                     Ext.layout.component.field.Field.initTip();
-                    owner.getActionEl().set({'data-errorqtip': owner.getActiveError() || ''});
+                    owner.getActionEl().dom.setAttribute('data-errorqtip', owner.getActiveError() || '');
                 },
                 onFocus: showTip
             }, base),
@@ -325,7 +331,7 @@ Ext.define('Ext.layout.component.field.Field', {
              */
             title: applyIf({
                 prepare: function(ownerContext, owner) {
-                    owner.el.set({'title': owner.getActiveError() || ''});
+                    owner.getActionEl().dom.setAttribute('title', owner.getActiveError() || '');
                 }
             }, base),
 

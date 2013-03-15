@@ -36,35 +36,14 @@ Ext.define('Ext.PluginManager', {
         if (config.init) {
             return config;
         } else {
-            return Ext.createByAlias('plugin.' + (config.ptype || defaultType), config);
+            // Lookup the class from the ptype and instantiate unless its a singleton
+            var result = Ext.ClassManager.getByAlias('plugin.' + (config.ptype || defaultType));
+            if (typeof result === 'function') {
+                result = new result(config);
+            }
+            return result;
         }
-
-        // Prior system supported Singleton plugins.
-        //var PluginCls = this.types[config.ptype || defaultType];
-        //if (PluginCls.init) {
-        //    return PluginCls;
-        //} else {
-        //    return new PluginCls(config);
-        //}
     },
-
-    //create: function(plugin, defaultType) {
-    //    if (plugin instanceof this) {
-    //        return plugin;
-    //    } else {
-    //        var type, config = {};
-    //
-    //        if (Ext.isString(plugin)) {
-    //            type = plugin;
-    //        }
-    //        else {
-    //            type = plugin[this.typeName] || defaultType;
-    //            config = plugin;
-    //        }
-    //
-    //        return Ext.createByAlias('plugin.' + type, config);
-    //    }
-    //},
 
     /**
      * Returns all plugins registered with the given type. Here, 'type' refers to the type of plugin, not its ptype.

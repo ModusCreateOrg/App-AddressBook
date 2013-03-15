@@ -47,11 +47,12 @@ Ext.define('Ext.grid.column.Number', {
     //</locale>
 
     /**
-     * @cfg renderer
+     * @cfg {Object} renderer
      * @hide
      */
+    
     /**
-     * @cfg scope
+     * @cfg {Object} scope
      * @hide
      */
 

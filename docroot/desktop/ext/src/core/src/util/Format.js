@@ -366,7 +366,6 @@
             }
             var comma = UtilFormat.thousandSeparator,
                 dec   = UtilFormat.decimalSeparator,
-                i18n  = false,
                 neg   = v < 0,
                 hasComma,
                 psplit,
@@ -389,7 +388,6 @@
                     I18NFormatCleanRe = new RegExp('[^\\d\\' + UtilFormat.decimalSeparator + ']','g');
                 }
                 formatString = formatString.substr(0, formatString.length - 2);
-                i18n   = true;
                 hasComma = formatString.indexOf(comma) != -1;
                 psplit = formatString.replace(I18NFormatCleanRe, '').split(dec);
             } else {
@@ -465,6 +463,23 @@
             return function(v) {
                 return UtilFormat.number(v, format);
             };
+        },
+
+        /**
+         * Formats an object of name value properties as HTML element attribute values suitable for using when creating textual markup.
+         * @param {Object} attributes An object containing the HTML attributes as properties eg: `{height:40, vAlign:'top'}`
+         */
+        attributes: function(attributes) {
+            if (typeof attributes === 'object') {
+                var result = [],
+                    name;
+
+                for (name in attributes) {
+                    result.push(name, '="', name === 'style' ? Ext.DomHelper.generateStyles(attributes[name]) : Ext.htmlEncode(attributes[name]), '"');
+                }
+                attributes = result.join('');
+            }
+            return attributes||'';
         },
 
         /**
@@ -548,10 +563,17 @@
          * @return {Object} An object with margin sizes for top, right, bottom and left
          */
         parseBox : function(box) {
-          box = Ext.isEmpty(box) ? '' : box;
-            if (Ext.isNumber(box)) {
-                box = box.toString();
-            }
+            box = box || 0;
+
+            if (typeof box === 'number') {
+                return {
+                    top   : box,
+                    right : box,
+                    bottom: box,
+                    left  : box
+                };
+             }
+
             var parts  = box.split(' '),
                 ln = parts.length;
 

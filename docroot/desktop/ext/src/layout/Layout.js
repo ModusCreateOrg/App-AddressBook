@@ -193,7 +193,9 @@ Ext.define('Ext.layout.Layout', {
      * @param {Ext.layout.ContextItem} ownerContext The context item for the layout's owner
      * component.
      */
-    finishedLayout: function () {
+    finishedLayout: function (ownerContext) {
+        this.lastWidthModel = ownerContext.widthModel;
+        this.lastHeightModel = ownerContext.heightModel;
         this.ownerContext = null;
     },
     
@@ -395,22 +397,32 @@ Ext.define('Ext.layout.Layout', {
      */
     isValidParent : function(item, target, position) {
         var itemDom = item.el ? item.el.dom : Ext.getDom(item),
-            targetDom = (target && target.dom) || target;
+            targetDom = (target && target.dom) || target,
+            parentNode = itemDom.parentNode,
+            className;
 
         // If it's resizable+wrapped, the position element is the wrapper.
-        if (itemDom.parentNode && itemDom.parentNode.className.indexOf(Ext.baseCSSPrefix + 'resizable-wrap') !== -1) {
-            itemDom = itemDom.parentNode;
+        if (parentNode) {
+            className = parentNode.className;
+            if (className && className.indexOf(Ext.baseCSSPrefix + 'resizable-wrap') !== -1) {
+                itemDom = itemDom.parentNode;
+            }
         }
 
         // Test DOM nodes for equality using "===" : http://jsperf.com/dom-equality-test
         if (itemDom && targetDom) {
             if (typeof position == 'number') {
+                position = this.getPositionOffset(position);
                 return itemDom === targetDom.childNodes[position];
             }
             return itemDom.parentNode === targetDom;
         }
 
         return false;
+    },
+    
+    getPositionOffset: function(position){
+        return position;
     },
 
     /**

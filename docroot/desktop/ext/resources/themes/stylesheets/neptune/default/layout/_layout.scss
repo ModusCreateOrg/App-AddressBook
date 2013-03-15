@@ -98,10 +98,6 @@ $toolbar-scroll-border-color: #8db2e3 !default;
         overflow: hidden !important;
     }
 
-    .#{$prefix}inline-children > * {
-        display: inline-block !important;
-    }
-
     .#{$prefix}abs-layout-ct {
         position: relative;
     }

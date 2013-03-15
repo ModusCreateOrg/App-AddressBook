@@ -17,9 +17,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.fr_CA.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} ligne(s) sélectionné(s)"
+    Ext.define("Ext.locale.fr_CA.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} ligne(s) sélectionné(s)"
     });
 
     Ext.define("Ext.locale.fr_CA.TabPanelItem", {
@@ -59,6 +59,7 @@ Ext.onReady(function() {
             "Mai": 4,
             "Juin": 5,
             "Juillet": 6,
+            "Juil": 6, 
             "Août": 7,
             "Septembre": 8,
             "Sept": 8,
@@ -142,6 +143,11 @@ Ext.onReady(function() {
         minText: "La valeur minimum de ce champ doit être de {0}",
         maxText: "La valeur maximum de ce champ doit être de {0}",
         nanText: "{0} n'est pas un nombre valide"
+    });
+
+    Ext.define("Ext.locale.fr_CA.form.field.File", { 
+        override: "Ext.form.field.File", 
+        buttonText: "Parcourir..." 
     });
 
     Ext.define("Ext.locale.fr_CA.form.field.Date", {

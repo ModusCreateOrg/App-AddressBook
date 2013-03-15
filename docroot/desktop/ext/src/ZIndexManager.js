@@ -64,7 +64,7 @@ Ext.define('Ext.ZIndexManager', {
         return result;
     },
 
-    // private
+    // @private
     assignZIndices: function() {
         var a = this.zIndexStack,
             len = a.length,
@@ -92,9 +92,11 @@ Ext.define('Ext.ZIndexManager', {
         return zIndex;
     },
 
-    // private
+    // @private
     _setActiveChild: function(comp, oldFront) {
-        var front = this.front;
+        var front = this.front,
+            oldPreventFocus = comp.preventFocusOnActivate;
+
         if (comp !== front) {
 
             if (front && !front.destroying) {
@@ -102,39 +104,50 @@ Ext.define('Ext.ZIndexManager', {
             }
             this.front = comp;
             if (comp && comp != oldFront) {
+
+                // If the previously active comp did not take focus, then do not disturb focus state by focusing the new front
+                comp.preventFocusOnActivate = oldFront && (oldFront.preventFocusOnActivate || !oldFront.focusOnToFront);
+
                 comp.setActive(true);
                 if (comp.modal) {
                     this._showModalMask(comp);
                 }
+
+                // Restore the new front's focusing flag
+                comp.preventFocusOnActivate = oldPreventFocus;
             }
         }
     },
-    
+
     onComponentHide: function(comp){
-        comp.setActive(false);
         this._activateLast();
     },
 
-    // private
+    // @private
     _activateLast: function() {
         var me = this,
             stack = me.zIndexStack,
             i = stack.length - 1,
-            oldFront = me.front,
             comp;
-
-        // There may be no visible floater to activate
-        me.front = undefined;
 
         // Go down through the z-index stack.
         // Activate the next visible one down.
         // If that was modal, then we're done
         for (; i >= 0 && stack[i].hidden; --i);
+
+        // The loop found a visible floater to activate
         if ((comp = stack[i])) {
-            me._setActiveChild(comp, oldFront);
+            me._setActiveChild(comp, me.front);
             if (comp.modal) {
                 return;
             }
+        }
+        // No other floater to activate, just deactivate the current one
+        else {
+            if (me.front && !me.front.destroying) {
+                me.front.setActive(false);
+            }
+            me.front = undefined;
         }
 
         // If the new top one was not modal, keep going down to find the next visible
@@ -159,19 +172,28 @@ Ext.define('Ext.ZIndexManager', {
             maskTarget = comp.floatParent ? comp.floatParent.getTargetEl() : comp.container,
             viewSize = maskTarget.getBox();
 
-        if (maskTarget.dom === document.body) {
-            viewSize.height = Math.max(document.body.scrollHeight, Ext.dom.Element.getDocumentHeight());
-            viewSize.width = Math.max(document.body.scrollWidth, viewSize.width);
-        }
         if (!me.mask) {
+            if (Ext.isIE6) {
+                me.maskShim = Ext.getBody().createChild({
+                    tag: 'iframe',
+                    cls : Ext.baseCSSPrefix + 'shim ' + Ext.baseCSSPrefix + 'mask-shim'
+                });
+                me.maskShim.setVisibilityMode(Ext.Element.DISPLAY);
+            }
+
             me.mask = Ext.getBody().createChild({
                 cls: Ext.baseCSSPrefix + 'mask'
             });
             me.mask.setVisibilityMode(Ext.Element.DISPLAY);
             me.mask.on('click', me._onMaskClick, me);
         }
+
+        if (me.maskShim) {
+            me.maskShim.setStyle('zIndex', zIndex);
+            me.maskShim.show();
+            me.maskShim.setBox(viewSize);
+        }
         me.mask.maskTarget = maskTarget;
-        maskTarget.addCls(Ext.baseCSSPrefix + 'body-masked');
         me.mask.setStyle('zIndex', zIndex);
 
         // setting mask box before showing it in an IE7 strict iframe within a quirks page
@@ -181,11 +203,15 @@ Ext.define('Ext.ZIndexManager', {
     },
 
     _hideModalMask: function() {
-        var mask = this.mask;
+        var mask = this.mask,
+            maskShim = this.maskShim;
+
         if (mask && mask.isVisible()) {
-            mask.maskTarget.removeCls(Ext.baseCSSPrefix + 'body-masked');
             mask.maskTarget = undefined;
             mask.hide();
+            if (maskShim) {
+                maskShim.hide();
+            }
         }
     },
 
@@ -197,6 +223,7 @@ Ext.define('Ext.ZIndexManager', {
 
     _onContainerResize: function() {
         var mask = this.mask,
+            maskShim = this.maskShim,
             maskTarget,
             viewSize;
 
@@ -205,6 +232,9 @@ Ext.define('Ext.ZIndexManager', {
             // At the new container size, the mask might be *causing* the scrollbar, so to find the valid
             // client size to mask, we must temporarily unmask the parent node.
             mask.hide();
+            if (maskShim) {
+                maskShim.hide();
+            }
             maskTarget = mask.maskTarget;
 
             if (maskTarget.dom === document.body) {
@@ -214,6 +244,10 @@ Ext.define('Ext.ZIndexManager', {
                 };
             } else {
                 viewSize = maskTarget.getViewSize(true);
+            }
+            if (maskShim) {
+                maskShim.setSize(viewSize);
+                maskShim.show();
             }
             mask.setSize(viewSize);
             mask.show();
@@ -235,7 +269,8 @@ Ext.define('Ext.ZIndexManager', {
      * @param {Ext.Component} comp The Component to register.
      */
     register : function(comp) {
-        var me = this;
+        var me = this,
+            compAfterHide = comp.afterHide;
         
         if (comp.zIndexManager) {
             comp.zIndexManager.unregister(comp);
@@ -244,7 +279,12 @@ Ext.define('Ext.ZIndexManager', {
 
         me.list[comp.id] = comp;
         me.zIndexStack.push(comp);
-        comp.on('hide', me.onComponentHide, me);
+        
+        // Hook into Component's afterHide processing
+        comp.afterHide = function() {
+            compAfterHide.apply(comp, arguments);
+            me.onComponentHide(comp);
+        };
     },
 
     /**
@@ -260,7 +300,9 @@ Ext.define('Ext.ZIndexManager', {
         delete comp.zIndexManager;
         if (list && list[comp.id]) {
             delete list[comp.id];
-            comp.un('hide', me.onComponentHide);
+            
+            // Relinquish control of Component's afterHide processing
+            delete comp.afterHide;
             Ext.Array.remove(me.zIndexStack, comp);
 
             // Destruction requires that the topmost visible floater be activated. Same as hiding.
@@ -350,25 +392,19 @@ Ext.define('Ext.ZIndexManager', {
      * they should all be hidden just for the duration of the drag.
      */
     hide: function() {
-        var me = this,
-            mask = me.mask,
-            i = 0,
-            stack = me.zIndexStack,
+        var i = 0,
+            stack = this.zIndexStack,
             len = stack.length,
             comp;
 
-        me.tempHidden = me.tempHidden||[];
+        this.tempHidden = [];
         for (; i < len; i++) {
             comp = stack[i];
             if (comp.isVisible()) {
-                me.tempHidden.push(comp);
+                this.tempHidden.push(comp);
                 comp.el.hide();
+                comp.hidden = true;
             }
-        }
-        
-        // Also hide modal mask during hidden state
-        if (mask) {
-            mask.hide();
         }
     },
 
@@ -377,25 +413,18 @@ Ext.define('Ext.ZIndexManager', {
      * Restores temporarily hidden managed Components to visibility.
      */
     show: function() {
-        var me = this,
-            mask = me.mask,
-            i = 0,
-            tempHidden = me.tempHidden,
+        var i = 0,
+            tempHidden = this.tempHidden,
             len = tempHidden ? tempHidden.length : 0,
             comp;
 
         for (; i < len; i++) {
             comp = tempHidden[i];
             comp.el.show();
+            comp.hidden = false;
             comp.setPosition(comp.x, comp.y);
         }
-        me.tempHidden.length = 0;
-
-        // Also restore mask to visibility and ensure it is aligned with its target element
-        if (mask) {
-            mask.show();
-            mask.alignTo(mask.maskTarget, 'tl-tl');
-        }
+        delete this.tempHidden;
     },
 
     /**

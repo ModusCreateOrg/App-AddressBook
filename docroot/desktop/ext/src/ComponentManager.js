@@ -44,4 +44,18 @@ Ext.define('Ext.ComponentManager', {
         cls[this.typeName] = type;
         cls.prototype[this.typeName] = type;
     }
+},
+function () {
+    /**
+     * This is shorthand reference to {@link Ext.ComponentManager#get}.
+     * Looks up an existing {@link Ext.Component Component} by {@link Ext.Component#id id}
+     *
+     * @param {String} id The component {@link Ext.Component#id id}
+     * @return Ext.Component The Component, `undefined` if not found, or `null` if a
+     * Class was found.
+     * @member Ext
+    */
+    Ext.getCmp = function(id) {
+        return Ext.ComponentManager.get(id);
+    };
 });

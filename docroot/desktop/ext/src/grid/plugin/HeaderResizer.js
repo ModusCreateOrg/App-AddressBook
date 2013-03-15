@@ -152,7 +152,6 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
     getConstrainRegion: function() {
         var me       = this,
             dragHdEl = me.dragHd.el,
-            region   = Ext.util.Region.getRegion(dragHdEl),
             nextHd;
 
         // If forceFit, then right constraint is based upon not being able to force the next header
@@ -161,7 +160,8 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
             nextHd = me.dragHd.nextNode('gridcolumn:not([hidden]):not([isGroupHeader])');
         }
 
-         return region.adjust(
+        return me.adjustConstrainRegion(
+            Ext.util.Region.getRegion(dragHdEl),
             0,
             me.headerCt.forceFit ? (nextHd ? nextHd.getWidth() - me.minColWidth : 0) : me.maxColWidth - dragHdEl.getWidth(),
             0,
@@ -178,7 +178,7 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
             width    = dragHdEl.getWidth(),
             headerCt = me.headerCt,
             t        = e.getTarget(),
-            xy, gridSection, dragHct, firstSection, lhsMarker, rhsMarker, el, offsetLeft, offsetTop, topLeft, markerHeight, top;
+            x, y, gridSection, dragHct, firstSection, lhsMarker, rhsMarker, markerHeight;
 
         if (me.dragHd && !Ext.fly(t).hasCls(Ext.baseCSSPrefix + 'column-header-trigger')) {
             headerCt.dragging = true;
@@ -188,39 +188,31 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
 
         // setup marker proxies
         if (!me.dynamic) {
-            xy           = dragHdEl.getXY();
-            gridSection  = headerCt.up('[scrollerOwner]');
+            x            = me.getDragHdX();
+            gridSection  = headerCt.up('tablepanel');
             dragHct      = me.dragHd.up(':not([isGroupHeader])');
             firstSection = dragHct.up();
             lhsMarker    = gridSection.getLhsMarker();
             rhsMarker    = gridSection.getRhsMarker();
-            el           = rhsMarker.parent();
-            offsetLeft   = el.getLocalX();
-            offsetTop    = el.getLocalY();
-            topLeft      = el.translatePoints(xy);
             markerHeight = firstSection.body.getHeight() + headerCt.getHeight();
-            top = topLeft.top - offsetTop;
+            y            = dragHdEl.getY() - gridSection.getY();
 
-            lhsMarker.setTop(top);
-            rhsMarker.setTop(top);
+            x += me.getViewOffset(gridSection);
+
+            lhsMarker.setLocalY(y);
+            rhsMarker.setLocalY(y);
             lhsMarker.setHeight(markerHeight);
             rhsMarker.setHeight(markerHeight);
-            lhsMarker.setLeft(topLeft.left - offsetLeft);
-            rhsMarker.setLeft(topLeft.left + width - offsetLeft);
+            me.setMarkerX(lhsMarker, x);
+            me.setMarkerX(rhsMarker, x + width);
         }
     },
 
     // synchronize the rhsMarker with the mouse movement
     onDrag: function(e){
         if (!this.dynamic) {
-            var xy          = this.tracker.getXY('point'),
-                gridSection = this.headerCt.up('[scrollerOwner]'),
-                rhsMarker   = gridSection.getRhsMarker(),
-                el          = rhsMarker.parent(),
-                topLeft     = el.translatePoints(xy),
-                offsetLeft  = el.getLocalX();
-
-            rhsMarker.setLeft(topLeft.left - offsetLeft);
+            var gridSection = this.headerCt.up('tablepanel');
+            this.setMarkerX(gridSection.getRhsMarker(), this.calculateDragX(gridSection));
         // Resize as user interacts
         } else {
             this.doResize();
@@ -231,15 +223,14 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
         this.headerCt.dragging = false;
         if (this.dragHd) {
             if (!this.dynamic) {
-                var dragHd      = this.dragHd,
-                    gridSection = this.headerCt.up('[scrollerOwner]'),
+                var gridSection = this.headerCt.up('tablepanel'),
                     lhsMarker   = gridSection.getLhsMarker(),
                     rhsMarker   = gridSection.getRhsMarker(),
                     offscreen   = -9999;
 
                 // hide markers
-                lhsMarker.setLeft(offscreen);
-                rhsMarker.setLeft(offscreen);
+                this.setMarkerX(lhsMarker, offscreen);
+                this.setMarkerX(rhsMarker, offscreen);
             }
             this.doResize();
         }
@@ -259,7 +250,7 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
             Ext.suspendLayouts();
 
             // Set the new column width.
-            dragHd.setWidth(this.origWidth + offset[0]);
+            this.adjustColumnWidth(offset[0]);
  
             // In the case of forceFit, change the following Header width.
             // Constraining so that neither neighbour can be sized to below minWidth is handled in getConstrainRegion
@@ -288,5 +279,29 @@ Ext.define('Ext.grid.plugin.HeaderResizer', {
         if (this.tracker) {
             this.tracker.enable();
         }
+    },
+
+    calculateDragX: function(gridSection) {
+        return this.tracker.getXY('point')[0] - gridSection.getX();
+    },
+
+    getDragHdX: function() {
+        return this.dragHd.el.getLocalX();
+    },
+
+    setMarkerX: function(marker, x) {
+        marker.setLocalX(x);
+    },
+
+    adjustConstrainRegion: function(region, t, r, b, l) {
+        return region.adjust(t, r, b, l);
+    },
+
+    adjustColumnWidth: function(offsetX) {
+        this.dragHd.setWidth(this.origWidth + offsetX);
+    },
+    
+    getViewOffset: function(gridSection) {
+        return gridSection.view.getX() - gridSection.getX() - gridSection.el.getBorderWidth('l');
     }
 });

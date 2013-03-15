@@ -22,6 +22,8 @@ Ext.define('Ext.direct.Provider', {
     mixins: {
         observable: 'Ext.util.Observable'
     },
+    
+    isProvider: true,
 
     /* End Definitions */
 

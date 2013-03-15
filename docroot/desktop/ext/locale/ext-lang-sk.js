@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.sk.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} označených riadkov"
+    Ext.define("Ext.locale.sk.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} označených riadkov"
     });
 
     Ext.define("Ext.locale.sk.TabPanelItem", {

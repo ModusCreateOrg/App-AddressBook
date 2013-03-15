@@ -1,3 +1,4 @@
+//@require Ext.CompositeElement
 /**
  * @private
  */

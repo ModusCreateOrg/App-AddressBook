@@ -80,21 +80,46 @@ Ext.define('Ext.chart.axis.Category', {
     /* End Definitions */
 
     /**
+     * @cfg {String} categoryNames
      * A list of category names to display along this axis.
-     * @property {String} categoryNames
      */
     categoryNames: null,
 
     /**
+     * @cfg {Boolean} calculateCategoryCount
      * Indicates whether or not to calculate the number of categories (ticks and
      * labels) when there is not enough room to display all labels on the axis.
      * If set to true, the axis will determine the number of categories to plot.
      * If not, all categories will be plotted.
-     *
-     * @property calculateCategoryCount
-     * @type Boolean
      */
     calculateCategoryCount: false,
+
+    // @private constrains to datapoints between minimum and maximum only
+    doConstrain: function() {
+        var me = this,
+            chart = me.chart,
+            store = chart.getChartStore(),
+            items = store.data.items,
+            series = chart.series.items,
+            seriesLength = series.length,
+            data = [], i
+
+        for (i = 0; i < seriesLength; i++) {
+            if (series[i].type === 'bar' && series[i].stacked) {
+                // Do not constrain stacked bar chart.
+                return;
+            }
+        }
+
+        for (i = me.minimum; i < me.maximum; i++) {
+            data.push(items[i]);
+        }
+        
+        chart.setSubStore(new Ext.data.Store({
+            model: store.model,
+            data: data
+        }));
+    },
 
     // @private creates an array of labels to be used when rendering.
     setLabels: function() {
@@ -103,13 +128,21 @@ Ext.define('Ext.chart.axis.Category', {
             d, dLen, record,
             fields = this.fields,
             ln = fields.length,
+            labels,
+            name,
             i;
 
-        this.labels = [];
+        labels = this.labels = [];
         for (d = 0, dLen = data.length; d < dLen; d++) {
             record = data[d];
             for (i = 0; i < ln; i++) {
-                this.labels.push(record.get(fields[i]));
+                name = record.get(fields[i]);
+                //<debug>
+                if (Ext.Array.indexOf(labels, name) > -1) {
+                    Ext.log.warn('Duplicate category in axis, ' + name);
+                }
+                //</debug>
+                labels.push(name);
             }
         }
     },

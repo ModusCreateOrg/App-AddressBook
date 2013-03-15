@@ -38,7 +38,7 @@
         padding: $panel-header-padding;
     }
     .#{$prefix}panel-header-vertical {
-        padding: $panel-header-vertical-padding;
+        padding: rotate90($panel-header-padding);
     }
 
     .#{$prefix}panel-header-icon,
@@ -48,13 +48,31 @@
         background-repeat:no-repeat;
         background-position:0 0;
         vertical-align:middle;
-        margin-right:4px;
+        margin: $panel-header-icon-margin;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl {
+            &.#{$prefix}panel-header-icon,
+            &.#{$prefix}window-header-icon {
+                margin: rtl($panel-header-icon-margin);
+            }
+        }
     }
 
     .#{$prefix}vertical {
         .#{$prefix}panel-header-icon,
         .#{$prefix}window-header-icon {
-            margin: 0 0 4px;
+            margin: rotate90($panel-header-icon-margin);
+        }
+
+        @if $include-rtl {
+            .#{$prefix}rtl {
+                &.#{$prefix}panel-header-icon,
+                &.#{$prefix}window-header-icon {
+                    margin: rtl(rotate90($panel-header-icon-margin));
+                }
+            }
         }
     }
 
@@ -84,14 +102,126 @@
         }
     }
 
-    .#{$prefix}panel-header-text-container {
+    .#{$prefix}panel-header-horizontal,
+    .#{$prefix}window-header-horizontal {
+        .#{$prefix}tool {
+            margin: $panel-tool-margin;
+            padding: $panel-tool-padding;
+        }
+
+        @if $include-rtl {
+            .#{$prefix}rtl.#{$prefix}tool {
+                padding: rtl($panel-tool-padding);
+                margin: rtl($panel-tool-margin);
+            }
+        }
+    }
+
+    .#{$prefix}panel-header-vertical,
+    .#{$prefix}window-header-vertical {
+        .#{$prefix}tool {
+            margin: rotate90($panel-tool-margin);
+            padding: rotate90($panel-tool-padding);
+        }
+
+        @if $include-rtl {
+            .#{$prefix}rtl.#{$prefix}tool {
+                margin: rtl(rotate90($panel-tool-margin));
+                padding: rtl(rotate90($panel-tool-padding));
+            }
+        }
+    }
+
+    .#{$prefix}panel-header-vertical,
+    .#{$prefix}window-header-vertical {
+        // this assumes that there will only ever be one tool that shows at the top of a vertical header (the collapse tool)
+        // we should revisit this if it is decided that we want to support multiple tools at the top
+        .#{$prefix}tool-top {
+            margin: $panel-tool-top-margin;
+        }
+
+        @if $include-rtl {
+            .#{$prefix}rtl.#{$prefix}tool-top {
+                margin: rtl($panel-tool-top-margin);
+            }
+        }
+    }
+
+    .#{$prefix}panel-header-text-container,
+    .#{$prefix}window-header-text-container {
         overflow: hidden;
         -o-text-overflow: ellipsis;
         text-overflow: ellipsis;
+        padding: $panel-header-text-padding;
     }
 
-    .#{$prefix}panel-header-text {
-        @include no-select;
+    @if $include-rtl {
+        .#{$prefix}rtl {
+            &.#{$prefix}panel-header-text-container,
+            &.#{$prefix}window-header-text-container {
+                -o-text-overflow: clip;
+                text-overflow: clip;
+            }
+        }
+    }
+
+    .#{$prefix}panel-header-vertical .#{$prefix}panel-header-text-container,
+    .#{$prefix}window-header-vertical .#{$prefix}window-header-text-container {
+        -webkit-transform: rotate(90deg); 
+        -webkit-transform-origin: 0 0;
+        -moz-transform: rotate(90deg);	
+        -moz-transform-origin: 0 0;
+        -o-transform: rotate(90deg);	
+        -o-transform-origin: 0 0;
+        transform: rotate(90deg);
+        transform-origin: 0 0;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}panel-header-vertical .#{$prefix}rtl.#{$prefix}panel-header-text-container,
+        .#{$prefix}window-header-vertical .#{$prefix}rtl.#{$prefix}window-header-text-container {
+            -webkit-transform: rotate(270deg); 
+            -webkit-transform-origin: 100% 0;
+            -moz-transform: rotate(270deg);	
+            -moz-transform-origin: 100% 0;
+            -o-transform: rotate(270deg);	
+            -o-transform-origin: 100% 0;
+            transform: rotate(270deg);
+            transform-origin: 100% 0;
+        }
+    }
+
+    // In IE9 and below we have to use a BasicImage filter to achieve 90 or 270 degree
+    // rotation of the text container. Text rotated using this methodology does
+    // not display using ClearType font unless the element has a background. To
+    // work around this, we apply a background color to the text container element
+    // and then use a Chroma filter to display all pixels of that color as transparent. 
+    .#{$prefix}ie9m {
+        .#{$prefix}panel-header-vertical .#{$prefix}panel-header-text-container {
+            background: $panel-header-background-color;
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1),
+                    progid:DXImageTransform.Microsoft.Chroma(color='#{$panel-header-background-color}');
+        }
+        .#{$prefix}window-header-vertical .#{$prefix}window-header-text-container {
+            background: $window-background-color;
+            filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1),
+                    progid:DXImageTransform.Microsoft.Chroma(color='#{$window-background-color}');
+        }
+
+        @if $include-rtl {
+            .#{$prefix}panel-header-vertical .#{$prefix}rtl.#{$prefix}panel-header-text-container {
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3),
+                        progid:DXImageTransform.Microsoft.Chroma(color='#{$panel-header-background-color}');
+            }
+            .#{$prefix}window-header-vertical .#{$prefix}rtl.#{$prefix}window-header-text-container {
+                filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3),
+                        progid:DXImageTransform.Microsoft.Chroma(color='#{$window-background-color}');
+            }
+        }
+    }
+
+    .#{$prefix}panel-header-text,
+    .#{$prefix}window-header-text {
         white-space: nowrap;
     }
 
@@ -110,21 +240,6 @@
         font-size: $panel-body-font-size;
     }
 
-    .#{$prefix}panel-header-vertical {
-        .#{$prefix}surface {
-            padding-left: 1px;
-        }
-    }
-
-    .#{$prefix}opera,
-    .#{$prefix}strict .#{$prefix}ie9 {
-        .#{$prefix}panel-header-vertical {
-            .#{$prefix}surface {
-                padding-left: 2px;
-            }
-        }
-    }
-
     .#{$prefix}panel-collapsed {
         .#{$prefix}panel-header-collapsed-border-top {
             border-bottom-width: $panel-header-border-width !important;
@@ -137,6 +252,17 @@
         }
         .#{$prefix}panel-header-collapsed-border-left {
             border-right-width: $panel-header-border-width !important;
+        }
+
+        @if $include-rtl {
+            .#{$prefix}rtl {
+                &.#{$prefix}panel-header-collapsed-border-right {
+                    border-right-width: $panel-header-border-width !important;
+                }
+                &.#{$prefix}panel-header-collapsed-border-left {
+                    border-left-width: $panel-header-border-width !important;
+                }
+            }
         }
     }
 
@@ -271,31 +397,61 @@
         }
     }
 
+    @if $ui-base-color != null {
+        @if $supports-gradients or $compile-all {
+            .#{$prefix}panel-header-#{$ui-label}-left,
+            .#{$prefix}panel-header-#{$ui-label}-right {
+                @include background-gradient($ui-header-background-color, $ui-header-background-gradient, right);
+            }
+            @if $include-rtl {
+                .#{$prefix}rtl {
+                    &.#{$prefix}panel-header-#{$ui-label}-left,
+                    &.#{$prefix}panel-header-#{$ui-label}-right {
+                        @include background-gradient($ui-header-background-color, $ui-header-background-gradient, left);
+                    }
+                }
+            }
+        }
+    }
+
     // header background images
     @if $ui-header-background-color != null and $ui-header-background-gradient != null {
         @if not $supports-gradients or $compile-all {
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-top {
-                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-top-bg.gif');
-            }
+            .#{$prefix}nlg {
+                .#{$prefix}panel-header-#{$ui-label}-top {
+                    background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-top-bg.gif');
+                }
 
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-bottom {
-                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-bottom-bg.gif');
-            }
+                .#{$prefix}panel-header-#{$ui-label}-bottom {
+                    background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-bottom-bg.gif');
+                }
 
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-left {
-                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-left-bg.gif');
-            }
+                .#{$prefix}panel-header-#{$ui-label}-left {
+                    background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-left-bg.gif');
+                }
 
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
-                background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg.gif');
-            }
+                .#{$prefix}panel-header-#{$ui-label}-right {
+                    background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg.gif');
+                }
 
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-right {
-                background-position: top right;
-            }
+                .#{$prefix}panel-header-#{$ui-label}-right {
+                    background-position: top right;
+                }
 
-            .#{$prefix}nlg .#{$prefix}panel-header-#{$ui-label}-bottom {
-                background-position: bottom left;
+                .#{$prefix}panel-header-#{$ui-label}-bottom {
+                    background-position: bottom left;
+                }
+
+                @if $include-rtl {
+                    .#{$prefix}rtl {
+                        &.#{$prefix}panel-header-#{$ui-label}-left {
+                            background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-left-bg-rtl.gif');
+                        }
+                        &.#{$prefix}panel-header-#{$ui-label}-right {
+                            background-image: theme-background-image($theme-name, 'panel-header/panel-header-#{$ui-label}-right-bg-rtl.gif');
+                        }
+                    }
+                }
             }
 
             @if $ui-border-radius != null {
@@ -303,7 +459,7 @@
                     // If framing elements are used to achieve rounded corners remove the background image from the header element since the framing elements
                     // already have the background image, and a background image on the main header element bleeds through the corner framing elements.
                     .#{$prefix}panel-header-#{$ui-label} {
-                        background-image: none;
+                        background-image: none !important;
                     }
                 }
             }
@@ -369,15 +525,6 @@
         @if $ui-body-border-color != null { border-color: $ui-body-border-color; }
     }
 
-    @if $ui-base-color != null {
-        @if $supports-gradients or $compile-all {
-            .#{$prefix}panel-header-#{$ui-label}-left,
-            .#{$prefix}panel-header-#{$ui-label}-right {
-                @include background-gradient($ui-header-background-color, $ui-header-background-gradient, right);
-            }
-        }
-    }
-
     @if $ui-border-radius != null {
         @include x-frame(
             'panel',
@@ -392,9 +539,9 @@
 
 
         @include x-frame('panel-header', '#{$ui-label}-top',    top($ui-border-radius) right($ui-border-radius) 0 0,    top($ui-border-width) right($ui-border-width) 0 left($ui-border-width), $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-right',  0 right($ui-border-radius) bottom($ui-border-radius) 0, top($ui-border-width) right($ui-border-width) bottom($ui-border-width) 0, $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-right',  0 right($ui-border-radius) bottom($ui-border-radius) 0, top($ui-border-width) right($ui-border-width) bottom($ui-border-width) 0, rotate90($panel-header-padding), $ui-header-background-color, $ui-header-background-gradient, false, right, $include-rtl);
         @include x-frame('panel-header', '#{$ui-label}-bottom', 0 0 bottom($ui-border-radius) left($ui-border-radius),  0 right($ui-border-width) bottom($ui-border-width) left($ui-border-width), $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-left',   top($ui-border-radius) 0 0 left($ui-border-radius),     top($ui-border-width) 0 bottom($ui-border-width) left($ui-border-width), $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-left',   top($ui-border-radius) 0 0 left($ui-border-radius),     top($ui-border-width) 0 bottom($ui-border-width) left($ui-border-width), rotate90($panel-header-padding), $ui-header-background-color, $ui-header-background-gradient, false, right, $include-rtl);
 
         .#{$prefix}panel-header-#{$ui-label}-top {
             @include inner-border(1px 1px 0 1px, $ui-header-inner-border-color);
@@ -470,9 +617,9 @@
         }
 
         @include x-frame('panel-header', '#{$ui-label}-collapsed-top',    top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-collapsed-right',  top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-collapsed-right',  top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, rotate90($panel-header-padding), $ui-header-background-color, $ui-header-background-gradient, false, right, $include-rtl);
         @include x-frame('panel-header', '#{$ui-label}-collapsed-bottom', top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-padding, $ui-header-background-color, $ui-header-background-gradient);
-        @include x-frame('panel-header', '#{$ui-label}-collapsed-left',   top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, $panel-header-vertical-padding, $ui-header-background-color, $ui-header-background-gradient, false, right);
+        @include x-frame('panel-header', '#{$ui-label}-collapsed-left',   top($ui-border-radius) right($ui-border-radius) bottom($ui-border-radius) left($ui-border-radius), $ui-border-width, rotate90($panel-header-padding), $ui-header-background-color, $ui-header-background-gradient, false, right, $include-rtl);
     }
 
     //background positioning of images

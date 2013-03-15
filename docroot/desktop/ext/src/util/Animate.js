@@ -198,8 +198,14 @@
  *     }
  */
 Ext.define('Ext.util.Animate', {
-    requires: ['Ext.Element', 'Ext.CompositeElementLite'],
-    uses: ['Ext.fx.Manager', 'Ext.fx.Anim'],
+    requires: [
+        'Ext.Element', 
+        'Ext.CompositeElementLite',
+        'Ext.fx.Manager', 
+        'Ext.fx.Anim'
+    ],
+    
+    isAnimate: true,
 
     /**
      * Performs custom animation on this object.

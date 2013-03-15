@@ -43,12 +43,21 @@ Ext.define('Ext.layout.container.HBox', {
      * @cfg {String} align
      * Controls how the child items of the container are aligned. Acceptable configuration values for this property are:
      *
-     * - **top** : **Default** child items are aligned vertically at the **top** of the container
-     * - **middle** : child items are aligned vertically in the **middle** of the container
-     * - **stretch** : child items are stretched vertically to fill the height of the container
+     * - **top** : **Default** child items are aligned vertically at the **top** of the container.
+     * - **middle** : child items are aligned vertically in the **middle** of the container.
+     * - **bottom** : child items are aligned vertically at the **bottom** of the container.
+     * - **stretch** : child items are stretched vertically to fill the height of the container.
      * - **stretchmax** : child items are stretched vertically to the height of the largest item.
      */
     align: 'top', // top, middle, stretch, strechmax
+    
+    /**
+     * @cfg {Boolean} constrainAlign
+     * Limits the size of {@link #align aligned} components to the size of the container under certain circumstances.
+     * Firstly, the container height must not be determined by the height of the child components. Secondly, the child
+     * components must have their height {@link Ext.AbstractComponent#shrinkWrap shrinkwrapped}.
+     */
+    constrainAlign: false,
 
     type : 'hbox',
 
@@ -58,11 +67,9 @@ Ext.define('Ext.layout.container.HBox', {
 
     names: {
         // parallel
-        lr: 'lr',
-        left: 'left',// 'before',
+        beforeX: 'left',
         leftCap: 'Left',
-        right: 'right',// 'after',
-        position: 'left',
+        afterX: 'right',
         width: 'width',
         contentWidth: 'contentWidth',
         minWidth: 'minWidth',
@@ -75,12 +82,12 @@ Ext.define('Ext.layout.container.HBox', {
         overflowX: 'overflowX',
         hasOverflowX: 'hasOverflowX',
         invalidateScrollX: 'invalidateScrollX',
+        parallelMargins: 'lr',
 
         // perpendicular
         center: 'middle',
-        top: 'top',
-        topPosition: 'top',
-        bottom: 'bottom',
+        beforeY: 'top',
+        afterY: 'bottom',
         height: 'height',
         contentHeight: 'contentHeight',
         minHeight: 'minHeight',
@@ -93,6 +100,7 @@ Ext.define('Ext.layout.container.HBox', {
         overflowY: 'overflowY',
         hasOverflowY: 'hasOverflowY',
         invalidateScrollY: 'invalidateScrollY',
+        perpendicularMargins: 'tb',
 
         // Methods
         getWidth: 'getWidth',
@@ -110,31 +118,41 @@ Ext.define('Ext.layout.container.HBox', {
     sizePolicy: {
         flex: {
             '': {
-                setsWidth: 1,
-                setsHeight: 0
+                readsWidth : 0,
+                readsHeight: 0,
+                setsWidth  : 1,
+                setsHeight : 0
             },
             stretch: {
-                setsWidth: 1,
-                setsHeight: 1
+                readsWidth : 0,
+                readsHeight: 0,
+                setsWidth  : 1,
+                setsHeight : 1
             },
             stretchmax: {
+                readsWidth : 0,
                 readsHeight: 1,
-                setsWidth: 1,
-                setsHeight: 1
+                setsWidth  : 1,
+                setsHeight : 1
             }
         },
         '': {
-            setsWidth: 0,
-            setsHeight: 0
+            readsWidth : 0,
+            readsHeight: 0,
+            setsWidth  : 0,
+            setsHeight : 0
         },
         stretch: {
-            setsWidth: 0,
-            setsHeight: 1
+            readsWidth : 0,
+            readsHeight: 0,
+            setsWidth  : 0,
+            setsHeight : 1
         },
         stretchmax: {
+            readsWidth : 0,
             readsHeight: 1,
-            setsWidth: 0,
-            setsHeight: 1
+            setsWidth  : 0,
+            setsHeight : 1
         }
     }            
 });

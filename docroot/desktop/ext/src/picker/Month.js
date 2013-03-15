@@ -8,7 +8,7 @@ Ext.define('Ext.picker.Month', {
     requires: [
         'Ext.XTemplate', 
         'Ext.util.ClickRepeater', 
-        'Ext.Date', 
+        'Ext.Date',
         'Ext.button.Button'
     ],
     alias: 'widget.monthpicker',
@@ -88,12 +88,13 @@ Ext.define('Ext.picker.Month', {
     // used when attached to date picker which isnt showing buttons
     smallCls: Ext.baseCSSPrefix + 'monthpicker-small',
 
-    // private
+    // @private
     totalYears: 10,
     yearOffset: 5, // 10 years in total, 2 per row
     monthOffset: 6, // 12 months, 2 per row
 
-    // private, inherit docs
+    // @private
+    // @inheritdoc
     initComponent: function(){
         var me = this;
 
@@ -176,7 +177,8 @@ Ext.define('Ext.picker.Month', {
         this.callParent();
     },
 
-    // private, inherit docs
+    // @private
+    // @inheritdoc
     beforeRender: function(){
         var me = this,
             i = 0,
@@ -204,7 +206,8 @@ Ext.define('Ext.picker.Month', {
         });
     },
 
-    // private, inherit docs
+    // @private
+    // @inheritdoc
     afterRender: function(){
         var me = this,
             body = me.bodyEl,
@@ -485,7 +488,8 @@ Ext.define('Ext.picker.Month', {
         }
     },
 
-    // private, inherit docs
+    // @private
+    // @inheritdoc
     beforeDestroy: function(){
         var me = this;
         me.years = me.months = null;

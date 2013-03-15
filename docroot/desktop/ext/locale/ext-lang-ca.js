@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.ca.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} fila(es) seleccionada(es)"
+    Ext.define("Ext.locale.ca.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} fila(es) seleccionada(es)"
     });
 
     // changing the msg text below will affect the LoadMask
@@ -139,6 +139,11 @@ Ext.onReady(function() {
         minText: "El valor m&#237;nim per aquest camp &#233;s {0}",
         maxText: "El valor m&#224;xim per aquest camp &#233;s {0}",
         nanText: "{0} no &#233;s un nombre v&#224;lid"
+    });
+
+    Ext.define("Ext.locale.ca.form.field.File", { 
+        override: "Ext.form.field.File", 
+        buttonText: "Examinar..." 
     });
 
     Ext.define("Ext.locale.ca.form.field.Date", {

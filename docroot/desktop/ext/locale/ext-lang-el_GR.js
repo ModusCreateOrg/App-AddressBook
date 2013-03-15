@@ -23,9 +23,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.el_GR.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} Επιλεγμένες σειρές"
+    Ext.define("Ext.locale.el_GR.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} Επιλεγμένες σειρές"
     });
 
     Ext.define("Ext.locale.el_GR.TabPanelItem", {

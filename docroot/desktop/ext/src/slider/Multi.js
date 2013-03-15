@@ -609,14 +609,40 @@ Ext.define('Ext.slider.Multi', {
     /**
      * Programmatically sets the value of the Slider. Ensures that the value is constrained within the minValue and
      * maxValue.
-     * @param {Number} index Index of the thumb to move
+     * 
+     * Setting a single value:
+     *     // Set the second slider value, don't animate
+     *     mySlider.setValue(1, 50, false);
+     * 
+     * Setting multiple values at once
+     *     // Set 3 thumb values, animate
+     *     mySlider.setValue([20, 40, 60], true);
+     * 
+     * @param {Number/Number[]} index Index of the thumb to move. Alternatively, it can be an array of values to set
+     * for each thumb in the slider.
      * @param {Number} value The value to set the slider to. (This will be constrained within minValue and maxValue)
      * @param {Boolean} [animate=true] Turn on or off animation
+     * @return {Ext.slider.Multi} this
      */
     setValue : function(index, value, animate, changeComplete) {
         var me = this,
-            thumb = me.thumbs[index];
+            thumbs = me.thumbs,
+            thumb, len, i, values;
+            
+        if (Ext.isArray(index)) {
+            values = index;
+            animate = value;
+            
+            for (i = 0, len = values.length; i < len; ++i) {
+                thumb = thumbs[i];
+                if (thumb) {
+                    me.setValue(i, values[i], animate);
+                }    
+            }
+            return me;
+        }
 
+        thumb = me.thumbs[index];
         // ensures value is contstrained and snapped
         value = me.normalizeValue(value);
 
@@ -639,6 +665,7 @@ Ext.define('Ext.slider.Multi', {
                 }
             }
         }
+        return me;
     },
 
     /**
@@ -646,7 +673,16 @@ Ext.define('Ext.slider.Multi', {
      * Given a value within this Slider's range, calculates a Thumb's percentage CSS position to map that value.
      */
     calculateThumbPosition : function(v) {
-        return (v - this.minValue) / (this.maxValue - this.minValue) * 100;
+        var me = this,
+            minValue = me.minValue,
+            pos = (v - minValue) / (me.maxValue - minValue) * 100;
+
+        // If the total number of records is <= pageSize then return minValue.
+        if (isNaN(pos)) {
+            pos = minValue;
+        }
+
+        return pos;
     },
 
     /**

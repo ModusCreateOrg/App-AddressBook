@@ -27,7 +27,8 @@ Ext.define('Ext.fx.target.CompositeElement', {
 
     getAttr: function(attr, val) {
         var out      = [],
-            elements = this.target.elements,
+            target = this.target,
+            elements = target.elements,
             length   = elements.length,
             i,
             el;
@@ -36,11 +37,39 @@ Ext.define('Ext.fx.target.CompositeElement', {
             el = elements[i];
 
             if (el) {
-                el = this.target.getElement(el);
+                el = target.getElement(el);
                 out.push([el, this.getElVal(el, attr, val)]);
             }
         }
 
         return out;
+    },
+    
+    setAttr: function(targetData){
+        var target = this.target,
+            ln = targetData.length,
+            elements = target.elements,
+            ln3 = elements.length,
+            value, k,
+            attrs, attr, o, i, j, ln2;
+            
+        for (i = 0; i < ln; i++) {
+            attrs = targetData[i].attrs;
+            for (attr in attrs) {
+                if (attrs.hasOwnProperty(attr)) {
+                    ln2 = attrs[attr].length;
+                    for (j = 0; j < ln2; j++) {
+                        value = attrs[attr][j][1];
+                        for (k = 0; k < ln3; ++k) {
+                            el = elements[k];
+                            if (el) {
+                                el = target.getElement(el);
+                                this.setElVal(el, attr, value);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 });

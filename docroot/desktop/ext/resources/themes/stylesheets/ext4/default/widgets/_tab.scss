@@ -364,6 +364,13 @@
         padding-right: $tab-closable-icon-width + 3;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}tab-closable em {
+            padding-right: 6px;
+            padding-left: $tab-closable-icon-width + 3;
+        }
+    }
+
     .#{$prefix}tab-close-btn {
         position: absolute;
         top: $tab-closable-icon-top;
@@ -378,9 +385,23 @@
         @include opacity(.6);
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}tab .#{$prefix}tab-close-btn {
+            right: auto;
+            left: $tab-closable-icon-right; 
+        }
+    }
+
     .#{$prefix}nbr .#{$prefix}tab-close-btn {
         top: $nbr-tab-closable-icon-top;
         right: $nbr-tab-closable-icon-right;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}nbr .#{$prefix}rtl.#{$prefix}tab .#{$prefix}tab-close-btn {
+            right: auto;
+            left: $nbr-tab-closable-icon-right; 
+        }
     }
 
     /* Include the element name otherwise Internet Explorer 7 & 8 take a performance hit */

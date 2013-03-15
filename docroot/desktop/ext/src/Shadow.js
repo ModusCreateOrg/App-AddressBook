@@ -7,6 +7,11 @@
 Ext.define('Ext.Shadow', {
     requires: ['Ext.ShadowPool'],
 
+    localXYNames: {
+        get: 'getLocalXY',
+        set: 'setLocalXY'
+    },
+
     /**
      * Creates new Shadow.
      * @param {Object} config (optional) Config object.
@@ -148,7 +153,7 @@ Ext.define('Ext.Shadow', {
      */
     show: function(target) {
         var me = this,
-            index;
+            index, xy;
         
         target = Ext.get(target);
         if (!me.el) {
@@ -162,9 +167,10 @@ Ext.define('Ext.Shadow', {
         if (Ext.isIE && !Ext.supports.CSS3BoxShadow) {
             me.el.dom.style.filter = "progid:DXImageTransform.Microsoft.alpha(opacity=" + me.opacity + ") progid:DXImageTransform.Microsoft.Blur(pixelradius=" + (me.offset) + ")";
         }
+        xy = target[me.localXYNames.get]();
         me.realign(
-            target.getLocalX(),
-            target.getLocalY(),
+            xy[0],
+            xy[1],
             target.dom.offsetWidth,
             target.dom.offsetHeight
         );
@@ -191,15 +197,14 @@ Ext.define('Ext.Shadow', {
             return;
         }
         var adjusts = this.adjusts,
-            d = this.el.dom,
-            targetStyle = d.style,
+            el = this.el,
+            targetStyle = el.dom.style,
             shadowWidth,
             shadowHeight,
             sws,
             shs;
 
-        targetStyle.left = (l + adjusts.l) + "px";
-        targetStyle.top = (t + adjusts.t) + "px";
+        el[this.localXYNames.set](l + adjusts.l, t + adjusts.t);
         shadowWidth = Math.max(targetWidth + adjusts.w, 0);
         shadowHeight = Math.max(targetHeight + adjusts.h, 0);
         sws = shadowWidth + "px";

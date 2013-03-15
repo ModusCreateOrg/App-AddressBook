@@ -24,7 +24,7 @@
  *     
  *     // Wait 500ms before calling our function. If the user presses another key
  *     // during that 500ms, it will be cancelled and we'll wait another 500ms.
- *     Ext.get('myInputField').on('keypress', function(){
+ *     Ext.get('myInputField').on('keypress', function() {
  *         task.{@link #delay}(500);
  *     });
  * 
@@ -34,39 +34,55 @@
  * 
  * @constructor The parameters to this constructor serve as defaults and are not required.
  * @param {Function} fn (optional) The default function to call. If not specified here, it must be specified during the {@link #delay} call.
- * @param {Object} scope (optional) The default scope (The <code><b>this</b></code> reference) in which the
- * function is called. If not specified, <code>this</code> will refer to the browser window.
+ * @param {Object} scope (optional) The default scope (The **`this`** reference) in which the
+ * function is called. If not specified, `this` will refer to the browser window.
  * @param {Array} args (optional) The default Array of arguments.
+ * @param {Boolean} [cancelOnDelay=true] By default, each call to {@link #delay} cancels any pending invocation and reschedules a new
+ * invocation. Specifying this as `false` means that calls to {@link #delay} when an invocation is pending just update the call settings,
+ * `newDelay`, `newFn`, `newScope` or `newArgs`, whichever are passed.
  */
-Ext.util.DelayedTask = function(fn, scope, args) {
+Ext.util.DelayedTask = function(fn, scope, args, cancelOnDelay) {
     var me = this,
         id,
+        delay,
         call = function() {
             clearInterval(id);
             id = null;
             fn.apply(scope, args || []);
+            Ext.EventManager.idleEvent.fire();
         };
 
+    cancelOnDelay = typeof cancelOnDelay === 'boolean' ? cancelOnDelay : true;
+
     /**
-     * Cancels any pending timeout and queues a new one
-     * @param {Number} delay The milliseconds to delay
+     * By default, cancels any pending timeout and queues a new one.
+     *
+     * If the `cancelOnDelay` parameter was specified as `false` in the constructor, this does not cancel and
+     * reschedule, but just updates the call settings, `newDelay`, `newFn`, `newScope` or `newArgs`, whichever are passed.
+     *
+     * @param {Number} newDelay The milliseconds to delay
      * @param {Function} newFn (optional) Overrides function passed to constructor
      * @param {Object} newScope (optional) Overrides scope passed to constructor. Remember that if no scope
      * is specified, <code>this</code> will refer to the browser window.
      * @param {Array} newArgs (optional) Overrides args passed to constructor
      */
-    this.delay = function(delay, newFn, newScope, newArgs) {
-        me.cancel();
-        fn = newFn || fn;
+    me.delay = function(newDelay, newFn, newScope, newArgs) {
+        if (cancelOnDelay) {
+            me.cancel();
+        }
+        delay = newDelay || delay,
+        fn    = newFn    || fn;
         scope = newScope || scope;
-        args = newArgs || args;
-        id = setInterval(call, delay);
+        args  = newArgs  || args;
+        if (!id) {
+            id = setInterval(call, delay);
+        }
     };
 
     /**
      * Cancel the last queued timeout
      */
-    this.cancel = function(){
+    me.cancel = function() {
         if (id) {
             clearInterval(id);
             id = null;

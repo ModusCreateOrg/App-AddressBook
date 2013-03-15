@@ -19,7 +19,7 @@ Ext.define('Ext.layout.component.field.FieldContainer', {
     beginLayout: function(ownerContext) {
         this.callParent(arguments);
 
-        // Tell Component.measureAutoDimensions to measure the DOM when containerChildrenDone is true
+        // Tell Component.measureAutoDimensions to measure the DOM when containerChildrenSizeDone is true
         ownerContext.hasRawContent = true;
         ownerContext.target.bodyEl.setStyle('height', '');
     },

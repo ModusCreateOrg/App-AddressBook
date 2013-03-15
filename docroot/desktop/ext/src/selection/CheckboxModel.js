@@ -10,9 +10,9 @@ Ext.define('Ext.selection.CheckboxModel', {
     extend: 'Ext.selection.RowModel',
 
     /**
-     * @cfg {String} mode
+     * @cfg {"SINGLE"/"SIMPLE"/"MULTI"} mode
      * Modes of selection.
-     * Valid values are SINGLE, SIMPLE, and MULTI.
+     * Valid values are `"SINGLE"`, `"SIMPLE"`, and `"MULTI"`.
      */
     mode: 'MULTI',
 
@@ -33,7 +33,7 @@ Ext.define('Ext.selection.CheckboxModel', {
      * @cfg {Boolean} showHeaderCheckbox
      * Configure as `false` to not display the header checkbox at the top of the column.
      */
-    showHeaderCheckbox: true,
+    showHeaderCheckbox: undefined,
 
     headerWidth: 24,
 
@@ -42,10 +42,28 @@ Ext.define('Ext.selection.CheckboxModel', {
 
     // private
     refreshOnRemove: true,
+    
+    constructor: function(){
+        var me = this;
+        me.callParent(arguments);   
+        
+        // If mode is single and showHeaderCheck isn't explicity set to
+        // true, hide it.
+        if (me.mode === 'SINGLE' && me.showHeaderCheckbox !== true) {
+            me.showHeaderCheckbox = false;
+        } 
+    },
 
     beforeViewRender: function(view) {
-        var me = this;
+        var me = this,
+            views = me.views,
+            owner;
+            
         me.callParent(arguments);
+        
+        if (Ext.Array.indexOf(views, view) === -1) {
+            views.push(view);
+        }
 
         // if we have a locked header, only hook up to the first
         if (!me.hasLockedHeader() || view.headerCt.lockedCt) {
@@ -53,7 +71,12 @@ Ext.define('Ext.selection.CheckboxModel', {
                 view.headerCt.on('headerclick', me.onHeaderClick, me);
             }
             me.addCheckbox(view, true);
-            me.mon(view.ownerCt, 'reconfigure', me.onReconfigure, me);
+            owner = view.ownerCt;
+            // Listen to the outermost reconfigure event
+            if (view.headerCt.lockedCt) {
+                owner = owner.ownerCt;
+            }
+            me.mon(owner, 'reconfigure', me.onReconfigure, me);
         }
     },
 
@@ -124,13 +147,14 @@ Ext.define('Ext.selection.CheckboxModel', {
     toggleUiHeader: function(isChecked) {
         var view     = this.views[0],
             headerCt = view.headerCt,
-            checkHd  = headerCt.child('gridcolumn[isCheckerHd]');
+            checkHd  = headerCt.child('gridcolumn[isCheckerHd]'),
+            cls = this.checkerOnCls;
 
         if (checkHd) {
             if (isChecked) {
-                checkHd.el.addCls(this.checkerOnCls);
+                checkHd.addCls(cls);
             } else {
-                checkHd.el.removeCls(this.checkerOnCls);
+                checkHd.removeCls(cls);
             }
         }
     },
@@ -180,9 +204,18 @@ Ext.define('Ext.selection.CheckboxModel', {
             locked: me.hasLockedHeader()
         };
     },
-    
-    renderEmpty: function(){
-        return '&#160;';    
+
+    renderEmpty: function() {
+        return '&#160;';
+    },
+
+    // After refresh, ensure that the header checkbox state matches
+    refresh: function() {
+        var me = this;
+
+        me.callParent(arguments);
+
+        me.updateHeaderState();
     },
 
     /**
@@ -202,7 +235,7 @@ Ext.define('Ext.selection.CheckboxModel', {
         var me = this,
             checker = e.getTarget('.' + Ext.baseCSSPrefix + 'grid-row-checker'),
             mode;
-            
+
         if (!me.allowRightMouseSelection(e)) {
             return;
         }
@@ -250,7 +283,12 @@ Ext.define('Ext.selection.CheckboxModel', {
      */
     updateHeaderState: function() {
         // check to see if all records are selected
-        var hdSelectStatus = this.selected.getCount() === this.store.getCount();
-        this.toggleUiHeader(hdSelectStatus);
+        var me = this,
+            storeCount = me.store.getCount(),
+            hdSelectStatus = storeCount > 0 && me.selected.getCount() === storeCount;
+            
+        if (me.views && me.views.length) {
+            me.toggleUiHeader(hdSelectStatus);
+        }
     }
 });

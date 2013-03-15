@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.af.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} geselekteerde ry(e)"
+    Ext.define("Ext.locale.af.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} geselekteerde ry(e)"
     });
 
     Ext.define("Ext.locale.af.TabPanelItem", {

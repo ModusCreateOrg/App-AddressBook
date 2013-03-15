@@ -23,7 +23,7 @@ Ext.onReady(function() {
 
     Ext.define("Ext.locale.tr.grid.Grid", {
         override: "Ext.grid.Grid",
-        ddText: "Seçili satýr sayýsý : {0}"
+        dragText: "Seçili satýr sayýsý : {0}"
     });
 
     Ext.define("Ext.locale.tr.TabPanelItem", {

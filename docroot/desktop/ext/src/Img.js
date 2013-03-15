@@ -46,6 +46,12 @@ Ext.define('Ext.Img', {
     alt: '',
 
     /**
+     * @cfg {String} title
+     * Specifies addtional information about the image.
+     */
+    title: '',
+
+    /**
      * @cfg {String} imgCls
      * Optional CSS classes to add to the img element.
      */
@@ -72,8 +78,12 @@ Ext.define('Ext.Img', {
         }
 
         img.src = me.src || Ext.BLANK_IMAGE_URL;
+
         if (me.alt) {
             img.alt = me.alt;
+        }
+        if (me.title) {
+            img.title = me.title;
         }
 
         return config;

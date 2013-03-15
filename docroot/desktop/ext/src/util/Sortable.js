@@ -15,7 +15,7 @@ Ext.define("Ext.util.Sortable", {
     isSortable: true,
 
     /**
-     * @property {String} defaultSortDirection
+     * @cfg {String} defaultSortDirection
      * The default sort direction to use if one is not specified.
      */
     defaultSortDirection: "ASC",
@@ -24,9 +24,38 @@ Ext.define("Ext.util.Sortable", {
         'Ext.util.Sorter'
     ],
 
+    statics: {
+        /**
+         * Creates a single comparator function which encapsulates the passed Sorter array.
+         * @param {Ext.util.Sorter[]} sorters The sorter set for which to create a comparator function
+         * @return {Function} a function, which when passed two comparable objects returns the result
+         * of the whole sorter comparator functions.
+         */
+        createComparator: function(sorters) {
+            return sorters && sorters.length ? function(r1, r2) {
+                var result = sorters[0].sort(r1, r2),
+                    length = sorters.length,
+                    i = 1;
+
+                // if we have more than one sorter, OR any additional sorter functions together
+                for (; i < length; i++) {
+                    result = result || sorters[i].sort.call(this, r1, r2);
+                }
+                return result;
+            }: function() {
+                return 0;
+            };
+        }
+    },
+
     /**
-     * @property {String} sortRoot
+     * @cfg {String} sortRoot
      * The property in each item that contains the data to sort.
+     */
+
+    /**
+     * @cfg {Ext.util.Sorter[]/Object[]} sorters
+     * The initial set of {@link Ext.util.Sorter Sorters}
      */
 
     /**
@@ -88,7 +117,7 @@ Ext.define("Ext.util.Sortable", {
      */
     sort: function(sorters, direction, where, doSort) {
         var me = this,
-            sorter, sorterFn,
+            sorter,
             newSorters;
 
         if (Ext.isArray(sorters)) {
@@ -140,6 +169,7 @@ Ext.define("Ext.util.Sortable", {
         }
 
         if (doSort !== false) {
+            me.fireEvent('beforesort', me, newSorters);
             me.onBeforeSort(newSorters);
             
             sorters = me.sorters.items;
@@ -153,29 +183,17 @@ Ext.define("Ext.util.Sortable", {
     },
 
     /**
-     * <p>Returns a comparator function which compares two items and returns -1, 0, or 1 depending
-     * on the currently defined set of {@link #sorters}.</p>
-     * <p>If there are no {@link #sorters} defined, it returns a function which returns <code>0</code> meaning that no sorting will occur.</p>
+     * Returns a comparator function which compares two items and returns -1, 0, or 1 depending
+     * on the currently defined set of {@link #cfg-sorters}.
+     *
+     * If there are no {@link #cfg-sorters} defined, it returns a function which returns `0` meaning
+     * that no sorting will occur.
      */
     generateComparator: function() {
         var sorters = this.sorters.getRange();
         return sorters.length ? this.createComparator(sorters) : this.emptyComparator;
     },
-    
-    createComparator: function(sorters) {
-        return function(r1, r2) {
-            var result = sorters[0].sort(r1, r2),
-                length = sorters.length,
-                i = 1;
 
-            // if we have more than one sorter, OR any additional sorter functions together
-            for (; i < length; i++) {
-                result = result || sorters[i].sort.call(this, r1, r2);
-            }
-            return result;
-        };
-    },
-    
     emptyComparator: function(){
         return 0;
     },
@@ -266,4 +284,7 @@ Ext.define("Ext.util.Sortable", {
         }
         return null;
     }
+}, function() {
+    // Reference the static implementation in prototype
+    this.prototype.createComparator = this.createComparator;
 });

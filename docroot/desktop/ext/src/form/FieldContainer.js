@@ -104,8 +104,12 @@ Ext.define('Ext.form.FieldContainer', {
     alias: 'widget.fieldcontainer',
 
     componentLayout: 'fieldcontainer',
-    
+
     componentCls: Ext.baseCSSPrefix + 'form-fieldcontainer',
+
+    /**
+     * @cfg autoScroll @hide
+     */
 
     /**
      * @cfg {Boolean} combineLabels
@@ -141,22 +145,32 @@ Ext.define('Ext.form.FieldContainer', {
         // Init mixins
         me.initLabelable();
         me.initFieldAncestor();
+        
+        if (me.labelAlign == 'top') {
+            // We need to add an extra offset to the DOM checks because
+            // the label is rendered inside the target element.
+            // See Ext.layout.container.Container::getPositionOffset
+            // for more details
+            me.itemNodeOffset = 1;
+        }
 
         me.callParent();
-    },
-
-    beforeRender: function(){
-        this.callParent(arguments);
-        this.beforeLabelableRender(arguments);
     },
 
     /**
      * @protected Called when a {@link Ext.form.Labelable} instance is added to the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was added
      */
-    onLabelableAdded: function(labelable) {
+    onAdd: function(labelable) {
         var me = this;
-        me.mixins.fieldAncestor.onLabelableAdded.call(this, labelable);
+        
+        // Fix for https://sencha.jira.com/browse/EXTJSIV-6424
+        // In FF, positioning absolutely within a TD positions relative to the TR!
+        // So we must add the width of a visible, left-aligned label cell to the x coordinate.
+        if (Ext.isGecko && me.layout.type === 'absolute' && !me.hideLabel && me.labelAlign !== 'top') {
+            labelable.x += (me.labelWidth + me.labelPad);
+        }
+        me.callParent(arguments);
         me.updateLabel();
     },
 
@@ -164,9 +178,9 @@ Ext.define('Ext.form.FieldContainer', {
      * @protected Called when a {@link Ext.form.Labelable} instance is removed from the container's subtree.
      * @param {Ext.form.Labelable} labelable The instance that was removed
      */
-    onLabelableRemoved: function(labelable) {
+    onRemove: function(labelable) {
         var me = this;
-        me.mixins.fieldAncestor.onLabelableRemoved.call(this, labelable);
+        me.callParent(arguments);
         me.updateLabel();
     },
 
@@ -290,5 +304,11 @@ Ext.define('Ext.form.FieldContainer', {
 
     getTargetEl: function() {
         return this.bodyEl || this.callParent();
+    },
+
+    applyTargetCls: function(targetCls) {
+        var fieldBodyCls = this.fieldBodyCls;
+
+        this.fieldBodyCls = fieldBodyCls ? fieldBodyCls + ' ' + targetCls : targetCls;
     }
 });

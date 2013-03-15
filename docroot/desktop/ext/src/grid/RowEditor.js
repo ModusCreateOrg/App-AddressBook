@@ -14,6 +14,7 @@
  */
 Ext.define('Ext.grid.RowEditor', {
     extend: 'Ext.form.Panel',
+    alias: 'widget.roweditor',
     requires: [
         'Ext.tip.ToolTip',
         'Ext.util.HashMap',
@@ -80,7 +81,7 @@ Ext.define('Ext.grid.RowEditor', {
             delete me.fields;
         }
         
-        me.mon(Ext.container.Container.hierarchyEventSource, {
+        me.mon(me.hierarchyEventSource, {
             scope: me,
             show: me.repositionIfVisible
         });
@@ -104,7 +105,10 @@ Ext.define('Ext.grid.RowEditor', {
         var buttons = this.floatingButtons; 
         if (buttons) {
             buttons.child('#update').setDisabled(!valid);
-        }    
+        } else {
+            // set flag so we can disabled when created if needed
+            this.updateButtonDisabled = !valid;
+        }
     },
 
     afterRender: function() {
@@ -218,9 +222,11 @@ Ext.define('Ext.grid.RowEditor', {
     },
 
     onColumnShow: function(column) {
-        var field = column.getEditor();
-        field.setWidth(column.getWidth() - 2).show();
-        this.repositionIfVisible();
+        if (!column.isGroupHeader) {
+            var field = column.getEditor();
+            field.setWidth(column.getWidth() - 2).show();
+            this.repositionIfVisible();
+        }
     },
 
     onColumnMove: function(column, fromIdx, toIdx) {
@@ -309,7 +315,8 @@ Ext.define('Ext.grid.RowEditor', {
                     handler: plugin.completeEdit,
                     scope: plugin,
                     text: me.saveBtnText,
-                    minWidth: minWidth
+                    minWidth: minWidth,
+                    disabled: me.updateButtonDisabled
                 }, {
                     xtype: 'button',
                     handler: plugin.cancelEdit,
@@ -393,7 +400,7 @@ Ext.define('Ext.grid.RowEditor', {
             // Set editor height to match the row height
             if (me.getHeight() != newHeight) {
                 me.setHeight(newHeight);
-                me.el.setLeft(0);
+                me.el.setLocalX(0);
             }
 
             if (animateConfig) {
@@ -418,7 +425,7 @@ Ext.define('Ext.grid.RowEditor', {
         if (me.getWidth() != mainBodyWidth) {
             me.setWidth(mainBodyWidth);
         }
-        btnEl.setLeft(left);
+        btnEl.setLocalX(left);
     },
 
     getEditor: function(fieldInfo) {

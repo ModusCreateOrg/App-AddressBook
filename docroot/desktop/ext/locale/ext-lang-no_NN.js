@@ -17,9 +17,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.no_NN.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} markert(e) rad(er)"
+    Ext.define("Ext.locale.no_NN.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} markert(e) rad(er)"
     });
 
     Ext.define("Ext.locale.no_NN.TabPanelItem", {

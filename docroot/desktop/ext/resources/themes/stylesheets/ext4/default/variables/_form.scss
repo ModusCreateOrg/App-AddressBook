@@ -191,7 +191,8 @@ $fieldset-border-style: solid !default;
 $fieldset-border-color: $form-field-border-color !default;
 $fieldset-border: $fieldset-border-width $fieldset-border-style $fieldset-border-color !default;
 
-$fieldset-padding: 10px !default;
+$fieldset-padding: 0 10px !default;
+$fieldset-margin: 0 0 10px !default;
 $fieldset-header-padding: 0 3px 1px !default;
 
 /**

@@ -212,7 +212,7 @@ Ext.define('Ext.layout.component.Dock', {
             if (item.rendered) {
                 itemContext = layoutContext.getCmp(item);
                 itemContext.dockedAt = { x: 0, y: 0 };
-                itemContext.offsets = offsets = Ext.Element.parseBox(item.offsets || {});
+                itemContext.offsets = offsets = Ext.Element.parseBox(item.offsets || 0);
                 offsets.width = offsets.left + offsets.right;
                 offsets.height = offsets.top + offsets.bottom;
                 dockedItems.push(itemContext);
@@ -270,7 +270,7 @@ Ext.define('Ext.layout.component.Dock', {
             dock = item.dock;
 
             if (dock == 'right') {
-                item.el.setLeft(0);
+                item.setLocalX(0);
             } else if (dock != 'left') {
                 continue;
             }
@@ -1102,7 +1102,17 @@ Ext.define('Ext.layout.component.Dock', {
         this.callParent(arguments);
 
         item.addCls(Ext.baseCSSPrefix + 'docked');
-        item.addClsWithUI('docked-' + item.dock);
+        item.addClsWithUI(this.getDockCls(item.dock));
+    },
+
+    /**
+     * Get's the css class name for a given dock position.
+     * @param {String} dock `top`, `right`, `bottom`, or `left`
+     * @return {String}
+     * @private 
+     */
+    getDockCls: function(dock) {
+        return 'docked-' + dock;
     },
 
     afterRemove : function(item) {

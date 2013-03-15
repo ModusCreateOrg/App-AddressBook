@@ -21,9 +21,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.lt.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} pažymėtų eilučių"
+    Ext.define("Ext.locale.lt.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} pažymėtų eilučių"
     });
 
     Ext.define("Ext.locale.lt.TabPanelItem", {

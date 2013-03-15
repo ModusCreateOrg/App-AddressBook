@@ -37,7 +37,7 @@ Ext.define('Ext.grid.plugin.Editing', {
      */
     triggerEvent: undefined,
 
-    // private
+    // @private
     defaultFieldXType: 'textfield',
 
     // cell, row, form
@@ -160,7 +160,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         });
     },
 
-    // private
+    // @private
     init: function(grid) {
         var me = this;
 
@@ -236,12 +236,12 @@ Ext.define('Ext.grid.plugin.Editing', {
         delete me.keyNav;
     },
 
-    // private
+    // @private
     getEditStyle: function() {
         return this.editStyle;
     },
 
-    // private
+    // @private
     initFieldAccessors: function(columns) {
         columns = [].concat(columns);
 
@@ -265,7 +265,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         }
     },
 
-    // private
+    // @private
     removeFieldAccessors: function(columns) {
         columns = [].concat(columns);
 
@@ -281,7 +281,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         }
     },
 
-    // private
+    // @private
     // remaps to the public API of Ext.grid.column.Column.getEditor
     getColumnField: function(columnHeader, defaultField) {
         var field = columnHeader.field;
@@ -312,7 +312,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         }
     },
 
-    // private
+    // @private
     // remaps to the public API of Ext.grid.column.Column.setEditor
     setColumnField: function(column, field) {
         if (Ext.isObject(field) && !field.isFormField) {
@@ -321,7 +321,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         column.field = field;
     },
 
-    // private
+    // @private
     initEvents: function() {
         var me = this;
         me.initEditTriggers();
@@ -331,7 +331,7 @@ Ext.define('Ext.grid.plugin.Editing', {
     // @abstract
     initCancelTriggers: Ext.emptyFn,
     
-    // private
+    // @private
     initEditTriggers: function() {
         var me = this,
             view = me.view;
@@ -372,17 +372,17 @@ Ext.define('Ext.grid.plugin.Editing', {
         }
     },
 
-    // private. Used if we are triggered by the rowfocus event
+    // @private Used if we are triggered by the rowfocus event
     onRowFocus: function(record, row, rowIdx) {
         this.startEdit(row, 0);
     },
 
-    // private. Used if we are triggered by the cellfocus event
+    // @private Used if we are triggered by the cellfocus event
     onCellFocus: function(record, cell, position) {
         this.startEdit(position.row, position.column);
     },
 
-    // private. Used if we are triggered by a cellclick event
+    // @private Used if we are triggered by a cellclick event
     onCellClick: function(view, cell, colIdx, record, row, rowIdx, e) {
         // cancel editing if the element that was clicked was a tree expander
         if(!view.expanderSelector || !e.getTarget(view.expanderSelector)) {
@@ -409,21 +409,21 @@ Ext.define('Ext.grid.plugin.Editing', {
         });
     },
     
-    // private
+    // @private
     onColumnAdd: function(ct, column) {
         if (column.isHeader) {
             this.initFieldAccessors(column);
         }
     },
 
-    // private
+    // @private
     onColumnRemove: function(ct, column) {
         if (column.isHeader) {
             this.removeFieldAccessors(column);
         }
     },
 
-    // private
+    // @private
     onEnterKey: function(e) {
         var me = this,
             grid = me.grid,
@@ -437,7 +437,7 @@ Ext.define('Ext.grid.plugin.Editing', {
         if (selModel.getCurrentPosition) {
             pos = selModel.getCurrentPosition();
             if (pos) {
-                record = grid.store.getAt(pos.row);
+                record = grid.getView().getStore().getAt(pos.row);
                 columnHeader = grid.headerCt.getHeaderAtIndex(pos.column);
             }
         }
@@ -452,9 +452,9 @@ Ext.define('Ext.grid.plugin.Editing', {
         }
     },
 
-    // private
+    // @private
     onEscKey: function(e) {
-        this.cancelEdit();
+        return this.cancelEdit();
     },
 
     /**
@@ -500,11 +500,11 @@ Ext.define('Ext.grid.plugin.Editing', {
         var me = this,
             grid = me.grid,
             view = grid.getView(),
-            node = view.getNode(record),
+            recordNode = view.getNode(record, true),
             rowIdx, colIdx;
 
         // An intervening listener may have deleted the Record
-        if (!node) {
+        if (!recordNode) {
             return;
         }
 
@@ -521,9 +521,15 @@ Ext.define('Ext.grid.plugin.Editing', {
         if (Ext.isNumber(record)) {
             // look up record if numeric row index was passed
             rowIdx = record;
-            record = view.getRecord(node);
+            record = view.getRecord(recordNode);
         } else {
-            rowIdx = view.indexOf(node);
+            rowIdx = view.indexOf(recordNode);
+        }
+        
+        // The record may be removed from the store but the view
+        // not yet updated, so check it exists
+        if (!record) {
+            return;
         }
 
         return {
@@ -531,7 +537,7 @@ Ext.define('Ext.grid.plugin.Editing', {
             record : record,
             field  : columnHeader.dataIndex,
             value  : record.get(columnHeader.dataIndex),
-            row    : view.getNode(rowIdx),
+            row    : recordNode,
             column : columnHeader,
             rowIdx : rowIdx,
             colIdx : colIdx

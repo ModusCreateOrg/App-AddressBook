@@ -40,13 +40,13 @@ Ext.define('Ext.fx.target.Component', {
         }
     },
 
-    compMethod: {
-        top: 'setPosition',
-        left: 'setPosition',
-        x: 'setPagePosition',
-        y: 'setPagePosition',
-        height: 'setSize',
-        width: 'setSize',
+    setMethods: {
+        top:     'setPosition',
+        left:    'setPosition',
+        x:       'setPagePosition',
+        y:       'setPagePosition',
+        height:  'setSize',
+        width:   'setSize',
         opacity: 'setOpacity'
     },
 
@@ -59,59 +59,55 @@ Ext.define('Ext.fx.target.Component', {
         var me = this,
             target = me.target,
             ln = targetData.length,
-            attrs, attr, o, i, j, meth, targets, left, top, w, h;
+            attrs, attr, o, i, j, targets, left, top, w, h,
+            methodsToCall = {},
+            methodProps;
+
         for (i = 0; i < ln; i++) {
             attrs = targetData[i].attrs;
             for (attr in attrs) {
                 targets = attrs[attr].length;
-                meth = {
-                    setPosition: {},
-                    setPagePosition: {},
-                    setSize: {},
-                    setOpacity: {}
-                };
                 for (j = 0; j < targets; j++) {
                     o = attrs[attr][j];
-                    // We REALLY want a single function call, so push these down to merge them: eg
-                    // meth.setPagePosition.target = <targetComponent>
-                    // meth.setPagePosition['x'] = 100
-                    // meth.setPagePosition['y'] = 100
-                    meth[me.compMethod[attr]].target = o[0];
-                    meth[me.compMethod[attr]][attr] = o[1];
+                    methodProps = methodsToCall[me.setMethods[attr]] || (methodsToCall[me.setMethods[attr]] = {});
+                    methodProps.target = o[0];
+                    methodProps[attr] = o[1];
+                    // debugging code: Ext.log('Setting ' + o[0].id + "'s " + attr + ' to ' + o[1]);
                 }
-                if (meth.setPosition.target) {
-                    o = meth.setPosition;
-                    left = (o.left === undefined) ? undefined : parseFloat(o.left);
-                    top = (o.top === undefined) ? undefined : parseFloat(o.top);
-                    o.target.setPosition(left, top);
-                }
-                if (meth.setPagePosition.target) {
-                    o = meth.setPagePosition;
-                    o.target.setPagePosition(o.x, o.y);
-                }
-                if (meth.setSize.target) {
-                    o = meth.setSize;
-                    // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
-                    w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
-                    h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
+            }
+            if (methodsToCall.setPosition) {
+                o = methodsToCall.setPosition;
+                left = (o.left === undefined) ? undefined : parseFloat(o.left);
+                top = (o.top === undefined) ? undefined : parseFloat(o.top);
+                o.target.setPosition(left, top);
+            }
+            if (methodsToCall.setPagePosition) {
+                o = methodsToCall.setPagePosition;
+                o.target.setPagePosition(o.x, o.y);
+            }
+            if (methodsToCall.setSize) {
+                o = methodsToCall.setSize;
+                // Dimensions not being animated MUST NOT be autosized. They must remain at current value.
+                w = (o.width === undefined) ? o.target.getWidth() : parseFloat(o.width);
+                h = (o.height === undefined) ? o.target.getHeight() : parseFloat(o.height);
 
-                    // Only set the size of the Component on the last frame, or if the animation was
-                    // configured with dynamic: true.
-                    // In other cases, we just set the target element size.
-                    // This will result in either clipping if animating a reduction in size, or the revealing of
-                    // the inner elements of the Component if animating an increase in size.
-                    // Component's animate function initially resizes to the larger size before resizing the
-                    // outer element to clip the contents.
-                    if (isLastFrame || me.dynamic) {
-                        o.target.setSize(w, h);
-                    } else {
-                        o.target.el.setSize(w, h);
-                    }
+                // Only set the size of the Component on the last frame, or if the animation was
+                // configured with dynamic: true.
+                // In other cases, we just set the target element size.
+                // This will result in either clipping if animating a reduction in size, or the revealing of
+                // the inner elements of the Component if animating an increase in size.
+                // Component's animate function initially resizes to the larger size before resizing the
+                // outer element to clip the contents.
+                o.target.el.setSize(w, h);
+                if (isLastFrame || me.dynamic) {
+                    // In case anything in the resulting layout calls animation.
+                    // If it does, *this* frame will fire again... recursively
+                    Ext.Function.defer(o.target.setSize, 1, o.target, [w, h]);
                 }
-                if (meth.setOpacity.target) {
-                    o = meth.setOpacity;
-                    o.target.el.setStyle('opacity', o.opacity);
-                }
+            }
+            if (methodsToCall.setOpacity) {
+                o = methodsToCall.setOpacity;
+                o.target.el.setStyle('opacity', o.opacity);
             }
         }
     }

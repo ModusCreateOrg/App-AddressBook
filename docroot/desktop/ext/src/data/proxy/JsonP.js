@@ -140,9 +140,11 @@ Ext.define('Ext.data.proxy.JsonP', {
     callbackKey : 'callback',
 
     /**
-     * @cfg {String} recordParam
-     * The param name to use when passing records to the server (e.g. 'records=someEncodedRecordString'). Defaults to
-     * 'records'
+     * @cfg {String} [recordParam=records]
+     * The HTTP parameter name to use when passing records to the server and the {@link #writer Json writer} is not configured
+     * to {@link Ext.data.writer.Json#encode encode} records into a parameter.
+     * 
+     * The {@link #encodeRecords} method is used to encode the records to create this parameter's value.
      */
     recordParam: 'records',
 
@@ -152,11 +154,12 @@ Ext.define('Ext.data.proxy.JsonP', {
      */
     autoAppendParams: true,
 
-    constructor: function(){
+    constructor: function() {
         this.addEvents(
             /**
              * @event
-             * Fires when the server returns an exception
+             * Fires when the server returns an exception. This event may also be listened
+             * to in the event that a request has timed out or has been aborted.
              * @param {Ext.data.proxy.Proxy} this
              * @param {Ext.data.Request} request The request that was sent
              * @param {Ext.data.Operation} operation The operation that triggered the request
@@ -177,13 +180,8 @@ Ext.define('Ext.data.proxy.JsonP', {
     doRequest: function(operation, callback, scope) {
         //generate the unique IDs for this request
         var me      = this,
-            writer  = me.getWriter(),
             request = me.buildRequest(operation),
-            params = request.params;
-
-        if (operation.allowWrite()) {
-            request = writer.write(request);
-        }
+            params  = request.params;
 
         // apply JsonP proxy-specific attributes to the Request
         Ext.apply(request, {
@@ -194,7 +192,8 @@ Ext.define('Ext.data.proxy.JsonP', {
             callback: me.createRequestCallback(request, operation, callback, scope)
         });
 
-        // prevent doubling up
+        // If we are responsible for appending the params to the URL, clear them now so that
+        // The Ext.data.JsonP singleton does not append them.
         if (me.autoAppendParams) {
             request.params = {};
         }
@@ -246,41 +245,44 @@ Ext.define('Ext.data.proxy.JsonP', {
     buildUrl: function(request) {
         var me      = this,
             url     = me.callParent(arguments),
-            params  = Ext.apply({}, request.params),
-            filters = params.filters,
-            records,
+            records = request.records,
+            writer  = me.getWriter(),
+            params,
+            filters,
             filter, i;
 
-        delete params.filters;
-
-        if (me.autoAppendParams) {
-            url = Ext.urlAppend(url, Ext.Object.toQueryString(params));
+        // In the JsonP proxy, params may only go into the URL.
+        // So params created by the Writer get applied to the request's params here
+        if (writer && request.operation.allowWrite()) {
+            request = writer.write(request);
         }
 
+        // Encode filters into the URL via params
+        params  = request.params;
+        filters = params.filters,
+        delete params.filters;
         if (filters && filters.length) {
             for (i = 0; i < filters.length; i++) {
                 filter = filters[i];
 
                 if (filter.value) {
-                    url = Ext.urlAppend(url, filter.property + "=" + filter.value);
+                    params[filter.property] = filter.value;
                 }
             }
         }
 
-        //if there are any records present, append them to the url also
-        records = request.records;
+        // If there's no writer, or the writer is not configured to encode the records into a parameter, then we have to do it here.
+        if ((!writer || !writer.encode) && Ext.isArray(records) && records.length > 0) {
+            params[me.recordParam] = me.encodeRecords(records);
+        }
 
-        if (Ext.isArray(records) && records.length > 0) {
-            url = Ext.urlAppend(url, Ext.String.format("{0}={1}", me.recordParam, me.encodeRecords(records)));
+        // If we are responsible for appending the params to the URL, do it now.
+        // The params are cleared in doRequest so that the Ext.data.JsonP singleton does not add them.
+        if (me.autoAppendParams) {
+            url = Ext.urlAppend(url, Ext.Object.toQueryString(params));
         }
 
         return url;
-    },
-
-    //inherit docs
-    destroy: function() {
-        this.abort();
-        this.callParent(arguments);
     },
 
     /**
@@ -294,18 +296,20 @@ Ext.define('Ext.data.proxy.JsonP', {
     },
 
     /**
-     * Encodes an array of records into a string suitable to be appended to the script src url. This is broken out into
-     * its own function so that it can be easily overridden.
+     * Encodes an array of records into a value suitable to be added to the request `params` as the {@link #recordParam} parameter.
+     * This is broken out into its own function so that it can be easily overridden.
+     * 
+     * The default implementation 
      * @param {Ext.data.Model[]} records The records array
-     * @return {String} The encoded records string
+     * @return {Array} An array of record data objects
      */
     encodeRecords: function(records) {
-        var encoded = "",
+        var encoded = [],
             i = 0,
             len = records.length;
 
         for (; i < len; i++) {
-            encoded += Ext.Object.toQueryString(records[i].getData());
+            encoded.push(Ext.encode(records[i].getData()));
         }
 
         return encoded;

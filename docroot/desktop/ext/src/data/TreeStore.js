@@ -70,6 +70,12 @@ Ext.define('Ext.data.TreeStore', {
      * The default root id.
      */
     defaultRootId: 'root',
+    
+    /**
+     * @cfg {String} [defaultRootText="Root"]
+     * The default root text (if not specified)/
+     */
+    defaultRootText: 'Root',
 
     /**
      * @cfg {String} [defaultRootProperty="children"]
@@ -79,6 +85,8 @@ Ext.define('Ext.data.TreeStore', {
     
     // Keep a copy of the default so we know if it's been changed in a subclass/config
     rootProperty: 'children',
+    
+    fillCount: 0,
 
     /**
      * @cfg {Boolean} [folderSort=false]
@@ -253,6 +261,12 @@ Ext.define('Ext.data.TreeStore', {
             needsRoot = !(reader && !Ext.isEmpty(reader.root));
         }
         proxy = this.callParent(arguments);
+
+        // The proxy sets a parameter to carry the entity ID based upon the Operation's id
+        // That partameter name defaults to "id".
+        // TreeStore however uses a nodeParam configuration to specify the entity id
+        proxy.idParam = this.nodeParam;
+
         if (needsRoot) {
             reader = proxy.getReader();
             reader.root = this.defaultRootProperty;
@@ -279,18 +293,23 @@ Ext.define('Ext.data.TreeStore', {
      * @param {Object} scope The scope in which to run the callback function
      */
     onBeforeNodeExpand: function(node, callback, scope) {
+        var me = this;
+        
         if (node.isLoaded()) {
             Ext.callback(callback, scope || node, [node.childNodes]);
         }
         else if (node.isLoading()) {
-            this.on('load', function() {
+            me.on('load', function() {
                 Ext.callback(callback, scope || node, [node.childNodes]);
-            }, this, {single: true});
+            }, me, {single: true});
         }
         else {
-            this.read({
+            me.read({
                 node: node,
                 callback: function() {
+                    // Clear the callback, since if we're introducing a custom one,
+                    // it may be re-used on reload
+                    delete me.lastOptions.callback;
                     Ext.callback(callback, scope || node, [node.childNodes]);
                 }
             });
@@ -322,6 +341,7 @@ Ext.define('Ext.data.TreeStore', {
         var me = this,
             removed = me.removed;
 
+        node.unjoin(me);
         if (!node.isReplace && Ext.Array.indexOf(removed, node) == -1) {
             removed.push(node);
         }
@@ -339,6 +359,7 @@ Ext.define('Ext.data.TreeStore', {
             dataRoot;
 
         Ext.Array.remove(me.removed, node);
+        node.join(me);
 
         if (!node.isLeaf()) {
             dataRoot = reader.getRoot(data);
@@ -371,10 +392,11 @@ Ext.define('Ext.data.TreeStore', {
 
         root = root || {};
         if (!root.isModel) {
+            root = Ext.apply({}, root);
             // create a default rootNode and create internal data struct.
             Ext.applyIf(root, {
                 id: me.defaultRootId,
-                text: 'Root',
+                text: me.defaultRootText,
                 allowDrag: false
             });
             if (root[idProperty] === undefined) {
@@ -446,8 +468,9 @@ Ext.define('Ext.data.TreeStore', {
                 expanded: true
             }, true);
         }
-
-        // Assign the ID of the Operation so that a REST proxy can create the correct URL
+        
+        // Assign the ID of the Operation so that a ServerProxy can set its idParam parameter,
+        // or a REST proxy can create the correct URL
         options.id = node.getId();
 
         if (me.clearOnLoad) {
@@ -466,13 +489,14 @@ Ext.define('Ext.data.TreeStore', {
         Ext.applyIf(options, {
             node: node
         });
-        options.params[me.nodeParam] = node ? node.getId() : 'root';
 
-        if (node) {
+        me.callParent([options]);
+        
+        if (me.loading && node) {
             node.set('loading', true);
         }
-
-        return me.callParent([options]);
+        
+        return me;
     },
 
     /**
@@ -543,7 +567,7 @@ Ext.define('Ext.data.TreeStore', {
             i, sortCollection,
             needsIndexSort = false,
             performLocalSort = ln && me.sortOnLoad && !me.remoteSort && sorters && sorters.items && sorters.items.length,
-            node1, node2;
+            node1, node2, rootFill;
 
         // See if there are any differing index values in the new nodes. If not, then we do not have to sortByIndex
         for (i = 1; i < ln; i++) {
@@ -573,11 +597,37 @@ Ext.define('Ext.data.TreeStore', {
         }
 
         node.set('loaded', true);
+        
+        // Fill node gets called recursively (indirectly) as we're populating the
+        // nodes via a load or when appending a new child. As such, when we hit
+        // the top most node, we fire an event to let the view know we'll be doing
+        // a bulk operation so it can take appropriate action
+        rootFill = me.fillCount === 0;
+        if (rootFill) {
+            // internal event
+            me.fireEvent('beforefill', me, node, newNodes);
+        }
+        ++me.fillCount;
+        
         for (i = 0; i < ln; i++) {
             node.appendChild(newNodes[i], undefined, true);
         }
-
+        
+        if (rootFill) {
+            // internal event
+            me.fireEvent('fillcomplete', me, node, newNodes);
+        }
+        --me.fillCount;
+        
         return newNodes;
+    },
+    
+    beginBulkRemove: function(){
+        this.fireEvent('beforebulkremove', this);
+    },
+    
+    endBulkRemove: function(){
+        this.fireEvent('bulkremovecomplete', this);    
     },
 
     /**
@@ -681,7 +731,7 @@ Ext.define('Ext.data.TreeStore', {
             me.fireEvent('datachanged', me);
             me.fireEvent('refresh', me);
         }
-        me.fireEvent('sort', me);
+        me.fireEvent('sort', me, me.sorters.getRange());
     }
 }, function() {
     var proto = this.prototype;

@@ -104,7 +104,7 @@ Ext.define('Ext.menu.Manager', {
         }
     },
 
-    // private
+    // @private
     onMouseDown: function(e) {
         var me = this,
             active = me.active,
@@ -115,7 +115,7 @@ Ext.define('Ext.menu.Manager', {
         }
     },
 
-    // private
+    // @private
     register: function(menu) {
         var me = this;
 
@@ -158,7 +158,7 @@ Ext.define('Ext.menu.Manager', {
         }
     },
 
-    // private
+    // @private
     unregister: function(menu) {
         var me = this,
             menus = me.menus,
@@ -175,7 +175,7 @@ Ext.define('Ext.menu.Manager', {
         });
     },
 
-    // private
+    // @private
     registerCheckable: function(menuItem) {
         var groups  = this.groups,
             groupId = menuItem.group;
@@ -189,7 +189,7 @@ Ext.define('Ext.menu.Manager', {
         }
     },
 
-    // private
+    // @private
     unregisterCheckable: function(menuItem) {
         var groups  = this.groups,
             groupId = menuItem.group;

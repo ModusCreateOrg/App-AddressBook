@@ -41,12 +41,14 @@ Ext.define('Ext.grid.column.Template', {
      * {@link Ext.data.Model Model}'s {@link Ext.data.Model#persistenceProperty data} to produce a
      * column's rendered value.
      */
+    
     /**
-     * @cfg renderer
+     * @cfg {Object} renderer
      * @hide
      */
+    
     /**
-     * @cfg scope
+     * @cfg {Object} scope
      * @hide
      */
 

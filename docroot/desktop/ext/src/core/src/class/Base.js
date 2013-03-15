@@ -14,7 +14,21 @@
 (function(flexSetter) {
 
 var noArgs = [],
-    Base = function(){};
+    Base = function(){},
+    hookFunctionFactory = function(hookFunction, underriddenFunction, methodName, owningClass) {
+        var result = function() {
+            var result = this.callParent(arguments);
+            hookFunction.apply(this, arguments);
+            return result;
+        };
+        result.$name = methodName;
+        result.$owner = owningClass;
+        if (underriddenFunction) {
+            result.$previous = underriddenFunction.$previous;
+            underriddenFunction.$previous = result;
+        }
+        return result;
+    };
 
     // These static properties will be copied to every newly created class with {@link Ext#define}
     Ext.apply(Base, {
@@ -296,7 +310,7 @@ var noArgs = [],
                 if (members.hasOwnProperty(name)) {
                     member = members[name];
 
-                    if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn) {
+                    if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn && member !== Ext.identityFn) {
                         member.$owner = this;
                         member.$name = name;
                         //<debug>
@@ -318,8 +332,8 @@ var noArgs = [],
          * @param name
          * @param member
          */
-        addMember: function(name, member) {
-            if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn) {
+        addMember: function(name, member) {            
+            if (typeof member == 'function' && !member.$isClass && member !== Ext.emptyFn && member !== Ext.identityFn) {
                 member.$owner = this;
                 member.$name = name;
                 //<debug>
@@ -328,7 +342,6 @@ var noArgs = [],
             }
 
             this.prototype[name] = member;
-
             return this;
         },
 
@@ -479,6 +492,8 @@ var noArgs = [],
                 for (name in members) { // hasOwnProperty is checked in the next loop...
                     if (name == 'statics') {
                         statics = members[name];
+                    } else if (name == 'inheritableStatics'){
+                        me.addInheritableStatics(members[name]);
                     } else if (name == 'config') {
                         me.addConfig(members[name], true);
                     } else {
@@ -496,7 +511,7 @@ var noArgs = [],
                     if (members.hasOwnProperty(name)) {
                         member = members[name];
 
-                        if (typeof member == 'function' && !member.$className && member !== Ext.emptyFn) {
+                        if (typeof member == 'function' && !member.$className && member !== Ext.emptyFn && member !== Ext.identityFn) {
                             if (typeof member.$owner != 'undefined') {
                                 member = cloneFunction(member);
                             }
@@ -533,8 +548,8 @@ var noArgs = [],
 
             // This code is intentionally inlined for the least number of debugger stepping
             return (method = this.callParent.caller) && (method.$previous ||
-                ((method = method.$owner ? method : method.caller) &&
-                    method.$owner.superclass.self[method.$name])).apply(this, args || noArgs);
+                  ((method = method.$owner ? method : method.caller) &&
+                        method.$owner.superclass.self[method.$name])).apply(this, args || noArgs);
         },
 
         // Documented downwards
@@ -543,8 +558,8 @@ var noArgs = [],
 
             // This code is intentionally inlined for the least number of debugger stepping
             return (method = this.callSuper.caller) &&
-                ((method = method.$owner ? method : method.caller) &&
-                    method.$owner.superclass.self[method.$name]).apply(this, args || noArgs);
+                    ((method = method.$owner ? method : method.caller) &&
+                      method.$owner.superclass.self[method.$name]).apply(this, args || noArgs);
         },
 
         //<feature classSystem.mixins>
@@ -555,12 +570,14 @@ var noArgs = [],
          * @inheritable
          */
         mixin: function(name, mixinClass) {
-            var mixin = mixinClass.prototype,
-                prototype = this.prototype,
-                key;
+            var me = this,
+                mixin = mixinClass.prototype,
+                prototype = me.prototype,
+                key, statics, i, ln, staticName,
+                mixinValue, hookKey, hookFunction;
 
             if (typeof mixin.onClassMixedIn != 'undefined') {
-                mixin.onClassMixedIn.call(mixinClass, this);
+                mixin.onClassMixedIn.call(mixinClass, me);
             }
 
             if (!prototype.hasOwnProperty('mixins')) {
@@ -573,21 +590,58 @@ var noArgs = [],
             }
 
             for (key in mixin) {
+                mixinValue = mixin[key];
                 if (key === 'mixins') {
-                    Ext.merge(prototype.mixins, mixin[key]);
+                    Ext.merge(prototype.mixins, mixinValue);
                 }
-                else if (typeof prototype[key] == 'undefined' && key != 'mixinId' && key != 'config') {
-                    prototype[key] = mixin[key];
+                else if (key === 'xhooks') {
+                    for (hookKey in mixinValue) {
+                        hookFunction = mixinValue[hookKey];
+
+                        // Mixed in xhook methods cannot call a parent.
+                        hookFunction.$previous = Ext.emptyFn;
+
+                        if (prototype.hasOwnProperty(hookKey)) {
+
+                            // Pass the hook function, and the existing function which it is to underride.
+                            // The existing function has its $previous pointer replaced by a closure
+                            // which calls the hookFunction and then the existing function's original $previous
+                            hookFunctionFactory(hookFunction, prototype[hookKey], hookKey, me);
+                        } else {
+                            // There's no original function, so generate an implementation which calls
+                            // the hook function. It will not get any $previous pointer.
+                            prototype[hookKey] = hookFunctionFactory(hookFunction, null, hookKey, me);
+                        }
+                    }
+                }
+                else if (!(key === 'mixinId' || key === 'config') && (prototype[key] === undefined)) {
+                    prototype[key] = mixinValue;
                 }
             }
 
+            //<feature classSystem.inheritableStatics>
+            // Mixin statics inheritance
+            statics = mixin.$inheritableStatics;
+
+            if (statics) {
+                for (i = 0, ln = statics.length; i < ln; i++) {
+                    staticName = statics[i];
+
+                    if (!me.hasOwnProperty(staticName)) {
+                        me[staticName] = mixinClass[staticName];
+                    }
+                }
+            }
+            //</feature>
+
             //<feature classSystem.config>
             if ('config' in mixin) {
-                this.addConfig(mixin.config, false);
+                me.addConfig(mixin.config, false);
             }
             //</feature>
 
             prototype.mixins[name] = mixin;
+            return me;
         },
         //</feature>
 
@@ -879,40 +933,40 @@ var noArgs = [],
          * This method is used by an override to call the superclass method but bypass any
          * overridden method. This is often done to "patch" a method that contains a bug
          * but for whatever reason cannot be fixed directly.
-         *
+         * 
          * Consider:
-         *
+         * 
          *      Ext.define('Ext.some.Class', {
          *          method: function () {
          *              console.log('Good');
          *          }
          *      });
-         *
+         * 
          *      Ext.define('Ext.some.DerivedClass', {
          *          method: function () {
          *              console.log('Bad');
-         *
+         * 
          *              // ... logic but with a bug ...
-         *
+         *              
          *              this.callParent();
          *          }
          *      });
-         *
+         * 
          * To patch the bug in `DerivedClass.method`, the typical solution is to create an
          * override:
-         *
+         * 
          *      Ext.define('App.paches.DerivedClass', {
          *          override: 'Ext.some.DerivedClass',
-         *
+         *          
          *          method: function () {
          *              console.log('Fixed');
-         *
+         * 
          *              // ... logic but with bug fixed ...
          *
          *              this.callSuper();
          *          }
          *      });
-         *
+         * 
          * The patch method cannot use `callParent` to call the superclass `method` since
          * that would call the overridden method containing the bug. In other words, the
          * above patch would only produce "Fixed" then "Good" in the console log, whereas,
@@ -930,8 +984,8 @@ var noArgs = [],
             // to be.
             var method,
                 superMethod = (method = this.callSuper.caller) &&
-                    ((method = method.$owner ? method : method.caller) &&
-                        method.$owner.superclass[method.$name]);
+                        ((method = method.$owner ? method : method.caller) &&
+                          method.$owner.superclass[method.$name]);
 
             //<debug error>
             if (!superMethod) {
@@ -951,7 +1005,7 @@ var noArgs = [],
 
                 if (!(methodName in parentClass)) {
                     throw new Error("this.callSuper() was called but there's no such method (" + methodName +
-                        ") found in the parent class (" + (Ext.getClassName(parentClass) || 'Object') + ")");
+                                ") found in the parent class (" + (Ext.getClassName(parentClass) || 'Object') + ")");
                 }
             }
             //</debug>

@@ -55,6 +55,19 @@ Ext.define('Ext.data.Tree', {
 
         me.root = node;
 
+        // If the passed node is currently the root of another Tree, remove it.
+        if (node.rootOf) {
+            node.rootOf.removeRootNode();
+        }
+
+        // If the passed node is owned by some other node, remove it.
+        else if (node.parentNode) {
+            node.parentNode.removeChild(node);
+        }
+
+        // Insert upward link to owning Tree
+        node.rootOf = me;
+
         if (me.fireEvent('beforeappend', null, node) !== false) {
             node.set('root', true);
             node.updateInfo();
@@ -68,7 +81,8 @@ Ext.define('Ext.data.Tree', {
                 remove: me.onNodeRemove
             });
 
-            me.relayEvents(node, [
+            // Capture the relayer functions so that if the root is removed, the listeners can be removed.
+            me.rootRelayers = me.relayEvents(node, [
                 /**
                  * @event append
                  * @inheritdoc Ext.data.NodeInterface#append
@@ -156,12 +170,43 @@ Ext.define('Ext.data.Tree', {
             ]);
 
             me.nodeHash = {};
-            me.registerNode(node);
+            me.registerNode(node, true);
             me.fireEvent('append', null, node);
             me.fireEvent('rootchange', node);
         }
 
         return node;
+    },
+
+    /**
+     * Removes the root node from this tree.
+     * @return {Ext.data.NodeInterface} The root node
+     */
+    removeRootNode: function() {
+        var me = this,
+            root = me.root;
+
+        root.set('root', false);
+        delete root.rootOf;
+        delete me.root;
+
+        // Remove listeners
+        root.un({
+            scope: me,
+            insert: me.onNodeInsert,
+            append: me.onNodeAppend,
+            remove: me.onNodeRemove
+        });
+
+        // Remove the relaying listeners through which we relay the root's events
+        Ext.destroy(me.rootRelayers);
+
+        // Unregister the root and all its descendants
+        me.unregisterNode(root, true);
+
+        me.fireEvent('remove', null, root, false);
+        me.fireEvent('rootchange', null);
+        return root;
     },
 
     /**
@@ -251,11 +296,14 @@ Ext.define('Ext.data.Tree', {
      * @param {Boolean} [includeChildren] True to unregister any child nodes
      */
     unregisterNode : function(node, includeChildren) {
+        var me = this;
+
         delete this.nodeHash[node.getId() || node.internalId];
+        node.un('idchanged', me.onNodeIdChanged, me);
         if (includeChildren === true) {
             node.eachChild(function(child){
-                this.unregisterNode(child, true);
-            }, this);
+                me.unregisterNode(child, true);
+            });
         }
     },
 

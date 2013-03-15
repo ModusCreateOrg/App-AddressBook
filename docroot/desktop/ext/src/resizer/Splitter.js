@@ -23,7 +23,9 @@ Ext.define('Ext.resizer.Splitter', {
     renderTpl: [
         '<tpl if="collapsible===true">',
             '<div id="{id}-collapseEl" class="', Ext.baseCSSPrefix, 'collapse-el ',
-                Ext.baseCSSPrefix, 'layout-split-{collapseDir}">&#160;</div>',
+                Ext.baseCSSPrefix, 'layout-split-{collapseDir}',
+                '<tpl if="childElCls"> {childElCls}</tpl>">&#160;',
+            '</div>',
         '</tpl>'
     ],
 
@@ -138,6 +140,8 @@ Ext.define('Ext.resizer.Splitter', {
             collapseDir: collapseDir,
             collapsible: me.collapsible || target.collapsible
         });
+
+        me.protoEl.unselectable();
     },
 
     onRender: function() {
@@ -162,7 +166,6 @@ Ext.define('Ext.resizer.Splitter', {
             scope: me
         });
 
-        me.el.unselectable();
         if (me.canResize) {
             me.tracker = Ext.create(me.getTrackerConfig());
             // Relay the most important events to our owner (could open wider later):

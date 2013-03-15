@@ -35,7 +35,7 @@ Ext.define('Ext.util.History', {
 
     constructor: function() {
         var me = this;
-        me.oldIEMode = Ext.isIE6 || Ext.isIE7 || !Ext.isStrict && Ext.isIE8;
+        me.oldIEMode = Ext.isIE7m || !Ext.isStrict && Ext.isIE8;
         me.iframe = null;
         me.hiddenField = null;
         me.ready = false;

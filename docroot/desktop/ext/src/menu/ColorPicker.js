@@ -44,7 +44,7 @@
 
     /**
      * @cfg {Boolean} hideOnClick
-     * False to continue showing the menu after a date is selected.
+     * False to continue showing the menu after a color is selected.
      */
     hideOnClick : true,
 

@@ -10,19 +10,15 @@ Ext.onReady(function() {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
-    if (Ext.Updater) {
-        Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">Henter...</div>';
-    }
-
 
     Ext.define("Ext.locale.da.view.View", {
         override: "Ext.view.View",
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.da.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} markerede rækker"
+    Ext.define("Ext.locale.da.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} markerede rækker"
     });
 
     Ext.define("Ext.locale.da.TabPanelItem", {
@@ -49,22 +45,22 @@ Ext.onReady(function() {
         };
 
         Ext.Date.monthNumbers = {
-            Jan: 0,
-            Feb: 1,
-            Mar: 2,
-            Apr: 3,
-            May: 4,
-            Jun: 5,
-            Jul: 6,
-            Aug: 7,
-            Sep: 8,
-            Oct: 9,
-            Nov: 10,
-            Dec: 11
+            jan: 0,
+            feb: 1,
+            mar: 2,
+            apr: 3,
+            maj: 4,
+            jun: 5,
+            jul: 6,
+            aug: 7,
+            sep: 8,
+            okt: 9,
+            nov: 10,
+            dec: 11
         };
 
         Ext.Date.getMonthNumber = function(name) {
-            return Ext.Date.monthNumbers[name.substring(0, 1).toUpperCase() + name.substring(1, 3).toLowerCase()];
+            return Ext.Date.monthNumbers[name.substring(0, 3).toLowerCase()];
         };
 
         Ext.Date.dayNames = ["søndag", "mandag", "tirsdag", "onsdag", "torsdag", "fredag", "lørdag"];
@@ -142,7 +138,8 @@ Ext.onReady(function() {
         override: "Ext.form.field.Number",
         minText: "Mindste-værdien for dette felt er {0}",
         maxText: "Maksimum-værdien for dette felt er {0}",
-        nanText: "{0} er ikke et tilladt nummer"
+        nanText: "{0} er ikke et tilladt nummer",
+        decimalSeparator: ","
     });
 
     Ext.define("Ext.locale.da.form.field.Date", {

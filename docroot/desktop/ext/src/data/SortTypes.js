@@ -50,9 +50,7 @@ Ext.define('Ext.data.SortTypes', {
      * @param {Object} s The value being converted
      * @return {Object} The comparison value
      */
-    none : function(s) {
-        return s;
-    },
+    none : Ext.identityFn,
 
     /**
      * The regular expression used to strip tags

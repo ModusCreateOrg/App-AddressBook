@@ -16,9 +16,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.cs.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} vybraných řádků"
+    Ext.define("Ext.locale.cs.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} vybraných řádků"
     });
 
     Ext.define("Ext.locale.cs.TabPanelItem", {

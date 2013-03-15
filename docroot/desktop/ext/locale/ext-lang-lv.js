@@ -15,9 +15,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.lv.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} iezīmētu rindu"
+    Ext.define("Ext.locale.lv.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} iezīmētu rindu"
     });
 
     Ext.define("Ext.locale.lv.TabPanelItem", {

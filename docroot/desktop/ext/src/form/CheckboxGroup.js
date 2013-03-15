@@ -143,18 +143,34 @@ Ext.define('Ext.form.CheckboxGroup', {
      * @param {Object} field
      * @protected
      */
-    onFieldAdded: function(field) {
-        var me = this;
-        if (field.isCheckbox) {
-            me.mon(field, 'change', me.checkChange, me);
+    onAdd: function(item) {
+        var me = this,
+            items,
+            len, i;
+
+        if (item.isCheckbox) {
+            me.mon(item, 'change', me.checkChange, me);
+        } else if (item.isContainer) {
+            items = item.items.items;
+            for (i = 0, len = items.length; i < len; i++) {
+                me.onAdd(items[i]);
+            }
         }
         me.callParent(arguments);
     },
 
-    onFieldRemoved: function(field) {
-        var me = this;
-        if (field.isCheckbox) {
-            me.mun(field, 'change', me.checkChange, me);
+    onRemove: function(item) {
+        var me = this,
+            items,
+            len, i;
+
+        if (item.isCheckbox) {
+            me.mun(item, 'change', me.checkChange, me);
+        } else if (item.isContainer) {
+            items = item.items.items;
+            for (i = 0, len = items.length; i < len; i++) {
+                me.onRemove(items[i]);
+            }
         }
         me.callParent(arguments);
     },

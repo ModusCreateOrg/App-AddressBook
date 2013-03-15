@@ -21,7 +21,7 @@ Ext.define('Ext.selection.RowModel', {
      * Turns on/off keyboard navigation within the grid.
      */
     enableKeyNav: true,
-    
+
     /**
      * @cfg {Boolean} [ignoreRightMouseSelection=false]
      * True to ignore selections that are made when using the right mouse button if there are
@@ -129,17 +129,31 @@ Ext.define('Ext.selection.RowModel', {
         });
     },
 
+    onUpdate: function(record) {
+        var me = this,
+            view = me.view,
+            index;
+        
+        if (view && me.isSelected(record)) {
+            index = view.indexOf(record);
+            view.onRowSelect(index);
+            if (record === me.lastFocused) {
+                view.onRowFocus(index, true);
+            }
+        }
+    },
+
     // Returns the number of rows currently visible on the screen or
     // false if there were no rows. This assumes that all rows are
     // of the same height and the first view is accurate.
     getRowsVisible: function() {
         var rowsVisible = false,
             view = this.views[0],
-            row = view.getNode(0),
+            firstRow = view.all.first(),
             rowHeight, gridViewHeight;
 
-        if (row) {
-            rowHeight = Ext.fly(row).getHeight();
+        if (firstRow) {
+            rowHeight = firstRow.getHeight();
             gridViewHeight = view.el.getHeight();
             rowsVisible = Math.floor(gridViewHeight / rowHeight);
         }
@@ -150,7 +164,7 @@ Ext.define('Ext.selection.RowModel', {
     // go to last visible record in grid.
     onKeyEnd: function(e) {
         var me = this,
-            last = me.store.getAt(me.store.getCount() - 1);
+            last = me.views[0].all.last();
 
         if (last) {
             if (e.shiftKey) {
@@ -167,16 +181,16 @@ Ext.define('Ext.selection.RowModel', {
     // go to first visible record in grid.
     onKeyHome: function(e) {
         var me = this,
-            first = me.store.getAt(0);
+            firstRow = me.views[0].all.first();
 
-        if (first) {
+        if (firstRow) {
             if (e.shiftKey) {
-                me.selectRange(first, me.lastFocused || 0);
-                me.setLastFocused(first);
+                me.selectRange(firstRow, me.lastFocused || 0);
+                me.setLastFocused(firstRow);
             } else if (e.ctrlKey) {
-                me.setLastFocused(first);
+                me.setLastFocused(firstRow);
             } else {
-                me.doSelect(first, false);
+                me.doSelect(firstRow, false);
             }
         }
     },
@@ -195,7 +209,7 @@ Ext.define('Ext.selection.RowModel', {
             if (prevIdx < 0) {
                 prevIdx = 0;
             }
-            prevRecord = me.store.getAt(prevIdx);
+            prevRecord = me.views[0].getRecord(prevIdx);
             if (e.shiftKey) {
                 me.selectRange(prevRecord, e.record, e.ctrlKey, 'up');
                 me.setLastFocused(prevRecord);
@@ -223,7 +237,7 @@ Ext.define('Ext.selection.RowModel', {
             if (nextIdx >= me.store.getCount()) {
                 nextIdx = me.store.getCount() - 1;
             }
-            nextRecord = me.store.getAt(nextIdx);
+            nextRecord = me.views[0].getAt(nextIdx);
             if (e.shiftKey) {
                 me.selectRange(nextRecord, e.record, e.ctrlKey, 'down');
                 me.setLastFocused(nextRecord);
@@ -260,28 +274,33 @@ Ext.define('Ext.selection.RowModel', {
     // selection. Provides bounds checking.
     onKeyUp: function(e) {
         var me = this,
-            idx  = me.store.indexOf(me.lastFocused),
-            record;
+            pos = {
+                row: me.lastFocused ? me.views[0].indexOf(me.lastFocused, true) : me.view.all.endIndex + 1,
+                column: 0
+            },
+            newPos,
+            newRecord;
 
-        if (idx > 0) {
-            // needs to be the filtered count as thats what
-            // will be visible.
-            record = me.store.getAt(idx - 1);
-            if (e.shiftKey && me.lastFocused) {
-                if (me.isSelected(me.lastFocused) && me.isSelected(record)) {
-                    me.doDeselect(me.lastFocused, true);
-                    me.setLastFocused(record);
-                } else if (!me.isSelected(me.lastFocused)) {
-                    me.doSelect(me.lastFocused, true);
-                    me.doSelect(record, true);
+        if (pos.row > 0) {
+            newPos = me.view.walkCells(pos, 'up', e);
+            newRecord = newPos ? me.views[0].getRecord(newPos.row) : null;
+            if (newRecord) {
+                if (e.shiftKey && me.lastFocused) {
+                    if (me.isSelected(me.lastFocused) && me.isSelected(newRecord)) {
+                        me.doDeselect(me.lastFocused, true);
+                        me.setLastFocused(newRecord);
+                    } else if (!me.isSelected(me.lastFocused)) {
+                        me.doSelect(me.lastFocused, true);
+                        me.doSelect(newRecord, true);
+                    } else {
+                        me.doSelect(newRecord, true);
+                    }
+                } else if (e.ctrlKey) {
+                    me.setLastFocused(newRecord);
                 } else {
-                    me.doSelect(record, true);
+                    me.doSelect(newRecord);
+                    //view.focusRow(idx - 1);
                 }
-            } else if (e.ctrlKey) {
-                me.setLastFocused(record);
-            } else {
-                me.doSelect(record);
-                //view.focusRow(idx - 1);
             }
         }
         // There was no lastFocused record, and the user has pressed up
@@ -298,34 +317,37 @@ Ext.define('Ext.selection.RowModel', {
     // selection. Provides bounds checking.
     onKeyDown: function(e) {
         var me = this,
-            idx  = me.store.indexOf(me.lastFocused),
-            record;
+            pos = {
+                row: me.lastFocused ? me.views[0].indexOf(me.lastFocused) : 0,
+                column: 0
+            },
+            newPos,
+            newRecord;
 
-        // needs to be the filtered count as thats what
-        // will be visible.
-        if (idx + 1 < me.store.getCount()) {
-            record = me.store.getAt(idx + 1);
+        newPos = me.view.walkCells(pos, 'down', e);
+        newRecord = newPos ? me.views[0].getRecord(newPos.row) : null;
+        if (newRecord) {
             if (me.selected.getCount() === 0) {
                 if (!e.ctrlKey) {
-                    me.doSelect(record);
+                    me.doSelect(newRecord);
                 } else {
-                    me.setLastFocused(record);
+                    me.setLastFocused(newRecord);
                 }
                 //view.focusRow(idx + 1);
             } else if (e.shiftKey && me.lastFocused) {
-                if (me.isSelected(me.lastFocused) && me.isSelected(record)) {
+                if (me.isSelected(me.lastFocused) && me.isSelected(newRecord)) {
                     me.doDeselect(me.lastFocused, true);
-                    me.setLastFocused(record);
+                    me.setLastFocused(newRecord);
                 } else if (!me.isSelected(me.lastFocused)) {
                     me.doSelect(me.lastFocused, true);
-                    me.doSelect(record, true);
+                    me.doSelect(newRecord, true);
                 } else {
-                    me.doSelect(record, true);
+                    me.doSelect(newRecord, true);
                 }
             } else if (e.ctrlKey) {
-                me.setLastFocused(record);
+                me.setLastFocused(newRecord);
             } else {
-                me.doSelect(record);
+                me.doSelect(newRecord);
                 //view.focusRow(idx + 1);
             }
         }
@@ -352,15 +374,19 @@ Ext.define('Ext.selection.RowModel', {
     // Select the record with the event included so that
     // we can take into account ctrlKey, shiftKey, etc
     onRowMouseDown: function(view, record, item, index, e) {
-        if (!this.allowRightMouseSelection(e)) {
-            return;
-        }
 
-        if (e.button === 0 || !this.isSelected(record)) {
-            this.selectWithEvent(record, e);
+        // Record index will be -1 if the clicked record is a metadata record and not selectable
+        if (index !== -1) {
+            if (!this.allowRightMouseSelection(e)) {
+                return;
+            }
+
+            if (e.button === 0 || !this.isSelected(record)) {
+                this.selectWithEvent(record, e);
+            }
         }
     },
-    
+
     /**
      * Checks whether a selection should proceed based on the ignoreRightMouseSelection
      * option.
@@ -382,8 +408,7 @@ Ext.define('Ext.selection.RowModel', {
         var me      = this,
             views   = me.views,
             viewsLn = views.length,
-            store   = me.store,
-            rowIdx  = store.indexOf(record),
+            rowIdx  = views[0].indexOf(record),
             eventName = isSelected ? 'select' : 'deselect',
             i = 0;
 
@@ -409,12 +434,11 @@ Ext.define('Ext.selection.RowModel', {
     onLastFocusChanged: function(oldFocused, newFocused, supressFocus) {
         var views   = this.views,
             viewsLn = views.length,
-            store   = this.store,
             rowIdx,
             i = 0;
 
         if (oldFocused) {
-            rowIdx = store.indexOf(oldFocused);
+            rowIdx = views[0].indexOf(oldFocused);
             if (rowIdx != -1) {
                 for (; i < viewsLn; i++) {
                     views[i].onRowFocus(rowIdx, false);
@@ -423,7 +447,7 @@ Ext.define('Ext.selection.RowModel', {
         }
 
         if (newFocused) {
-            rowIdx = store.indexOf(newFocused);
+            rowIdx = views[0].indexOf(newFocused);
             if (rowIdx != -1) {
                 for (i = 0; i < viewsLn; i++) {
                     views[i].onRowFocus(rowIdx, true, supressFocus);
@@ -441,15 +465,15 @@ Ext.define('Ext.selection.RowModel', {
             position = view.getPosition(record, header),
             direction = e.shiftKey ? 'left' : 'right';
 
+        // We want to continue looping while:
+        // 1) We have a valid position
+        // 2) There is no editor at that position
+        // 3) There is an editor, but editing has been cancelled (veto event)
+
         do {
             position  = view.walkCells(position, direction, e, me.preventWrap);
-        } while(position && !view.headerCt.getHeaderAtIndex(position.column).getEditor());
-
-        if (position) {
-            editingPlugin.startEditByPosition(position);
-        }
+        } while(position && (!view.headerCt.getHeaderAtIndex(position.column).getEditor(record) || !editingPlugin.startEditByPosition(position)));
     },
-
 
     /**
      * Returns position of the first selected cell in the selection in the format {row: row, column: column}
@@ -469,7 +493,6 @@ Ext.define('Ext.selection.RowModel', {
         this.select(record);
     },
 
-
     /**
      * Selects the record immediately following the currently selected record.
      * @param {Boolean} [keepExisting] True to retain existing selections
@@ -481,7 +504,7 @@ Ext.define('Ext.selection.RowModel', {
             store = me.store,
             selection = me.getSelection(),
             record = selection[selection.length - 1],
-            index = store.indexOf(record) + 1,
+            index = me.views[0].indexOf(record) + 1,
             success;
 
         if(index === store.getCount() || index === 0) {
@@ -503,7 +526,7 @@ Ext.define('Ext.selection.RowModel', {
         var me = this,
             selection = me.getSelection(),
             record = selection[0],
-            index = me.store.indexOf(record) - 1,
+            index = me.views[0].indexOf(record) - 1,
             success;
 
         if (index < 0) {
@@ -513,5 +536,9 @@ Ext.define('Ext.selection.RowModel', {
             success = true;
         }
         return success;
+    },
+
+    isRowSelected: function(record, index) {
+        return this.isSelected(record);
     }
 });

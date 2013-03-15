@@ -17,9 +17,9 @@ Ext.onReady(function() {
         emptyText: "Ne postoji ni jedan slog"
     });
 
-    Ext.define("Ext.locale.sr.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} izabranih redova"
+    Ext.define("Ext.locale.sr.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} izabranih redova"
     });
 
     Ext.define("Ext.locale.sr.TabPanelItem", {

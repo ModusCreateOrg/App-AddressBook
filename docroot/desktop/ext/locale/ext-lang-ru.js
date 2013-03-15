@@ -17,9 +17,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.ru.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} выбранных строк"
+    Ext.define("Ext.locale.ru.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} выбранных строк"
     });
 
     Ext.define("Ext.locale.ru.TabPanelItem", {
@@ -140,7 +140,8 @@ Ext.onReady(function() {
         override: "Ext.form.field.Number",
         minText: "Значение этого поля не может быть меньше {0}",
         maxText: "Значение этого поля не может быть больше {0}",
-        nanText: "{0} не является числом"
+        nanText: "{0} не является числом",
+        negativeText: "Значение не может быть отрицательным"
     });
 
     Ext.define("Ext.locale.ru.form.field.Date", {

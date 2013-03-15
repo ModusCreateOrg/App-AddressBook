@@ -59,10 +59,23 @@
     .#{$prefix}form-cb-label-before {
         margin-right: 4px;
     }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}field .#{$prefix}form-cb-label-before {
+            margin-right: 0;
+            margin-left: 4px;
+        }
+    }
+
     .#{$prefix}form-cb-label-after {
         margin-left: 4px;
     }
 
-
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}field .#{$prefix}form-cb-label-after {
+            margin-left: 0;
+            margin-right: 4px;
+        }
+    }
 
 }

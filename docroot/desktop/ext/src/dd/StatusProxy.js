@@ -14,6 +14,8 @@ Ext.define('Ext.dd.StatusProxy', {
         '<div class="' + Ext.baseCSSPrefix + 'dd-drop-icon"></div>' +
         '<div id="{id}-ghost" class="' + Ext.baseCSSPrefix + 'dd-drag-ghost"></div>'
     ],
+    
+    repairCls: Ext.baseCSSPrefix + 'dd-drag-repair',
 
     /**
      * Creates new StatusProxy.
@@ -146,7 +148,7 @@ Ext.define('Ext.dd.StatusProxy', {
         me.callback = callback;
         me.scope = scope;
         if (xy && me.animRepair !== false) {
-            me.el.addCls(Ext.baseCSSPrefix + 'dd-drag-repair');
+            me.el.addCls(me.repairCls);
             me.el.hideUnders(true);
             me.anim = me.el.animate({
                 duration: me.repairDuration || 500,
@@ -169,7 +171,7 @@ Ext.define('Ext.dd.StatusProxy', {
         var me = this;
     
         me.hide(true);
-        me.el.removeCls(Ext.baseCSSPrefix + 'dd-drag-repair');
+        me.el.removeCls(me.repairCls);
         if (typeof me.callback == "function") {
             me.callback.call(me.scope || me);
         }

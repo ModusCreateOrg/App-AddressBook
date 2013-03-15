@@ -108,7 +108,7 @@ Ext.define('Ext.picker.Color', {
         '</tpl>'
     ],
 
-    // private
+    // @private
     initComponent : function(){
         var me = this;
 
@@ -129,7 +129,7 @@ Ext.define('Ext.picker.Color', {
     },
 
 
-    // private
+    // @private
     initRenderData : function(){
         var me = this;
         return Ext.apply(me.callParent(), {
@@ -151,7 +151,7 @@ Ext.define('Ext.picker.Color', {
         }
     },
 
-    // private
+    // @private
     afterRender : function(){
         var me = this,
             value;
@@ -164,7 +164,7 @@ Ext.define('Ext.picker.Color', {
         }
     },
 
-    // private
+    // @private
     handleClick : function(event, target){
         var me = this,
             color;

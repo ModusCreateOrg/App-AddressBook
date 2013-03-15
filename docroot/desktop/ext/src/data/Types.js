@@ -137,7 +137,7 @@ Ext.define('Ext.data.Types', {
          */
         DATE: {
             convert: function(v) {
-                var df = this.dateFormat,
+                var df = this.dateReadFormat || this.dateFormat,
                     parsed;
 
                 if (!v) {
@@ -147,12 +147,6 @@ Ext.define('Ext.data.Types', {
                     return v;
                 }
                 if (df) {
-                    if (df == 'timestamp') {
-                        return new Date(v*1000);
-                    }
-                    if (df == 'time') {
-                        return new Date(parseInt(v, 10));
-                    }
                     return Ext.Date.parse(v, df);
                 }
 

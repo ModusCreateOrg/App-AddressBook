@@ -311,6 +311,14 @@ Ext.define('Ext.Editor', {
         value = Ext.isDefined(value) ? value : Ext.String.trim(me.boundEl.dom.innerText || me.boundEl.dom.innerHTML);
 
         if (!me.rendered) {
+            // Render to the ownerCt's element
+            // Being floating, we do not need to use the actual layout's target.
+            // Indeed, it's better if we do not so that we do not interfere with layout's child management,
+            // especially with CellEditors in the element of a TablePanel.
+            if (me.ownerCt) {
+                me.parentEl = me.ownerCt.el;
+                me.parentEl.position();
+            }
             me.render(me.parentEl || document.body);
         }
 

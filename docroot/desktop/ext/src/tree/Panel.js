@@ -132,6 +132,11 @@ Ext.define('Ext.tree.Panel', {
      * @cfg {Ext.data.TreeStore} store (required)
      * The {@link Ext.data.TreeStore Store} the tree should use as its data source.
      */
+    
+    arrowCls: Ext.baseCSSPrefix + 'tree-arrows',
+    linesCls: Ext.baseCSSPrefix + 'tree-lines',
+    noLinesCls: Ext.baseCSSPrefix + 'tree-no-lines',
+    autoWidthCls: Ext.baseCSSPrefix + 'autowidth-table',
 
     constructor: function(config) {
         config = config || {};
@@ -147,34 +152,35 @@ Ext.define('Ext.tree.Panel', {
     initComponent: function() {
         var me = this,
             cls = [me.treeCls],
+            store = me.store,
             view;
 
         if (me.useArrows) {
-            cls.push(Ext.baseCSSPrefix + 'tree-arrows');
+            cls.push(me.arrowCls);
             me.lines = false;
         }
 
         if (me.lines) {
-            cls.push(Ext.baseCSSPrefix + 'tree-lines');
+            cls.push(me.linesCls);
         } else if (!me.useArrows) {
-            cls.push(Ext.baseCSSPrefix + 'tree-no-lines');
+            cls.push(me.noLinesCls);
         }
 
-        if (Ext.isString(me.store)) {
-            me.store = Ext.StoreMgr.lookup(me.store);
-        } else if (!me.store || Ext.isObject(me.store) && !me.store.isStore) {
-            me.store = new Ext.data.TreeStore(Ext.apply({}, me.store || {}, {
+        if (Ext.isString(store)) {
+            store = me.store = Ext.StoreMgr.lookup(store);
+        } else if (!store || Ext.isObject(store) && !store.isStore) {
+            store = me.store = new Ext.data.TreeStore(Ext.apply({
                 root: me.root,
                 fields: me.fields,
                 model: me.model,
                 folderSort: me.folderSort
-            }));
+            }, store));
         } else if (me.root) {
-            me.store = Ext.data.StoreManager.lookup(me.store);
-            me.store.setRootNode(me.root);
+            store = me.store = Ext.data.StoreManager.lookup(store);
+            store.setRootNode(me.root);
             if (me.folderSort !== undefined) {
-                me.store.folderSort = me.folderSort;
-                me.store.sort();
+                store.folderSort = me.folderSort;
+                store.sort();
             }
         }
 
@@ -183,22 +189,82 @@ Ext.define('Ext.tree.Panel', {
         //     me.rootVisible = false;
         // }
 
-        me.viewConfig = Ext.apply({}, me.viewConfig);
-        me.viewConfig = Ext.applyIf(me.viewConfig, {
+        me.viewConfig = Ext.apply({
             rootVisible: me.rootVisible,
             animate: me.enableAnimations,
             singleExpand: me.singleExpand,
-            node: me.store.getRootNode(),
+            node: store.getRootNode(),
             hideHeaders: me.hideHeaders
-        });
+        }, me.viewConfig);
 
-        me.mon(me.store, {
-            scope: me,
+        // If the user specifies the headers collection manually then dont inject our own
+        if (!me.columns) {
+            if (me.initialConfig.hideHeaders === undefined) {
+                me.hideHeaders = true;
+            }
+            me.addCls(me.autoWidthCls);
+            me.columns = [{
+                xtype    : 'treecolumn',
+                text     : 'Name',
+                width    : Ext.isIE6 ? '100%' : 10000, // IE6 needs width:100%
+                dataIndex: me.displayField         
+            }];
+        }
+
+        if (me.cls) {
+            cls.push(me.cls);
+        }
+        me.cls = cls.join(' ');
+
+        me.callParent();
+
+        view = me.getView();
+
+        me.relayEvents(view, [
+            /**
+             * @event checkchange
+             * Fires when a node with a checkbox's checked property changes
+             * @param {Ext.data.NodeInterface} node The node who's checked property was changed
+             * @param {Boolean} checked The node's new checked state
+             */
+            'checkchange',
+            /**
+             * @event afteritemexpand
+             * @inheritdoc Ext.tree.View#afteritemexpand
+             */
+            'afteritemexpand',
+            /**
+             * @event afteritemcollapse
+             * @inheritdoc Ext.tree.View#afteritemcollapse
+             */
+            'afteritemcollapse'
+        ]);
+
+        // If the root is not visible and there is no rootnode defined, then just lets load the store
+        if (!view.rootVisible && !me.getRootNode()) {
+            me.setRootNode({
+                expanded: true
+            });
+        }
+    },
+
+    // @private
+    // Hook into the TreeStore.
+    // Do not callParent in TreePanel's bindStore
+    // The TreeStore is only relevant to the tree - the View has its own NodeStore
+    bindStore: function(store) {
+        var me = this;
+
+        me.store = store;
+        me.mon(store, {
+            load: me.onStoreLoad,
             rootchange: me.onRootChange,
-            clear: me.onClear
+            clear: me.onClear,
+            scope: me
         });
 
-        me.relayEvents(me.store, [
+        // TODO: implement unbind properly when destroyable listeners available
+        me.relayEvents(store, [
             /**
              * @event beforeload
              * @inheritdoc Ext.data.TreeStore#beforeload
@@ -212,7 +278,8 @@ Ext.define('Ext.tree.Panel', {
             'load'
         ]);
 
-        me.mon(me.store, {
+        // TODO: implement unbind properly when destroyable listeners available
+        me.mon(store, {
             /**
              * @event itemappend
              * @inheritdoc Ext.data.TreeStore#append
@@ -286,56 +353,27 @@ Ext.define('Ext.tree.Panel', {
             beforecollapse: me.createRelayer('beforeitemcollapse', [0, 1])
         });
 
-        // If the user specifies the headers collection manually then dont inject our own
-        if (!me.columns) {
-            if (me.initialConfig.hideHeaders === undefined) {
-                me.hideHeaders = true;
-            }
-            me.addCls(Ext.baseCSSPrefix + 'autowidth-table');
-            me.columns = [{
-                xtype    : 'treecolumn',
-                text     : 'Name',
-                width    : Ext.isIE6 ? null : 10000,
-                dataIndex: me.displayField         
-            }];
-        }
+        // TreeStore must have an upward link to the TreePanel so that nodes can find their owning tree in NodeInterface.getOwnerTree
+        store.ownerTree = me;
+    },
 
-        if (me.cls) {
-            cls.push(me.cls);
-        }
-        me.cls = cls.join(' ');
-        me.callParent();
-        
-        view = me.getView();
+    // @private
+    // TODO: Decide whether it is possible to reconfigure a TreePanel.
+    unbindStore: function() {
+        var me = this,
+            store = me.store;
 
-        me.relayEvents(view, [
-            /**
-             * @event checkchange
-             * Fires when a node with a checkbox's checked property changes
-             * @param {Ext.data.NodeInterface} node The node who's checked property was changed
-             * @param {Boolean} checked The node's new checked state
-             */
-            'checkchange',
-            /**
-             * @event afteritemexpand
-             * @inheritdoc Ext.tree.View#afteritemexpand
-             */
-            'afteritemexpand',
-            /**
-             * @event afteritemcollapse
-             * @inheritdoc Ext.tree.View#afteritemcollapse
-             */
-            'afteritemcollapse'
-        ]);
-
-        // If the root is not visible and there is no rootnode defined, then just lets load the store
-        if (!view.rootVisible && !me.getRootNode()) {
-            me.setRootNode({
-                expanded: true
+        if (store) {
+            me.mun(store, {
+                load: me.onStoreLoad,
+                rootchange: me.onRootChange,
+                clear: me.onClear,
+                scope: me
             });
+            delete store.ownerTree;
         }
     },
-    
+
     onClear: function(){
         this.view.onClear();
     },

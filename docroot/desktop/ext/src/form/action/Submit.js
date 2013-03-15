@@ -73,13 +73,15 @@ Ext.define('Ext.form.action.Submit', {
 
     // inherit docs
     run : function(){
-        var form = this.form;
-        if (this.clientValidation === false || form.isValid()) {
-            this.doSubmit();
+        var me = this,
+            form = me.form;
+            
+        if (me.clientValidation === false || form.isValid()) {
+            me.doSubmit();
         } else {
             // client validation failed
-            this.failureType = Ext.form.action.Action.CLIENT_INVALID;
-            form.afterAction(this, false);
+            me.failureType = Ext.form.action.Action.CLIENT_INVALID;
+            form.afterAction(me, false);
         }
     },
 
@@ -88,20 +90,23 @@ Ext.define('Ext.form.action.Submit', {
      * Performs the submit of the form data.
      */
     doSubmit: function() {
-        var formEl,
-            ajaxOptions = Ext.apply(this.createCallback(), {
-                url: this.getUrl(),
-                method: this.getMethod(),
-                headers: this.headers
-            });
+        var me = this,
+            ajaxOptions = Ext.apply(me.createCallback(), {
+                url: me.getUrl(),
+                method: me.getMethod(),
+                headers: me.headers
+            }),
+            form = me.form,
+            paramsProp = form.jsonSubmit ? 'jsonData' : 'params',
+            formEl;
 
         // For uploads we need to create an actual form that contains the file upload fields,
         // and pass that to the ajax call so it can do its iframe-based submit method.
-        if (this.form.hasUpload()) {
-            formEl = ajaxOptions.form = this.buildForm();
+        if (form.hasUpload()) {
+            formEl = ajaxOptions.form = me.buildForm();
             ajaxOptions.isUpload = true;
         } else {
-            ajaxOptions.params = this.getParams();
+            ajaxOptions[paramsProp] = me.getParams();
         }
 
         Ext.Ajax.request(ajaxOptions);
@@ -116,9 +121,9 @@ Ext.define('Ext.form.action.Submit', {
      * Builds the full set of parameters from the field values plus any additional configured params.
      */
     getParams: function() {
-        var nope = false,
+        var falseVal = false,
             configParams = this.callParent(),
-            fieldParams = this.form.getValues(nope, nope, this.submitEmptyText !== nope);
+            fieldParams = this.form.getValues(falseVal, falseVal, this.submitEmptyText !== falseVal);
         return Ext.apply({}, fieldParams, configParams);
     },
 

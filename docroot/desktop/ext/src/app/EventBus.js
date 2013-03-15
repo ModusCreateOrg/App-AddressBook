@@ -7,21 +7,33 @@ Ext.define('Ext.app.EventBus', {
         'Ext.util.Event',
         'Ext.Component'
     ],
+
     mixins: {
         observable: 'Ext.util.Observable'
     },
+    
+    statics: {
+        
+        /**
+         * @property {Ext.app.EventBus} instance
+         *
+         * Global Ext.app.EventBus instance shared by all Controllers
+         */
+        instance: undefined
+    },
 
     constructor: function() {
-        this.mixins.observable.constructor.call(this);
-
-        this.bus = {};
-
         var me = this;
+
+        me.mixins.observable.constructor.call(me);
+        me.bus = {};
+
         Ext.override(Ext.Component, {
             fireEvent: function(ev) {
                 if (Ext.util.Observable.prototype.fireEvent.apply(this, arguments) !== false) {
-                    return me.dispatch.call(me, ev, this, arguments);
+                    return me.dispatch(ev, this, arguments);
                 }
+
                 return false;
             }
         });
@@ -109,4 +121,8 @@ Ext.define('Ext.app.EventBus', {
             }
         } //end outer loop
     }
+},
+
+function() {
+    this.instance = new this();
 });

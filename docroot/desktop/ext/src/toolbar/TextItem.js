@@ -48,11 +48,10 @@ Ext.define('Ext.toolbar.TextItem', {
      */
     setText : function(text) {
         var me = this;
+        me.text = text;
         if (me.rendered) {
             me.el.update(text);
             me.updateLayout();
-        } else {
-            this.text = text;
         }
     }
 });

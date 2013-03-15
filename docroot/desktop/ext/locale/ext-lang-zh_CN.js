@@ -20,9 +20,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.zh_CN.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "选择了 {0} 行"
+    Ext.define("Ext.locale.zh_CN.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "选择了 {0} 行"
     });
 
     Ext.define("Ext.locale.zh_CN.TabPanelItem", {

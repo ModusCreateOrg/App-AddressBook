@@ -143,6 +143,10 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
                 }
 
                 tip = Ext.create(className || 'Ext.tip.QuickTip', tipConfig);
+
+                // private.
+                // Need a globally accessble way of testing whether QuickTipsManager is both loaded AND initialized.
+                Ext.quickTipsActive = true;
             }
         },
 
@@ -158,7 +162,7 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
         },
 
         // Protected method called by the dd classes
-        ddDisable : function(){
+        ddDisable : function() {
             // don't disable it if we don't need to
             if(tip && !disabled){
                 tip.disable();
@@ -166,7 +170,7 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
         },
 
         // Protected method called by the dd classes
-        ddEnable : function(){
+        ddEnable : function() {
             // only enable it if it hasn't been disabled
             if(tip && !disabled){
                 tip.enable();

@@ -16,9 +16,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.mk.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} избрани редици"
+    Ext.define("Ext.locale.mk.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} избрани редици"
     });
 
     Ext.define("Ext.locale.mk.TabPanelItem", {

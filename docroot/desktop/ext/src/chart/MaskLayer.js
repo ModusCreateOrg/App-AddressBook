@@ -6,7 +6,7 @@ Ext.define('Ext.chart.MaskLayer', {
     
     constructor: function(config) {
         config = Ext.apply(config || {}, {
-            style: 'position:absolute;background-color:#888;cursor:move;opacity:0.6;border:1px solid #222;'
+            style: 'position:absolute;background-color:#ff9;cursor:crosshair;opacity:0.5;border:1px solid #00f;'
         });
         this.callParent([config]);    
     },

@@ -161,8 +161,6 @@
     .#{$prefix}resizable-proxy {
         border: 1px dashed #3b5a82;
         position: absolute;
-        left: 0;
-        top: 0;
         overflow: hidden;
         z-index: 50000;
     }

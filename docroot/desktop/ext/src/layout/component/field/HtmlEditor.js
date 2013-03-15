@@ -53,5 +53,15 @@ Ext.define('Ext.layout.component.field.HtmlEditor', {
         } else {
             me.done = false;
         }
+    },
+
+    measureContentHeight: function (ownerContext) {
+        // We cannot measure the contentHeight until the toolbar height is correct in the
+        // dom. In order for the toolbar hight to be correct in the dom, the toolbar's
+        // innerCt must have its width set in the dom, otherwise the box overflow trigger
+        // may be wrapping, causing extra height to be added to the toolbar.
+        return ownerContext.hasDomProp('componentChildrenDone') ?
+            this.callParent(arguments) : NaN;
     }
+ 
 });

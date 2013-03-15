@@ -11,7 +11,6 @@ $grid-header-background-color: $content-color;
 $grid-header-background-gradient: flat !default;
 $grid-header-border-color: #EAEAEA !default;
 $grid-header-over-background-color: $mixed-color !default;
-$grid-header-over-border-color: darken($grid-header-over-background-color, 20%) !default;
 $grid-header-over-background-gradient: $grid-header-background-gradient !default;
 $grid-header-padding: 4px 6px !default;
 $grid-header-trigger-height: 22px !default; // Deprecated

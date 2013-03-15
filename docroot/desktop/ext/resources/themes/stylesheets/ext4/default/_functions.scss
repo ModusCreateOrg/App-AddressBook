@@ -42,3 +42,9 @@
 @function boxmin($box) {
     @return min(min(top($box), right($box)), min(bottom($box), left($box)));
 }
+@function rotate90($box) {
+    @return left($box) top($box) right($box) bottom($box);
+}
+@function rtl($box) {
+    @return top($box) left($box) bottom($box) right($box);
+}

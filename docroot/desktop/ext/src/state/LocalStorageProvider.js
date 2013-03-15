@@ -1,8 +1,8 @@
 /**
  * @class Ext.state.LocalStorageProvider
  * A Provider implementation which saves and retrieves state via the HTML5 localStorage object.
- * If the browser does not support local storage, an exception will be thrown upon instantiating
- * this class.
+ * If the browser does not support local storage, there will be no attempt to read the state.
+ * Before creating this class, a check should be made to {@link Ext.supports#LocalStorage}.
  */
 
 Ext.define('Ext.state.LocalStorageProvider', {
@@ -18,7 +18,11 @@ Ext.define('Ext.state.LocalStorageProvider', {
         var me = this;
         me.callParent(arguments);
         me.store = me.getStorageObject();
-        me.state = me.readLocalStorage();
+        if (me.store) {
+            me.state = me.readLocalStorage();
+        } else {
+            me.state = {};
+        }
     },
     
     readLocalStorage: function(){
@@ -57,16 +61,12 @@ Ext.define('Ext.state.LocalStorageProvider', {
     },
     
     getStorageObject: function(){
-        try {
-            var supports = 'localStorage' in window && window['localStorage'] !== null;
-            if (supports) {
-                return window.localStorage;
-            }
-        } catch (e) {
-            return false;
+        if (Ext.supports.LocalStorage) {
+            return window.localStorage;
         }
         //<debug>
         Ext.Error.raise('LocalStorage is not supported by the current browser');
         //</debug>
+        return false;
     }    
 });

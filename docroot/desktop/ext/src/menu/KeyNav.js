@@ -54,12 +54,15 @@ Ext.define('Ext.menu.KeyNav', {
             focusedItem = menu.focusedItem,
             startIdx = focusedItem ? items.indexOf(focusedItem) : -1,
             idx = startIdx + step,
+            len = items.length,
+            count = 0,
             item;
 
-        while (idx != startIdx) {
+        // Limit the count, since we might not be able to find something to focus
+        while (count < len && idx !== startIdx) {
             if (idx < 0) {
-                idx = items.length - 1;
-            } else if (idx >= items.length) {
+                idx = len - 1;
+            } else if (idx >= len) {
                 idx = 0;
             }
 
@@ -69,6 +72,7 @@ Ext.define('Ext.menu.KeyNav', {
                 break;
             }
             idx += step;
+            ++count;
         }
     },
 

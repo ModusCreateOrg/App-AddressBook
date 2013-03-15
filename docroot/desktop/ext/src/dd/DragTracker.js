@@ -125,7 +125,7 @@ Ext.define('Ext.dd.DragTracker', {
              * drag operation begins after either the mouse has been moved by {@link #tolerance} pixels,
              * or after the {@link #autoStart} timer fires.
              *
-             * Return false to veto the drag operation.
+             * Return `false` to veto the drag operation.
              *
              * @param {Object} this
              * @param {Object} e event object
@@ -513,7 +513,7 @@ Ext.define('Ext.dd.DragTracker', {
      *    based upon the current mouse position, and then coerced into the constrainRegion. The returned
      *    mouse position is then adjusted by the same delta as was used to coerce the region.\
      *
-     * @param constrainMode {String} (Optional) If omitted the true mouse position is returned. May be passed
+     * @param {String} constrainMode (Optional) If omitted the true mouse position is returned. May be passed
      * as `point` or `dragTarget`. See above.
      * @returns {Number[]} The `X, Y` offset from the mousedown point, optionally constrained.
      */

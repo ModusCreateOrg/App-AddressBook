@@ -95,6 +95,9 @@ Ext.define('Ext.form.field.Checkbox', {
     requires: ['Ext.XTemplate', 'Ext.form.CheckboxManager' ],
 
     componentLayout: 'field',
+    
+    // inputEl should always retain the same size, never stretch
+    stretchInputElFixed: false,
 
     childEls: [
         /**
@@ -216,7 +219,9 @@ Ext.define('Ext.form.field.Checkbox', {
 
     /**
      * @cfg {String} [checkedCls='x-form-cb-checked']
-     * The CSS class added to the component's main element when it is in the checked state.
+     * The CSS class(es) added to the component's main element when it is in the checked state.
+     * You can add your own class (checkedCls='myClass x-form-cb-checked') or replace the default 
+     * class altogether (checkedCls='myClass').
      */
     checkedCls: Ext.baseCSSPrefix + 'form-cb-checked',
 

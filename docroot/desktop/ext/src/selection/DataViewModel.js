@@ -73,6 +73,13 @@ Ext.define('Ext.selection.DataViewModel', {
             me.initKeyNav(view);
         }
     },
+    
+    onUpdate: function(record){
+        var view = this.view;
+        if (view && this.isSelected(record)) {
+            view.onItemSelect(record);
+        }
+    },
 
     onItemClick: function(view, record, item, index, e) {
         this.selectWithEvent(record, e);
@@ -152,6 +159,13 @@ Ext.define('Ext.selection.DataViewModel', {
             if (!suppressEvent) {
                 me.fireEvent(eventName, me, record);
             }
+        }
+    },
+    
+    onLastFocusChanged: function(oldFocus, newFocus, suppressFocus){
+        var view = this.view;
+        if (view && !suppressFocus && newFocus) {
+            view.focusNode(newFocus);
         }
     },
     

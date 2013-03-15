@@ -83,8 +83,6 @@
  * `data3` respectively. All series display markers by having `showMarkers` enabled. The configuration
  * for the markers of each series can be set by adding properties onto the markerConfig object.
  * Finally we override some theme styling properties by adding properties to the `style` object.
- *
- * @xtype radar
  */
 Ext.define('Ext.chart.series.Radar', {
 
@@ -109,6 +107,37 @@ Ext.define('Ext.chart.series.Radar', {
      * An object containing styles for overriding series styles from Theming.
      */
     style: {},
+
+    /**
+     * @cfg {String} xField
+     * The name of the data Model field corresponding to the x-axis (angle) value.
+     */
+
+    /**
+     * @cfg {String} yField
+     * The name of the data Model field corresponding to the y-axis (radius) value.
+     */
+
+    /**
+     * @cfg {Boolean} showMarkers
+     * Whether markers should be displayed at the data points of the series. If true,
+     * then the {@link #markerConfig} config item will determine the markers' styling.
+     */
+
+    /**
+     * @cfg {Object} markerConfig
+     * The display style for the markers. Only used if {@link #showMarkers} is true.
+     * The markerConfig is a configuration object containing the same set of properties defined in
+     * the Sprite class. For example, if we were to set red circles as markers to the series we could
+     * pass the object:
+     *
+     *     @example
+     *     markerConfig: {
+     *         type: 'circle',
+     *         radius: 4,
+     *         'fill': '#f00'
+     *     }
+     */
 
     constructor: function(config) {
         this.callParent(arguments);
@@ -175,7 +204,7 @@ Ext.define('Ext.chart.series.Radar', {
         }
         
         if(!seriesStyle['stroke']){
-            seriesStyle['stroke'] = colorArrayStyle[seriesIdx % colorArrayStyle.length];
+            seriesStyle['stroke'] = colorArrayStyle[me.themeIdx % colorArrayStyle.length];
         }
 
         me.unHighlightItem();
@@ -263,16 +292,18 @@ Ext.define('Ext.chart.series.Radar', {
         var me = this,
             chart = me.chart,
             surface = chart.surface,
+            store = chart.getChartStore(),
             markerStyle = Ext.apply({}, me.markerStyle || {}),
             endMarkerStyle = Ext.apply(markerStyle, me.markerConfig, {
-                fill: me.colorArrayStyle[me.seriesIdx % me.colorArrayStyle.length]
+                fill: me.colorArrayStyle[me.themeIdx % me.colorArrayStyle.length]
             }),
             items = me.items,
             type = endMarkerStyle.type,
             markerGroup = me.markerGroup,
             centerX = me.centerX,
             centerY = me.centerY,
-            item, i, l, marker;
+            item, i, l, marker, rendererAttributes;
+
         delete endMarkerStyle.type;
 
         for (i = 0, l = items.length; i < l; i++) {
@@ -292,7 +323,9 @@ Ext.define('Ext.chart.series.Radar', {
             else {
                 marker.show();
             }
+
             item.sprite = marker;
+
             if (chart.resizing) {
                 marker.setAttributes({
                     x: 0,
@@ -310,13 +343,15 @@ Ext.define('Ext.chart.series.Radar', {
                 }
             };
             //render/animate
+            rendererAttributes = me.renderer(marker, store.getAt(i), marker._to, i, store);
+            rendererAttributes = Ext.applyIf(rendererAttributes || {}, endMarkerStyle || {});
             if (chart.animate) {
                 me.onAnimate(marker, {
-                    to: marker._to
+                    to: rendererAttributes
                 });
             }
             else {
-                marker.setAttributes(Ext.apply(marker._to, endMarkerStyle || {}), true);
+                marker.setAttributes(rendererAttributes, true);
             }
         }
     },
@@ -435,6 +470,19 @@ Ext.define('Ext.chart.series.Radar', {
         for (; i < count; i++) {
             me.markerGroup.getAt(i).hide(true);
         }
+    },
+
+    // @private return the radial axis as yAxis (there is no xAxis).
+    // Required by the base class 'Ext.chart.axis.Axis'.
+    getAxesForXAndYFields: function() {
+        var me = this,
+            chart = me.chart,
+            axes = chart.axes,
+            axis = [].concat(axes && axes.get(0));
+
+        return {
+            yAxis: axis
+        };
     }
 });
 

@@ -58,9 +58,7 @@ Ext.define("Ext.form.Labelable", {
          */
         'errorEl',
 
-        'inputRow',
-
-        'bottomPlaceHolder'
+        'inputRow'
     ],
 
     /**
@@ -119,7 +117,10 @@ Ext.define("Ext.form.Labelable", {
                 '<td id="{id}-labelCell" style="{labelCellStyle}" {labelCellAttrs}>',
                     '{beforeLabelTpl}',
                     '<label id="{id}-labelEl" {labelAttrTpl}<tpl if="inputId"> for="{inputId}"</tpl> class="{labelCls}"',
-                        '<tpl if="labelStyle"> style="{labelStyle}"</tpl>>',
+                        '<tpl if="labelStyle"> style="{labelStyle}"</tpl>',
+                        // Required for Opera
+                        ' unselectable="on"',
+                    '>',
                         '{beforeLabelTextTpl}',
                         '<tpl if="fieldLabel">{fieldLabel}{labelSeparator}</tpl>',
                         '{afterLabelTextTpl}',
@@ -137,7 +138,10 @@ Ext.define("Ext.form.Labelable", {
                     '{beforeLabelTpl}',
                     '<div id="{id}-labelCell" style="{labelCellStyle}">',
                         '<label id="{id}-labelEl" {labelAttrTpl}<tpl if="inputId"> for="{inputId}"</tpl> class="{labelCls}"',
-                            '<tpl if="labelStyle"> style="{labelStyle}"</tpl>>',
+                            '<tpl if="labelStyle"> style="{labelStyle}"</tpl>',
+                            // Required for Opera
+                            ' unselectable="on"',
+                        '>',
                             '{beforeLabelTextTpl}',
                             '<tpl if="fieldLabel">{fieldLabel}{labelSeparator}</tpl>',
                             '{afterLabelTextTpl}',
@@ -147,7 +151,7 @@ Ext.define("Ext.form.Labelable", {
                 '</tpl>',
 
                 '{beforeSubTpl}',
-                '{[values.$comp.getSubTplMarkup()]}',
+                '{[values.$comp.getSubTplMarkup(values)]}',
                 '{afterSubTpl}',
 
             // Final TD. It's a side error element unless there's a floating external one
@@ -172,11 +176,20 @@ Ext.define("Ext.form.Labelable", {
     /**
      * @cfg {String/String[]/Ext.XTemplate} activeErrorsTpl
      * The template used to format the Array of error messages passed to {@link #setActiveErrors} into a single HTML
-     * string. By default this renders each message as an item in an unordered list.
+     * string. if the {@link #msgTarget} is title, it defaults to a list separated by new lines. Otherwise, it 
+     * renders each message as an item in an unordered list.
      */
-    activeErrorsTpl: [
+    activeErrorsTpl: undefined,
+    
+    htmlActiveErrorsTpl: [
         '<tpl if="errors && errors.length">',
             '<ul><tpl for="errors"><li>{.}</li></tpl></ul>',
+        '</tpl>'
+    ],
+    
+    plaintextActiveErrorsTpl: [
+        '<tpl if="errors && errors.length">',
+            '<tpl for="errors"><tpl if="xindex &gt; 1">\n</tpl>{.}</tpl>',
         '</tpl>'
     ],
 
@@ -437,6 +450,14 @@ Ext.define("Ext.form.Labelable", {
             me.padding = undefined;
             me.extraMargins = Ext.Element.parseBox(padding);
         }
+        
+        if (!me.activeErrorsTpl) {
+            if (me.msgTarget == 'title') {
+                me.activeErrorsTpl = me.plaintextActiveErrorsTpl;
+            } else {
+                me.activeErrorsTpl = me.htmlActiveErrorsTpl;
+            }
+        }
 
         me.addCls(me.formItemCls);
         
@@ -452,6 +473,9 @@ Ext.define("Ext.form.Labelable", {
              */
             'errorchange'
         );
+
+        // bubbleEvents on the prototype of a mixin won't work, so call enableBubble
+        me.enableBubble('errorchange');
     },
 
     /**
@@ -565,28 +589,31 @@ Ext.define("Ext.form.Labelable", {
 
         return data;
     },
-    
-    beforeLabelableRender: function() {
-        var me = this;
-        if (me.ownerLayout) {
-            me.addCls(Ext.baseCSSPrefix + me.ownerLayout.type + '-form-item');
-        }
-    },
 
-    onLabelableRender: function() {
-        var me = this,
-            margins,
-            side,
-            style = {};
-
-        if (me.extraMargins) {
-            margins = me.el.getMargin();
-            for (side in margins) {
-                if (margins.hasOwnProperty(side)) {
-                    style['margin-' + side] = (margins[side] + me.extraMargins[side]) + 'px';
-                }
+    xhooks: {
+        beforeRender: function() {
+            var me = this;
+            me.setFieldDefaults(me.getHierarchyState().fieldDefaults);
+            if (me.ownerLayout) {
+                me.addCls(Ext.baseCSSPrefix + me.ownerLayout.type + '-form-item');
             }
-            me.el.setStyle(style);
+        },
+
+        onRender: function() {
+            var me = this,
+                margins,
+                side,
+                style = {};
+
+            if (me.extraMargins) {
+                margins = me.el.getMargin();
+                for (side in margins) {
+                    if (margins.hasOwnProperty(side)) {
+                        style['margin-' + side] = (margins[side] + me.extraMargins[side]) + 'px';
+                    }
+                }
+                me.el.setStyle(style);
+            }
         }
     },
     
@@ -599,6 +626,18 @@ Ext.define("Ext.form.Labelable", {
             return false;
         }
         return !(this.hideEmptyLabel && !this.getFieldLabel());
+    },
+    
+    /**
+     * Gets the width of the label (if visible)
+     * @return {Number} The label width
+     */
+    getLabelWidth: function(){
+        var me = this;
+        if (!me.hasVisibleLabel()) {
+            return 0;
+        }
+        return me.labelWidth + me.labelPad;
     },
     
     /**
@@ -623,12 +662,9 @@ Ext.define("Ext.form.Labelable", {
     },
     
     getLabelCls: function() {
-        var labelCls = this.labelCls,
+        var labelCls = this.labelCls + ' ' + Ext.dom.Element.unselectableCls,
             labelClsExtra = this.labelClsExtra;
 
-        if (this.labelAlign === 'top') {
-            labelCls += '-top';
-        }
         return labelClsExtra ? labelCls + ' ' + labelClsExtra : labelCls;
     },
 
@@ -673,7 +709,9 @@ Ext.define("Ext.form.Labelable", {
             if (me.labelWidth) {
                 labelStyle = 'width:' + me.labelWidth + 'px;';
             }
-            labelStyle += 'margin-right:' + labelPad + 'px;';
+            if (labelPad) {
+                labelStyle += 'margin-right:' + labelPad + 'px;';
+            }
         }
         
         return labelStyle + (me.labelStyle || '');
@@ -801,16 +839,11 @@ Ext.define("Ext.form.Labelable", {
      * @param {Object} defaults The defaults to apply to the object.
      */
     setFieldDefaults: function(defaults) {
-        var me = this,
-            val, key;
+        var key;
 
         for (key in defaults) {
-            if (defaults.hasOwnProperty(key)) {
-                val = defaults[key];
-
-                if (!me.hasOwnProperty(key)) {
-                    me[key] = val;
-                }
+            if (!this.hasOwnProperty(key)) {
+                this[key] = defaults[key];
             }
         }
     }

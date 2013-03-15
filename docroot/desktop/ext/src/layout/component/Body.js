@@ -21,6 +21,23 @@ Ext.define('Ext.layout.component.Body', {
         ownerContext.bodyContext = ownerContext.getEl('body');
     },
 
+    beginLayoutCycle: function(ownerContext, firstCycle){
+        var me = this,
+            lastWidthModel = me.lastWidthModel,
+            lastHeightModel = me.lastHeightModel,
+            body = me.owner.body;
+
+        me.callParent(arguments);
+
+        if (lastWidthModel && lastWidthModel.fixed && ownerContext.widthModel.shrinkWrap) {
+            body.setWidth(null);
+        }
+
+        if (lastHeightModel && lastHeightModel.fixed && ownerContext.heightModel.shrinkWrap) {
+            body.setHeight(null);
+        }
+    },
+
     // Padding is exciting here because we have 2 el's: owner.el and owner.body. Content
     // size always includes the padding of the targetEl, which should be owner.body. But
     // it is common to have padding on owner.el also (such as a panel header), so we need

@@ -28,15 +28,11 @@
     }
 
     .#{$prefix}window-header-top {
-        margin-bottom: -2px;
-    }
-    .#{$prefix}window-header-body-horizontal {
-        margin-top: -1px;
+        margin-bottom: -1px;
     }
 
     .#{$prefix}window-header-bottom {
         margin-top: -1px;
-        margin-bottom: -1px;
     }
 
     .#{$prefix}window-header-left {
@@ -45,12 +41,6 @@
 
     .#{$prefix}window-header-right {
         margin-left: -1px;
-    }
-
-    .#{$prefix}window-header-vertical {
-        .#{$prefix}surface {
-            padding-left: 1px;
-        }
     }
 
     // collapsed window header styles
@@ -75,40 +65,13 @@
 
         .#{$prefix}window-header-top {
             padding-bottom: 5px !important;
-            margin-bottom: -1px;
+            margin-bottom: 0;
         }
 
         .#{$prefix}window-header-bottom {
             padding-top: 5px !important;
             margin-top: 0;
         }
-    }
-
-    .#{$prefix}window-header-left,
-    .#{$prefix}window-header-right {
-        .#{$prefix}vml-base {
-            left: -3px !important;
-        }
-    }
-
-    .#{$prefix}opera,
-    .#{$prefix}strict .#{$prefix}ie9 {
-        .#{$prefix}window-header-vertical {
-            .#{$prefix}surface {
-                padding-left: 2px;
-            }
-        }
-    }
-
-    .#{$prefix}window-header-text-container {
-        overflow: hidden;
-        -o-text-overflow: ellipsis;
-        text-overflow: ellipsis;
-    }
-
-    .#{$prefix}window-header-text {
-        @include no-select;
-        white-space: nowrap;
     }
 
     @include extjs-window-ui(
@@ -208,9 +171,9 @@
         @include x-frame('window-header', '#{$ui-label}-left',   top($ui-border-radius) 0 0 left($ui-border-radius), top($window-border-width) 0 bottom($window-border-width) left($window-border-width), 5px 0px 5px 4px, $ui-background-color);
 
         // collapsed window header styles
-        @include x-frame('window-header', '#{$ui-label}-collapsed-top',    $ui-border-radius, $window-border-width, 4px 5px 4px, $ui-background-color);
+        @include x-frame('window-header', '#{$ui-label}-collapsed-top',    $ui-border-radius, $window-border-width, 4px 5px, $ui-background-color);
         @include x-frame('window-header', '#{$ui-label}-collapsed-right',  $ui-border-radius, $window-border-width, 5px 4px, $ui-background-color);
-        @include x-frame('window-header', '#{$ui-label}-collapsed-bottom', $ui-border-radius, $window-border-width, 4px 5px 4px, $ui-background-color);
+        @include x-frame('window-header', '#{$ui-label}-collapsed-bottom', $ui-border-radius, $window-border-width, 4px 5px, $ui-background-color);
         @include x-frame('window-header', '#{$ui-label}-collapsed-left',   $ui-border-radius, $window-border-width, 5px 4px, $ui-background-color);
     }
 

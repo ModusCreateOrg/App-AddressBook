@@ -29,8 +29,6 @@
     .#{$prefix}boundlist-item {
         padding: $boundlist-item-padding;
 
-        @include no-select;
-
         cursor: pointer;
         cursor: hand;
         position: relative; /*allow hover in IE on empty items*/

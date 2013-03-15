@@ -76,16 +76,17 @@ Ext.define('Ext.grid.property.Store', {
                     return new Ext.data.ResultSet(result);
                 },
 
-                // private
+                // @private
                 isEditableValue: function(val){
-                    return Ext.isPrimitive(val) || Ext.isDate(val);
+                    return Ext.isPrimitive(val) || Ext.isDate(val) || val === null;
                 }
             });
         }
         return this.reader;
     },
 
-    // protected - should only be called by the grid.  Use grid.setSource instead.
+    // @protected
+    // Should only be called by the grid.  Use grid.setSource instead.
     setSource : function(dataObject) {
         var me = this;
 
@@ -99,12 +100,12 @@ Ext.define('Ext.grid.property.Store', {
         me.fireEvent('refresh', me);
     },
 
-    // private
+    // @private
     getProperty : function(row) {
        return Ext.isNumber(row) ? this.getAt(row) : this.getById(row);
     },
 
-    // private
+    // @private
     setValue : function(prop, value, create){
         var me = this,
             rec = me.getRec(prop);
@@ -120,7 +121,7 @@ Ext.define('Ext.grid.property.Store', {
         }
     },
 
-    // private
+    // @private
     remove : function(prop) {
         var rec = this.getRec(prop);
         if (rec) {
@@ -129,12 +130,13 @@ Ext.define('Ext.grid.property.Store', {
         }
     },
 
-    // private
+    // @private
     getRec : function(prop) {
         return this.getById(prop);
     },
 
-    // protected - should only be called by the grid.  Use grid.getSource instead.
+    // @protected
+    // Should only be called by the grid.  Use grid.getSource instead.
     getSource : function() {
         return this.source;
     }

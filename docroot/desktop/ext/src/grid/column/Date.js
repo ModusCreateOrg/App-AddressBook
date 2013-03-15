@@ -48,12 +48,14 @@ Ext.define('Ext.grid.column.Date', {
      * Defaults to the default date from {@link Ext.Date#defaultFormat} which itself my be overridden
      * in a locale file.
      */
+    
     /**
-     * @cfg renderer
+     * @cfg {Object} renderer
      * @hide
      */
+    
     /**
-     * @cfg scope
+     * @cfg {Object} scope
      * @hide
      */
 

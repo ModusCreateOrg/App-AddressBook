@@ -7,7 +7,12 @@ Ext.define('Ext.tree.ViewDragZone', {
     isPreventDrag: function(e, record) {
         return (record.get('allowDrag') === false) || !!e.getTarget(this.view.expanderSelector);
     },
-    
+
+    getDragText: function() {
+        var count = this.dragData.records.length;
+        return count == 1 ? this.dragData.records[0].get('text') : Ext.String.format(this.dragText, count, 's');
+    },
+
     afterRepair: function() {
         var me = this,
             view = me.view,
@@ -17,7 +22,7 @@ Ext.define('Ext.tree.ViewDragZone', {
             rLen    = records.length,
             fly = Ext.fly,
             item;
-        
+
         if (Ext.enableFx && me.repairHighlight) {
             // Roll through all records and highlight all the ones we attempted to drag.
             for (r = 0; r < rLen; r++) {

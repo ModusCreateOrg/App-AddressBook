@@ -22,6 +22,10 @@ $panel-body-font-size: 12px !default;
 // ======== PANEL TOOLS ==========
 // ===============================
 $tool-size: 15px !default;
+$panel-tool-padding: 0 0 1px 1px !default;
+$panel-tool-margin: 0 0 0 1px !default;
+// margin for tool displayed at top of vertical header
+$panel-tool-top-margin: 0 0 4px;
 
 // ===============================
 // ======== PANEL HEADER =========
@@ -32,18 +36,19 @@ $panel-header-inner-border: true !default;
 $panel-header-inner-border-width: 1px 0 0 !default;
 
 //padding
-$panel-header-padding: 3px 5px 4px !default;
-$panel-header-vertical-padding: 5px 4px !default;
+$panel-header-padding: 4px 5px !default;
 
 //fonts
 $panel-header-font-size: ceil($font-size * .9) !default; //11px
-$panel-header-line-height: 17px !default;
+$panel-header-line-height: 15px !default;
 $panel-header-font-weight: bold !default;
 $panel-header-font-family: $font-family !default;
+$panel-header-text-padding: 0 0 1px;
 
 //icon
 $panel-header-icon-width: 16px !default;
 $panel-header-icon-height: 16px !default;
+$panel-header-icon-margin: 0 4px 0 0 !default;
 
 //background
 $panel-header-background-gradient: 'panel-header' !default;

@@ -246,14 +246,19 @@ Ext.define('Ext.dd.DropZone', {
      * @template
      */
     notifyDrop : function(dd, e, data){
-        if(this.lastOverNode){
-            this.onNodeOut(this.lastOverNode, dd, e, data);
-            this.lastOverNode = null;
+        var me = this,
+            n = me.getTargetFromEvent(e),
+            result = n ?
+                me.onNodeDrop(n, dd, e, data) :
+                me.onContainerDrop(dd, e, data);
+
+        // Exit the overNode upon drop.
+        // Must do this after dropping because exiting a node may perform actions which invalidate a drop.
+        if (me.lastOverNode) {
+            me.onNodeOut(me.lastOverNode, dd, e, data);
+            me.lastOverNode = null;
         }
-        var n = this.getTargetFromEvent(e);
-        return n ?
-            this.onNodeDrop(n, dd, e, data) :
-            this.onContainerDrop(dd, e, data);
+        return result;
     },
 
     // private

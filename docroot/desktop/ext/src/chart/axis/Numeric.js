@@ -81,7 +81,10 @@ Ext.define('Ext.chart.axis.Numeric', {
 
     /* End Definitions */
 
-    type: 'numeric',
+    type: 'Numeric',
+
+    // @private
+    isNumericAxis: true,
 
     alias: 'axis.numeric',
 
@@ -112,18 +115,16 @@ Ext.define('Ext.chart.axis.Numeric', {
     },
 
     /**
+     * @cfg {Number} minimum
      * The minimum value drawn by the axis. If not set explicitly, the axis
      * minimum will be calculated automatically.
-     *
-     * @property {Number} minimum
      */
     minimum: NaN,
 
     /**
+     * @cfg {Number} maximum
      * The maximum value drawn by the axis. If not set explicitly, the axis
      * maximum will be calculated automatically.
-     *
-     * @property {Number} maximum
      */
     maximum: NaN,
 
@@ -136,17 +137,15 @@ Ext.define('Ext.chart.axis.Numeric', {
     constrain: true,
 
     /**
+     * @cfg {Number} decimals
      * The number of decimals to round the value to.
-     *
-     * @property {Number} decimals
      */
     decimals: 2,
 
     /**
+     * @cfg {String} scale
      * The scaling algorithm to use on this axis. May be "linear" or
      * "logarithmic".  Currently only linear scale is implemented.
-     *
-     * @property {String} scale
      * @private
      */
     scale: "linear",
@@ -154,10 +153,11 @@ Ext.define('Ext.chart.axis.Numeric', {
     // @private constrains to datapoints between minimum and maximum only
     doConstrain: function() {
         var me = this,
-            store = me.chart.store,
+            chart = me.chart,
+            store = chart.getChartStore(),
             items = store.data.items,
             d, dLen, record,
-            series = me.chart.series.items,
+            series = chart.series.items,
             fields = me.fields,
             ln = fields.length,
             range = me.calcEnds(),
@@ -178,6 +178,9 @@ Ext.define('Ext.chart.axis.Numeric', {
             record = items[d];
             for (i = 0; i < ln; i++) {
                 value = record.get(fields[i]);
+                if (me.type == 'Time' && typeof value == "string") {
+                    value = Date.parse(value);
+                }
                 if (+value < +min) {
                     addRecord = false;
                     break;
@@ -191,29 +194,29 @@ Ext.define('Ext.chart.axis.Numeric', {
                 data.push(record);
             }
         }
-        me.chart.substore = Ext.create('Ext.data.Store', { model: store.model });
-        me.chart.substore.loadData(data); // data records must be loaded (not passed as config above because it's not json)
+        
+        chart.setSubStore(new Ext.data.Store({
+            model: store.model,
+            data: data
+        }));
     },
     /**
+     * @cfg {String} position
      * Indicates the position of the axis relative to the chart
-     *
-     * @property {String} position
      */
     position: 'left',
 
     /**
+     * @cfg {Boolean} adjustMaximumByMajorUnit
      * Indicates whether to extend maximum beyond data's maximum to the nearest
      * majorUnit.
-     *
-     * @property {Boolean} adjustMaximumByMajorUnit
      */
     adjustMaximumByMajorUnit: false,
 
     /**
+     * @cfg {Boolean} adjustMinimumByMajorUnit
      * Indicates whether to extend the minimum beyond data's minimum to the
      * nearest majorUnit.
-     *
-     * @property {Boolean} adjustMinimumByMajorUnit
      */
     adjustMinimumByMajorUnit: false,
 

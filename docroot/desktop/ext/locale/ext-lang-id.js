@@ -20,9 +20,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.id.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} baris terpilih"
+    Ext.define("Ext.locale.id.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} baris terpilih"
     });
 
     Ext.define("Ext.locale.id.TabPanelItem", {

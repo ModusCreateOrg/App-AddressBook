@@ -9,18 +9,14 @@ Ext.onReady(function() {
     var cm = Ext.ClassManager,
         exists = Ext.Function.bind(cm.get, cm);
 
-    if (Ext.Updater) {
-        Ext.Updater.defaults.indicatorText = '<div class="loading-indicator">Übertrage Daten ...</div>';
-    }
-
     Ext.define("Ext.locale.de.view.View", {
         override: "Ext.view.View",
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.de.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} Zeile(n) ausgewählt"
+    Ext.define("Ext.locale.de.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} Zeile(n) ausgewählt"
     });
 
     Ext.define("Ext.locale.de.TabPanelItem", {
@@ -46,6 +42,8 @@ Ext.onReady(function() {
 
     if (Ext.Date) {
         Ext.Date.monthNames = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
+        
+        Ext.Date.defaultFormat = 'd.m.Y';
 
         Ext.Date.getShortMonthName = function(month) {
             return Ext.Date.monthNames[month].substring(0, 3);
@@ -168,7 +166,8 @@ Ext.onReady(function() {
         maxText: "Das Datum in diesem Feld muss vor dem {0} liegen",
         invalidText: "{0} ist kein gültiges Datum - es muss im Format {1} eingegeben werden",
         format: "d.m.Y",
-        altFormats: "j.n.Y|j.n.y|j.n.|j.|j/n/Y|j/n/y|j-n-y|j-n-Y|j/n|j-n|dm|dmy|dmY|j|Y-n-j"
+        altFormats: "j.n.Y|j.n.y|j.n.|j.|j/n/Y|j/n/y|j-n-y|j-n-Y|j/n|j-n|dm|dmy|dmY|j|Y-n-j|Y-m-d",
+        startDay: 1
     });
 
     Ext.define("Ext.locale.de.form.field.ComboBox", {

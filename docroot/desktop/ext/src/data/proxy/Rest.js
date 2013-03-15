@@ -99,7 +99,21 @@ Ext.define('Ext.data.proxy.Rest', {
     extend: 'Ext.data.proxy.Ajax',
     alternateClassName: 'Ext.data.RestProxy',
     alias : 'proxy.rest',
-    
+
+    /**
+     * @property {Object} actionMethods
+     * Mapping of action name to HTTP request method. These default to RESTful conventions for the 'create', 'read',
+     * 'update' and 'destroy' actions (which map to 'POST', 'GET', 'PUT' and 'DELETE' respectively). This object
+     * should not be changed except globally via {@link Ext#override Ext.override} - the {@link #getMethod} function
+     * can be overridden instead.
+     */
+    actionMethods: {
+        create : 'POST',
+        read   : 'GET',
+        update : 'PUT',
+        destroy: 'DELETE'
+    },
+
     /**
      * @cfg {Boolean} appendId
      * True to automatically append the ID of a Model instance when performing a request based on that single instance.
@@ -154,20 +168,4 @@ Ext.define('Ext.data.proxy.Rest', {
         
         return me.callParent(arguments);
     }
-}, function() {
-    Ext.apply(this.prototype, {
-        /**
-         * @property {Object} actionMethods
-         * Mapping of action name to HTTP request method. These default to RESTful conventions for the 'create', 'read',
-         * 'update' and 'destroy' actions (which map to 'POST', 'GET', 'PUT' and 'DELETE' respectively). This object
-         * should not be changed except globally via {@link Ext#override Ext.override} - the {@link #getMethod} function
-         * can be overridden instead.
-         */
-        actionMethods: {
-            create : 'POST',
-            read   : 'GET',
-            update : 'PUT',
-            destroy: 'DELETE'
-        }
-    });
 });

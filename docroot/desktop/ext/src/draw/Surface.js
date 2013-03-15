@@ -50,6 +50,8 @@ Ext.define('Ext.draw.Surface', {
     uses: ['Ext.draw.engine.Svg', 'Ext.draw.engine.Vml', 'Ext.draw.engine.SvgExporter', 'Ext.draw.engine.ImageExporter'],
 
     separatorRe: /[, ]+/,
+    
+    enginePriority: ['Svg', 'Vml'],
 
     statics: {
         /**
@@ -61,14 +63,14 @@ Ext.define('Ext.draw.Surface', {
          * @static
          */
         create: function(config, enginePriority) {
-            enginePriority = enginePriority || ['Svg', 'Vml'];
+            enginePriority = enginePriority || this.prototype.enginePriority;
 
             var i = 0,
                 len = enginePriority.length,
                 surfaceClass;
 
             for (; i < len; i++) {
-                if (Ext.supports[enginePriority[i]] !== false) {
+                if (Ext.supports[enginePriority[i]]) {
                     return Ext.create('Ext.draw.engine.' + enginePriority[i], config);
                 }
             }
@@ -323,12 +325,11 @@ Ext.define('Ext.draw.Surface', {
     initGradients: function() {
         if (this.hasOwnProperty('gradients')) {
             var gradients = this.gradients,
-                gLen      = gradients.length,
-                fn        = this.addGradient,
-                g;
+                fn = this.addGradient,
+                g, gLen;
 
             if (gradients) {
-                for (g = 0; g < gLen; g++) {
+                for (g = 0, gLen = gradients.length; g < gLen; g++) {
                     if (fn.call(this, gradients[g], g, gLen) === false) {
                         break;
                     }

@@ -16,9 +16,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.fi.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} rivi(ä) valittu"
+    Ext.define("Ext.locale.fi.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} rivi(ä) valittu"
     });
 
     Ext.define("Ext.locale.fi.TabPanelItem", {

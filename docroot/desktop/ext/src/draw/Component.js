@@ -330,7 +330,10 @@ Ext.define('Ext.draw.Component', {
 
         // ensure we remove any listeners to prevent duplicate events since we refire them below
         delete cfg.listeners;
-        surface = Ext.draw.Surface.create(cfg);
+        if (!cfg.gradients) {
+            cfg.gradients = me.gradients;
+        }
+        surface = Ext.draw.Surface.create(cfg, me.enginePriority);
         if (!surface) {
             // In case we cannot create a surface, return false so we can stop
             return false;

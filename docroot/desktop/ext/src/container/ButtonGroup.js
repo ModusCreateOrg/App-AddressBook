@@ -60,7 +60,7 @@ Ext.define('Ext.container.ButtonGroup', {
     baseCls: Ext.baseCSSPrefix + 'btn-group',
 
     /**
-     * @cfg {Object} layout
+     * @cfg {Ext.enums.Layout/Object} layout
      * @inheritdoc
      */
     layout: {

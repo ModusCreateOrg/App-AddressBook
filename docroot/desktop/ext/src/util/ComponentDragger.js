@@ -51,7 +51,7 @@ Ext.define('Ext.util.ComponentDragger', {
             comp = me.comp;
 
         // Cache the start [X, Y] array
-        this.startPosition = comp.el.getXY();
+        this.startPosition = comp.getXY();
 
         // If client Component has a ghost method to show a lightweight version of itself
         // then use that as a drag proxy unless configured to liveDrag.

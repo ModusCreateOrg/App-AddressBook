@@ -19,9 +19,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.vn.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} dòng được chọn"
+    Ext.define("Ext.locale.vn.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} dòng được chọn"
     });
 
     Ext.define("Ext.locale.vn.TabPanelItem", {

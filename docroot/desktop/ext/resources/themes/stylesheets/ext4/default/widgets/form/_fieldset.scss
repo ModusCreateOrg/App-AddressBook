@@ -7,7 +7,7 @@
         border: $fieldset-border;
 
         padding: $fieldset-padding;
-        margin-bottom: $fieldset-padding;
+        margin: $fieldset-margin;
 
         display: block; /* preserve margins in IE */
         position: relative;
@@ -15,10 +15,13 @@
 
     // Insane IE bug: Fieldset padding-top is rendered *outside* the border!
     // So we transfer the padding-top to the body element.
-    .#{$prefix}ie .#{$prefix}fieldset {
-        padding-top: 0;
-        .#{$prefix}fieldset-body {
-            padding-top: $fieldset-padding;
+    .#{$prefix}ie8m,
+    .#{$prefix}quirks .#{$prefix}ie {
+        .#{$prefix}fieldset {
+            padding-top: 0;
+            .#{$prefix}fieldset-body {
+                padding-top: top($fieldset-padding);
+            }
         }
     }
 
@@ -27,12 +30,12 @@
     }
 
     .#{$prefix}fieldset-header {
-        font: $fieldset-header-font;
-        color: $fieldset-header-color;
         padding: $fieldset-header-padding;
         overflow: hidden; // fixes a webkit bug where legend elements that have floated children are not displayed
 
         .#{$prefix}fieldset-header-text {
+            font: $fieldset-header-font;
+            color: $fieldset-header-color;
             float: left;
             padding: 1px 0;
         }
@@ -44,6 +47,7 @@
         .#{$prefix}tool {
             float: left;
             margin: 1px 0 0 0;
+            padding: 0;
         }
 
         .#{$prefix}form-cb-wrap {
@@ -53,10 +57,29 @@
         }
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}fieldset-header {
+            .#{$prefix}form-item,
+            .#{$prefix}tool {
+                float: right;
+            }
+        }
+    }
+
     .#{$prefix}fieldset-with-title {
         .#{$prefix}fieldset-header-checkbox,
         .#{$prefix}tool {
             margin-right: 3px;
+        }
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl .#{$prefix}fieldset-with-title {
+            .#{$prefix}fieldset-header-checkbox,
+            .#{$prefix}tool {
+                margin-right: 0;
+                margin-left: 3px;
+            }
         }
     }
 

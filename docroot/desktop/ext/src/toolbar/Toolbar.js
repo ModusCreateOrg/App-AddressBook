@@ -8,9 +8,9 @@
  *
  * | Shortcut | xtype         | Class                         | Description
  * |:---------|:--------------|:------------------------------|:---------------------------------------------------
- * | `->`     | `tbfill`      | {@link Ext.toolbar.Fill}      | begin using the right-justified button container
- * | `-`      | `tbseparator` | {@link Ext.toolbar.Separator} | add a vertical separator bar between toolbar items
- * | ` `      | `tbspacer`    | {@link Ext.toolbar.Spacer}    | add horiztonal space between elements
+ * | '->'     | `tbfill`      | {@link Ext.toolbar.Fill}      | begin using the right-justified button container
+ * | '-'      | `tbseparator` | {@link Ext.toolbar.Separator} | add a vertical separator bar between toolbar items
+ * | ' '      | `tbspacer`    | {@link Ext.toolbar.Spacer}    | add horiztonal space between elements
  *
  *     @example
  *     Ext.create('Ext.toolbar.Toolbar', {
@@ -216,7 +216,7 @@ Ext.define('Ext.toolbar.Toolbar', {
     vertical: false,
 
     /**
-     * @cfg {String/Object} layout
+     * @cfg {Ext.enums.Layout/Object} layout
      * This class assigns a default layout (`layout: 'hbox'`).
      * Developers _may_ override this configuration option if another layout
      * is required (the constructor must be passed a configuration object in this
@@ -237,7 +237,7 @@ Ext.define('Ext.toolbar.Toolbar', {
      */
     menuTriggerCls: Ext.baseCSSPrefix + 'toolbar-more-icon',
     
-    // private
+    // @private
     trackMenus: true,
 
     itemCls: Ext.baseCSSPrefix + 'toolbar-item',
@@ -261,8 +261,7 @@ Ext.define('Ext.toolbar.Toolbar', {
     },
 
     initComponent: function() {
-        var me = this,
-            keys;
+        var me = this;
 
         // check for simplified (old-style) overflow config:
         if (!me.layout && me.enableOverflow) {
@@ -294,8 +293,9 @@ Ext.define('Ext.toolbar.Toolbar', {
         /**
          * @event overflowchange
          * Fires after the overflow state has changed.
-         * @param {Object} c The Container
-         * @param {Boolean} lastOverflow overflow state
+         * @param {Number} lastHiddenCount The number of overflowing items that used to be hidden.
+         * @param {Number} hiddenCount The number of overflowing items that are hidden now.
+         * @param {Array} The hidden items
          */
         me.addEvents('overflowchange');
     },
@@ -321,7 +321,7 @@ Ext.define('Ext.toolbar.Toolbar', {
      *
      * **Note**: See the notes within {@link Ext.container.Container#method-add}.
      *
-     * @param {Object...} args The following types of arguments are all valid:
+     * @param {Ext.Component.../Object.../String.../HTMLElement...} args The following types of arguments are all valid:
      *
      *  - `{@link Ext.button.Button config}`: A valid button config object
      *  - `HtmlElement`: Any standard HTML element
@@ -335,11 +335,24 @@ Ext.define('Ext.toolbar.Toolbar', {
      *      - `' '`: Creates a spacer element
      *      - `'->'`: Creates a fill element
      *
+     * @return {Ext.Component[]/Ext.Component} The Components that were added.
+     *
      * @method add
      */
+    
+    /**
+     * Inserts a Component into this Container at a specified index.
+     *
+     * @param {Number} index The index at which the Component will be inserted.
+     * @param {Ext.Component/Object/String/HTMLElement} component
+     * See {@link #method-add} method for overview of possible values.
+     * @return {Ext.Component} The component that was inserted.
+     * @method insert
+     */
 
-    // private
+    // @private
     lookupComponent: function(c) {
+        var args = arguments;
         if (typeof c == 'string') {
             var T = Ext.toolbar.Toolbar,
                 shortcut = T.shortcutsHV[this.vertical ? 1 : 0][c] || T.shortcuts[c];
@@ -358,12 +371,15 @@ Ext.define('Ext.toolbar.Toolbar', {
             }
 
             this.applyDefaults(c);
+            
+            // See: EXTJSIV-7578
+            args = [c];
         }
 
-        return this.callParent(arguments);
+        return this.callParent(args);
     },
 
-    // private
+    // @private
     applyDefaults: function(c) {
         if (!Ext.isString(c)) {
             c = this.callParent(arguments);
@@ -371,7 +387,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         return c;
     },
 
-    // private
+    // @private
     trackMenu: function(item, remove) {
         if (this.trackMenus && item.menu) {
             var method = remove ? 'mun' : 'mon',
@@ -383,13 +399,13 @@ Ext.define('Ext.toolbar.Toolbar', {
         }
     },
 
-    // private
+    // @private
     constructButton: function(item) {
         return item.events ? item
                 : Ext.widget(item.split ? 'splitbutton' : this.defaultType, item);
     },
 
-    // private
+    // @private
     onBeforeAdd: function(component) {
         if (component.is('field') || (component.is('button') && this.ui != 'footer')) {
             component.ui = component.ui + '-toolbar';
@@ -403,13 +419,13 @@ Ext.define('Ext.toolbar.Toolbar', {
         this.callParent(arguments);
     },
 
-    // private
+    // @private
     onAdd: function(component) {
         this.callParent(arguments);
         this.trackMenu(component);
     },
     
-    // private
+    // @private
     onRemove: function(c) {
         this.callParent(arguments);
         this.trackMenu(c, true);
@@ -419,7 +435,7 @@ Ext.define('Ext.toolbar.Toolbar', {
         return this.items.getRange();   
     },
 
-    // private
+    // @private
     onButtonOver: function(btn){
         if (this.activeMenuBtn && this.activeMenuBtn != btn) {
             this.activeMenuBtn.hideMenu();
@@ -428,12 +444,12 @@ Ext.define('Ext.toolbar.Toolbar', {
         }
     },
 
-    // private
+    // @private
     onButtonMenuShow: function(btn) {
         this.activeMenuBtn = btn;
     },
 
-    // private
+    // @private
     onButtonMenuHide: function(btn) {
         delete this.activeMenuBtn;
     }

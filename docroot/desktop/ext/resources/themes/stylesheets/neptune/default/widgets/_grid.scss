@@ -72,7 +72,7 @@
     }
 
     .#{$prefix}accordion-item .#{$prefix}grid-header-ct {
-        border-width: 0 0 1px 0!important;
+        border-width: 0 01px 1px 1px !important;
     }
 
     .#{$prefix}column-header {
@@ -229,7 +229,7 @@
         border-width: $grid-row-cell-border-width;
     }
 
-    .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-rowwrap {
         border-width: $grid-row-wrap-border-width;
         border-color: $grid-row-wrap-border-color;
         border-style: $grid-row-wrap-border-style;
@@ -239,12 +239,12 @@
     }
 
     .#{$prefix}grid-row-alt .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-alt .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-alt .#{$prefix}grid-rowwrap {
         background-color: $grid-row-cell-alt-background;
     }
 
     .#{$prefix}grid-row-over .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-over .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-over .#{$prefix}grid-rowwrap {
         border-color: $grid-row-cell-over-border-color;
         background-color: $grid-row-cell-over-background-color;
         color: $grid-row-cell-over-color;
@@ -255,14 +255,14 @@
     }
 
     .#{$prefix}grid-row-focused .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-focused .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-focused .#{$prefix}grid-rowwrap {
         border-color: $grid-row-cell-focus-border-color;
         color: color-by-background($grid-row-cell-focus-background-color);
         background-color: $grid-row-cell-focus-background-color;
     }
 
     .#{$prefix}grid-row-selected .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-selected .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-selected .#{$prefix}grid-rowwrap {
         border-style: $grid-row-cell-selected-border-style;
         border-color: $grid-row-cell-selected-border-color;
         color: color-by-background($grid-row-cell-selected-background-color);
@@ -270,12 +270,12 @@
         @include inset-by-background($grid-row-cell-selected-background-color);
     }
 
-    .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-rowwrap {
         .#{$prefix}grid-cell,
         .#{$prefix}grid-cell-inner {
             border-width: 0;
 
-            background: transparent;
+            background-color: transparent;
         }
     }
 

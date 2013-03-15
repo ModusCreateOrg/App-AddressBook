@@ -21,6 +21,12 @@
         overflow: hidden;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}form-trigger-wrap .#{$prefix}form-trigger {
+            background-image: theme-background-image($theme-name, 'form/trigger-rtl.gif');
+        }
+    }
+
     .#{$prefix}border-box .#{$prefix}form-trigger {
         height: $form-trigger-height;
     }
@@ -93,6 +99,12 @@
         background-image: theme-background-image($theme-name, 'form/date-trigger.gif');
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}form-trigger-wrap .#{$prefix}form-date-trigger {
+            background-image: theme-background-image($theme-name, 'form/date-trigger-rtl.gif');
+        }
+    }
+
     $spinner-btn-height: $form-trigger-height / 2;
     .#{$prefix}form-trigger-wrap {
         .#{$prefix}form-spinner-up,
@@ -110,6 +122,16 @@
             background-position: 0 (-$spinner-btn-height);
         }
     }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}form-trigger-wrap {
+            .#{$prefix}form-spinner-up,
+            .#{$prefix}form-spinner-down {
+                background-image: theme-background-image($theme-name, 'form/spinner-rtl.gif');
+            }
+        }
+    }
+
     .#{$prefix}form-trigger-wrap-focus .#{$prefix}form-spinner-down {
         background-position: -($form-trigger-width * 3) (-$spinner-btn-height);
     }
@@ -150,6 +172,14 @@
         }
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}field-default-toolbar .#{$prefix}form-trigger-wrap {
+            .#{$prefix}form-spinner-up,
+            .#{$prefix}form-spinner-down {
+                background-image: theme-background-image($theme-name, 'form/spinner-small-rtl.gif');
+            }
+        }
+    }
 
     .#{$prefix}trigger-noedit {
         cursor: pointer;
@@ -166,8 +196,21 @@
     .#{$prefix}form-clear-trigger {
         background-image: theme-background-image($theme-name, 'form/clear-trigger.gif');
     }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}form-trigger-wrap .#{$prefix}form-clear-trigger {
+            background-image: theme-background-image($theme-name, 'form/clear-trigger-rtl.gif');
+        }
+    }
+
     .#{$prefix}form-search-trigger {
         background-image: theme-background-image($theme-name, 'form/search-trigger.gif');
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}form-trigger-wrap .#{$prefix}form-search-trigger {
+            background-image: theme-background-image($theme-name, 'form/search-trigger-rtl.gif');
+        }
     }
 
     @if $include-ie {

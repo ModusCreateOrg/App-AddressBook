@@ -55,13 +55,13 @@ $accordion-border-color: $stroke-color !default;
         }
     }
 
-    .x-accordion-body {
+    .#{$prefix}accordion-body {
 //        padding-bottom: 5px;
         border-bottom: 0;
         background: #fff;
     }
 
-    .x-accordion-item {
+    .#{$prefix}accordion-item {
         margin: 5px 5px 0 5px;
     }
 

@@ -12,12 +12,10 @@ Ext.define('Ext.layout.component.field.Text', {
     canGrowWidth: true,
 
     beginLayoutCycle: function(ownerContext) {
-        var me = this;
-        
-        me.callParent(arguments);
+        this.callParent(arguments);
         
         // Clear height, in case a previous layout cycle stretched it.
-        if (ownerContext.shrinkWrap) {
+        if (ownerContext.heightModel.shrinkWrap) {
             ownerContext.inputContext.el.setStyle('height', '');
         }
     },
@@ -62,14 +60,17 @@ Ext.define('Ext.layout.component.field.Text', {
             ieInputWidthAdjustment = me.ieInputWidthAdjustment;
 
         if (ieInputWidthAdjustment) {
-            // adjust for IE 6/7 strict content-box model
-            // RTL: This might have to be padding-left unless the senses of the padding styles switch when in RTL mode.
-            me.owner.bodyEl.setStyle('padding-right', ieInputWidthAdjustment + 'px');
+            me.adjustIEInputPadding(ownerContext);
             if(suffix === 'px') {
                 width -= ieInputWidthAdjustment;
             }
         }
 
         me.callParent(arguments);
+    },
+
+    adjustIEInputPadding: function(ownerContext) {
+        // adjust for IE 6/7 strict content-box model
+        this.owner.bodyEl.setStyle('padding-right', this.ieInputWidthAdjustment + 'px');
     }
 });

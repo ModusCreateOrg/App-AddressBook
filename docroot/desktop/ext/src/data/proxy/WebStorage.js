@@ -20,6 +20,18 @@ Ext.define('Ext.data.proxy.WebStorage', {
     id: undefined,
 
     /**
+     * @cfg {Object} reader
+     * Not used by web storage proxy.
+     * @hide
+     */
+
+    /**
+     * @cfg {Object} writer
+     * Not used by web storage proxy.
+     * @hide
+     */
+
+    /**
      * Creates the proxy, throws an error if local storage is not supported in the current browser.
      * @param {Object} config (optional) Config object.
      */

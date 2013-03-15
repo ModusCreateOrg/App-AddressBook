@@ -109,13 +109,13 @@ Ext.define('Ext.util.KeyNav', {
                     if (typeof binding === 'function') {
                         binding = {
                             handler: binding,
-                            defaultAction: (config.defaultEventAction !== undefined) ? config.defaultEventAction : me.defaultEventAction
+                            defaultEventAction: (config.defaultEventAction !== undefined) ? config.defaultEventAction : me.defaultEventAction
                         };
                     }
                     map.addBinding({
                         key: keyCodes[keyName],
                         handler: Ext.Function.bind(me.handleEvent, binding.scope||defaultScope, binding.handler||binding.fn, true),
-                        defaultEventAction: (binding.defaultEventAction !== undefined) ? binding.defaultAction : me.defaultEventAction
+                        defaultEventAction: (binding.defaultEventAction !== undefined) ? binding.defaultEventAction : me.defaultEventAction
                     });
                 }
             }

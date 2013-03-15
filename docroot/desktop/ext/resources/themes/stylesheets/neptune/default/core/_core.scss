@@ -75,13 +75,6 @@
     position: relative;
 }
 
-@if $include-ie {
-    .#{$prefix}ie6 .#{$prefix}masked select,
-    .#{$prefix}ie6.#{$prefix}body-masked select {
-        visibility: hidden !important;
-    }
-}
-
 // Styles for the three schemes for showing shadows under an element: 
 // CSS3, IE blur transform, or 9 point framing with images.
 .#{$prefix}css-shadow {

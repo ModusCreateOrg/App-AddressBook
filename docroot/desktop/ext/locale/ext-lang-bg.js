@@ -21,9 +21,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.bg.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} избрани колони"
+    Ext.define("Ext.locale.bg.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} избрани колони"
     });
 
     Ext.define("Ext.locale.bg.TabPanelItem", {

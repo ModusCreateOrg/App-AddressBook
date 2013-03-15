@@ -406,8 +406,7 @@ Ext.define('Ext.dd.DragDropManager', {
      * @return {Ext.dd.DragDrop} the drag drop object, null if it is not found
      */
     getDDById: function(id) {
-        var me = this,
-            i, dd;
+        var i, dd;
         for (i in this.ids) {
             dd = this.ids[i][id];
             if (dd instanceof Ext.dd.DDTarget) {
@@ -425,7 +424,7 @@ Ext.define('Ext.dd.DragDropManager', {
      * @private
      */
     handleMouseDown: function(e, oDD) {
-        if(Ext.tip.QuickTipManager){
+        if (Ext.quickTipsActive){
             Ext.tip.QuickTipManager.ddDisable();
         }
         if(this.dragCurrent){
@@ -488,7 +487,7 @@ Ext.define('Ext.dd.DragDropManager', {
     handleMouseUp: function(e) {
         var current = this.dragCurrent;
         
-        if(Ext.tip && Ext.tip.QuickTipManager){
+        if(Ext.quickTipsActive){
             Ext.tip.QuickTipManager.ddEnable();
         }
         if (!current) {

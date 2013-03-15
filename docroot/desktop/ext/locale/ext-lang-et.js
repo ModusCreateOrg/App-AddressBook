@@ -15,9 +15,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.et.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} valitud rida"
+    Ext.define("Ext.locale.et.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} valitud rida"
     });
 
     // changing the msg text below will affect the LoadMask

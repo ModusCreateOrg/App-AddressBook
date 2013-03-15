@@ -242,7 +242,7 @@ Ext.define('Ext.Action', {
         Ext.each(this.items, fn, scope);
     },
 
-    // private
+    // @private
     callEach : function(fnName, args){
         var items = this.items,
             i = 0,
@@ -257,13 +257,13 @@ Ext.define('Ext.Action', {
         Ext.resumeLayouts(true);
     },
 
-    // private
+    // @private
     addComponent : function(comp){
         this.items.push(comp);
         comp.on('destroy', this.removeComponent, this);
     },
 
-    // private
+    // @private
     removeComponent : function(comp){
         Ext.Array.remove(this.items, comp);
     },

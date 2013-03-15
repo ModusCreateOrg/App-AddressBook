@@ -148,7 +148,7 @@ Ext.define('Ext.form.field.ComboBox', {
      */
     fieldSubTpl: [
         '<div class="{hiddenDataCls}" role="presentation"></div>',
-        '<input id="{id}" type="{type}" {inputAttrTpl} class="{fieldCls} {typeCls}" autocomplete="off"',
+        '<input id="{id}" type="{type}" {inputAttrTpl} class="{fieldCls} {typeCls} {editableCls}" autocomplete="off"',
             '<tpl if="value"> value="{[Ext.util.Format.htmlEncode(values.value)]}"</tpl>',
             '<tpl if="name"> name="{name}"</tpl>',
             '<tpl if="placeholder"> placeholder="{placeholder}"</tpl>',
@@ -180,10 +180,11 @@ Ext.define('Ext.form.field.ComboBox', {
     },
 
     /**
-     * @cfg {Ext.data.Store/Array} store
+     * @cfg {Ext.data.Store/String/Array} store
      * The data source to which this combo is bound. Acceptable values for this property are:
      *
      *   - **any {@link Ext.data.Store Store} subclass**
+     *   - **an {@link Ext.data.Store#storeId ID of a store}**
      *   - **an Array** : Arrays will be converted to a {@link Ext.data.Store} internally, automatically generating
      *     {@link Ext.data.Field#name field names} to work with all data components.
      *
@@ -379,6 +380,13 @@ Ext.define('Ext.form.field.ComboBox', {
      * (and its {@link #grow} property is `true`)
      */
     growToLongestValue: true,
+    
+    /**
+     * @cfg {Boolean} enableRegEx
+     * *When {@link #queryMode} is `'local'` only*
+     *
+     * Set to `true` to have the ComboBox use the typed value as a RegExp source to filter the store to get possible matches.
+     */
 
     /**
      * @cfg {String} valueNotFoundText
@@ -624,7 +632,7 @@ Ext.define('Ext.form.field.ComboBox', {
     assertValue: function() {
         var me = this,
             value = me.getRawValue(),
-            rec;
+            rec, currentValue;
 
         if (me.forceSelection) {
             if (me.multiSelect) {
@@ -638,7 +646,12 @@ Ext.define('Ext.form.field.ComboBox', {
                 // if it does not match a record then revert to the most recent selection.
                 rec = me.findRecordByDisplay(value);
                 if (rec) {
-                    me.select(rec);
+                    currentValue = me.value;
+                    // Prevent an issue where we have duplicate display values with
+                    // different underlying values.
+                    if (!me.findRecordByValue(currentValue)) {
+                        me.select(rec, true);
+                    }
                 } else {
                     me.setValue(me.lastSelection);
                 }
@@ -842,7 +855,7 @@ Ext.define('Ext.form.field.ComboBox', {
                         me.activeFilter = new Ext.util.Filter({
                             root: 'data',
                             property: me.displayField,
-                            value: queryString
+                            value: me.enableRegEx ? new RegExp(queryString) : queryString
                         });
                         store.filter(me.activeFilter);
                         needsRefresh = true;
@@ -984,6 +997,13 @@ Ext.define('Ext.form.field.ComboBox', {
         }
     },
 
+    onPaste: function(){
+        var me = this;
+        
+        if (!me.readOnly && !me.disabled && me.editable) {
+            me.doQueryTask.delay(me.queryDelay);
+        }
+    },
 
     // store the last key and doQuery if relevant
     onKeyUp: function(e, t) {
@@ -1017,6 +1037,7 @@ Ext.define('Ext.form.field.ComboBox', {
         if (!me.enableKeyEvents) {
             me.mon(me.inputEl, 'keyup', me.onKeyUp, me);
         }
+        me.mon(me.inputEl, 'paste', me.onPaste, me);
     },
 
     onDestroy: function() {
@@ -1174,6 +1195,18 @@ Ext.define('Ext.form.field.ComboBox', {
                     }
                     // Tab key event is allowed to propagate to field
                     return true;
+                },
+                enter: function(e){
+                    var selModel = picker.getSelectionModel(),
+                        count = selModel.getCount();
+                        
+                    this.selectHighlighted(e);
+                    
+                    // Handle the case where the highlighted item is already selected
+                    // In this case, the change event won't fire, so just collapse
+                    if (!me.multiSelect && count === selModel.getCount()) {
+                        me.collapse();
+                    }
                 }
             });
         }
@@ -1204,8 +1237,21 @@ Ext.define('Ext.form.field.ComboBox', {
      * Selects an item by a {@link Ext.data.Model Model}, or by a key value.
      * @param {Object} r
      */
-    select: function(r) {
-        this.setValue(r, true);
+    select: function(r, /* private */ assert) {
+        var me = this,
+            picker = me.picker,
+            doSelect = true;
+        
+        if (r && r.isModel && assert === true) {
+            if (picker) {
+                doSelect = !picker.getSelectionModel().isSelected(r);
+            }
+            
+            if (doSelect) {
+                me.fireEvent('select', me, r);
+            }
+        }
+        me.setValue(r, true);
     },
 
     /**
@@ -1396,7 +1442,13 @@ Ext.define('Ext.form.field.ComboBox', {
     },
 
     getSubmitValue: function() {
-        return this.getValue();
+        var value = this.getValue();
+        // If the value is null/undefined, we still return an empty string. If we
+        // don't, the field will never get posted to the server since nulls are ignored.
+        if (Ext.isEmpty(value)) {
+            value = '';
+        }
+        return value;
     },
 
     isEqual: function(v1, v2) {
@@ -1453,7 +1505,7 @@ Ext.define('Ext.form.field.ComboBox', {
             selModel = picker.getSelectionModel();
             selModel.deselectAll();
             if (selection.length) {
-                selModel.select(selection);
+                selModel.select(selection, undefined, true);
             }
             me.ignoreSelection--;
         }

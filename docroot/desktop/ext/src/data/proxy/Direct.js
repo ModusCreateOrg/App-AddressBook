@@ -116,7 +116,7 @@ Ext.define('Ext.data.proxy.Direct', {
     doRequest: function(operation, callback, scope) {
         var me = this,
             writer = me.getWriter(),
-            request = me.buildRequest(operation, callback, scope),
+            request = me.buildRequest(operation),
             fn = me.api[request.action]  || me.directFn,
             params = request.params,
             args = [],
@@ -152,9 +152,7 @@ Ext.define('Ext.data.proxy.Direct', {
      * Inherit docs. We don't apply any encoding here because
      * all of the direct requests go out as jsonData
      */
-    applyEncoding: function(value){
-        return value;
-    },
+    applyEncoding: Ext.identityFn,
 
     createRequestCallback: function(request, operation, callback, scope){
         var me = this;

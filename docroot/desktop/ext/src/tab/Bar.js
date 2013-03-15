@@ -12,7 +12,7 @@ Ext.define('Ext.tab.Bar', {
 
     /**
      * @property {Boolean} isTabBar
-     * `true` in this class to identify an objact as an instantiated Tab Bar, or subclass thereof.
+     * `true` in this class to identify an object as an instantiated Tab Bar, or subclass thereof.
      */
     isTabBar: true,
     
@@ -39,7 +39,7 @@ Ext.define('Ext.tab.Bar', {
 
     // @private
     renderTpl: [
-        '<div id="{id}-body" class="{baseCls}-body {bodyCls}<tpl if="ui"> {baseCls}-body-{ui}<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl></tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
+        '<div id="{id}-body" class="{baseCls}-body {bodyCls} {bodyTargetCls}<tpl if="ui"> {baseCls}-body-{ui}<tpl for="uiCls"> {parent.baseCls}-body-{parent.ui}-{.}</tpl></tpl>"<tpl if="bodyStyle"> style="{bodyStyle}"</tpl>>',
             '{%this.renderContainer(out,values)%}',
         '</div>',
         '<div id="{id}-strip" class="{baseCls}-strip<tpl if="ui"> {baseCls}-strip-{ui}<tpl for="uiCls"> {parent.baseCls}-strip-{parent.ui}-{.}</tpl></tpl>"></div>'
@@ -80,6 +80,7 @@ Ext.define('Ext.tab.Bar', {
 
         // Element onClick listener added by Header base class
         me.callParent(arguments);
+        Ext.merge(me.layout, me.initialConfig.layout);
 
         // TabBar must override the Header's align setting.
         me.layout.align = (me.orientation == 'vertical') ? 'left' : 'top';
@@ -115,8 +116,16 @@ Ext.define('Ext.tab.Bar', {
     },
 
     afterComponentLayout : function(width) {
-        this.callParent(arguments);
-        this.strip.setWidth(width);
+        var me = this,
+            needsScroll = me.needsScroll;
+        
+        me.callParent(arguments);
+        me.strip.setWidth(width);  
+            
+        if (needsScroll) {
+            me.layout.overflowHandler.scrollToItem(me.activeTab);
+        }    
+        delete me.needsScroll;
     },
 
     // @private
@@ -243,16 +252,8 @@ Ext.define('Ext.tab.Bar', {
             me.fireEvent('change', me, tab, tab.card);
 
             // Ensure that after the currently in progress layout, the active tab is scrolled into view
-            me.on({
-                afterlayout: me.afterTabActivate,
-                scope: me,
-                single: true
-            });
+            me.needsScroll = true;
             me.updateLayout();
         }
-    },
-
-    afterTabActivate: function() {
-        this.layout.overflowHandler.scrollToItem(this.activeTab);
     }
 });

@@ -164,11 +164,11 @@ Ext.define('Ext.layout.container.Fit', {
         c = ownerContext.target;
         ownerContext.overflowX = (!ownerContext.widthModel.shrinkWrap && 
                                    ownerContext.maxChildMinWidth &&
-                                   (c.autoScroll || c.overflowX)) || undef;
+                                   c.scrollFlags.x) || undef;
 
         ownerContext.overflowY = (!ownerContext.heightModel.shrinkWrap &&
                                    ownerContext.maxChildMinHeight &&
-                                   (c.autoScroll || c.overflowY)) || undef;
+                                   c.scrollFlags.y) || undef;
     },
 
     calculate : function (ownerContext) {

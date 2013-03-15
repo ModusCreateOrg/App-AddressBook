@@ -71,6 +71,8 @@ Ext.define('Ext.form.field.Field', {
      */
     suspendCheckChange: 0,
 
+    bubbleEvents: 'validitychange',
+
     /**
      * Initializes this Field mixin on the current instance. Components using this mixin should call this method during
      * their own initialization process.
@@ -102,6 +104,22 @@ Ext.define('Ext.form.field.Field', {
         );
 
         this.initValue();
+        
+        //<debug>
+        var badNames = [
+            'tagName',
+            'nodeName',
+            'children',
+            'childNodes'
+        ], name = this.name;
+            
+        if (name && Ext.Array.indexOf(badNames, name) > -1) {
+            Ext.log.warn(
+                ['It is recommended to not use "', name, '" as a field name, because it ',
+                'can cause naming collisions during form submission.'].join('')
+            );
+        }
+        //</debug>
     },
 
     /**
@@ -131,9 +149,7 @@ Ext.define('Ext.form.field.Field', {
      * @param {Object} value The initial value
      * @return {Object} The modified initial value
      */
-    transformOriginalValue: function(value){
-        return value;
-    },
+    transformOriginalValue: Ext.identityFn,
 
     /**
      * Returns the {@link Ext.form.field.Field#name name} attribute of the field. This is used as the parameter name

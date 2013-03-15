@@ -63,8 +63,9 @@ Ext.define('Ext.ProgressBar', {
     baseCls: Ext.baseCSSPrefix + 'progress',
 
     /**
-     * @cfg {Boolean} animate
-     * True to animate the progress bar during transitions.
+     * @cfg {Boolean/Object} animate
+     * True to animate the progress bar during transitions, or an animation configuration
+     * (see the {@link #method-animate} method for details).
      */
     animate: false,
 
@@ -322,7 +323,8 @@ Ext.define('Ext.ProgressBar', {
     },
 
     onDestroy: function(){
-        var me = this;
+        var me = this,
+            bar = me.bar;
         
         me.clearTimer();
         if (me.rendered) {
@@ -330,6 +332,9 @@ Ext.define('Ext.ProgressBar', {
                 me.textEl.clear();
             }
             Ext.destroyMembers(me, 'textEl', 'progressBar');
+            if (bar && me.animate) {
+                bar.stopAnimation();
+            }
         }
         me.callParent();
     }

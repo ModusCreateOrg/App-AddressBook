@@ -157,7 +157,7 @@ Ext.define('Ext.util.MixedCollection', {
      * depending on the relative sort positions of the 2 compared items.
      *
      * If omitted, a function {@link #generateComparator generated} from the currently defined set of
-     * {@link #sorters} will be used.
+     * {@link #cfg-sorters} will be used.
      *
      * @return {Number} The insertion point to add the new item into this MixedCollection at using {@link #insert}
      */

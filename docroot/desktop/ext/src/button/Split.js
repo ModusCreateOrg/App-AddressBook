@@ -45,40 +45,40 @@ Ext.define('Ext.button.Split', {
      * @cfg {Function} arrowHandler
      * A function called when the arrow button is clicked (can be used instead of click event)
      * @cfg {Ext.button.Split} arrowHandler.this
-     * @cfg {Event} arrowHandler.e The click event
+     * @cfg {Event} arrowHandler.e The click event.
      */
     /**
      * @cfg {String} arrowTooltip
-     * The title attribute of the arrow
+     * The title attribute of the arrow.
      */
 
-    // private
+    // @private
     arrowCls      : 'split',
     split         : true,
 
-    // private
+    // @private
     initComponent : function(){
         this.callParent();
         /**
          * @event arrowclick
          * Fires when this button's arrow is clicked.
          * @param {Ext.button.Split} this
-         * @param {Event} e The click event
+         * @param {Event} e The click event.
          */
         this.addEvents("arrowclick");
     },
 
     /**
      * Sets this button's arrow click handler.
-     * @param {Function} handler The function to call when the arrow is clicked
-     * @param {Object} scope (optional) Scope for the function passed above
+     * @param {Function} handler The function to call when the arrow is clicked.
+     * @param {Object} scope (optional) Scope for the function passed above.
      */
     setArrowHandler : function(handler, scope){
         this.arrowHandler = handler;
         this.scope = scope;
     },
 
-    // private
+    // @private
     onClick : function(e, t) {
         var me = this;
         

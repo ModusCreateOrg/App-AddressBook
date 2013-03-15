@@ -120,10 +120,10 @@ Ext.define('Ext.chart.axis.Gauge', {
             labelBBox;
 
         if (!labelSprite) {
-            me.titleSprite = labelSprite = surface.add({
+            me.titleSprite = labelSprite = surface.add(Ext.apply({
                 type: 'text',
                 zIndex: 2
-            });
+            }, me.axisTitleStyle, me.labelTitle));
         }
         labelSprite.setAttributes(Ext.apply({
             text: me.title

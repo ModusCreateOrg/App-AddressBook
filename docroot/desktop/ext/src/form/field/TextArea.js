@@ -170,6 +170,10 @@ Ext.define('Ext.form.field.TextArea', {
         return this.stripReturns(value); 
     },
     
+    getValue: function(){
+        return this.stripReturns(this.callParent());    
+    },
+    
     valueToRaw: function(value){
         value = this.stripReturns(value);
         return this.callParent([value]);
@@ -262,7 +266,8 @@ Ext.define('Ext.form.field.TextArea', {
     beforeDestroy: function(){
         var task = this.pasteTask;
         if (task) {
-            task.delay();
+            task.cancel();
+            this.pasteTask = null;
         }    
         this.callParent();
     }

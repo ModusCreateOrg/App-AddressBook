@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.zh_TW.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "選擇了 {0} 行"
+    Ext.define("Ext.locale.zh_TW.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "選擇了 {0} 行"
     });
 
     Ext.define("Ext.locale.zh_TW.TabPanelItem", {

@@ -110,6 +110,8 @@ Ext.define('Ext.layout.container.Box', {
     reserveOffset: true,
 
     manageMargins: true,
+    
+    createsInnerCt: true,
 
     childEls: [
         'innerCt',
@@ -131,13 +133,14 @@ Ext.define('Ext.layout.container.Box', {
                     'width:20000px;',
                     // On IE quirks and IE6/7 strict, a text-align:center style trickles
                     // down to this el at times and will cause it to move off the left edge.
-                    // The easy fix is to just always set left:0px here. The top:0px part
-                    // is just being paranoid. The requirement for targetEl is that its
-                    // origin align with innerCt... this ensures that it does!
-                    'left:0px;top:0px;',
+                    // The easy fix is to just always set left:0px here (right:0px in rtl
+                    // mode). The top:0px part is just being paranoid. The requirement for
+                    // targetEl is that its origin align with innerCt... this ensures that
+                    // it does!
+                    '{[values.$layout.names.beforeX]}:0px;{[values.$layout.names.beforeY]}:0px;',
                     // If we don't give the element a height, it does not always participate
                     // in the scrollWidth.
-                    'height:1px">',
+                    'height:1px"<tpl if="targetCls"> class="{targetCls}"</tpl>>',
                 '{%this.renderBody(out, values)%}',
             '</div>',
         '</div>',
@@ -169,10 +172,6 @@ Ext.define('Ext.layout.container.Box', {
         }
     },
 
-    getNames: function () {
-        return this.names;
-    },
-
     // Matches: <spaces>digits[.digits]<spaces>%<spaces>
     // Captures: digits[.digits]
     _percentageRe: /^\s*(\d+(?:\.\d*)?)\s*[%]\s*$/,
@@ -188,9 +187,12 @@ Ext.define('Ext.layout.container.Box', {
             height = item[names.height],
             percentageRe = me._percentageRe,
             percentageWidth = percentageRe.test(width),
-            isStretch = (align == 'stretch');
+            isStretch = (align == 'stretch'),
+            isStretchMax = (align == 'stretchmax'),
+            constrain = me.constrainAlign;
             
-        if ((isStretch || flex || percentageWidth) && !ownerSizeModel) {
+        // Getting the size model is expensive, so we only want to do so if we really need it
+        if (!ownerSizeModel && (isStretch || flex || percentageWidth || (constrain && !isStretchMax))) {
             ownerSizeModel = me.owner.getSizeModel();
         }
 
@@ -203,11 +205,15 @@ Ext.define('Ext.layout.container.Box', {
                 // stretchmax size calculation. This avoid running such a child in its
                 // shrinkWrap mode prior to supplying the calculated size.
             }
-        } else if (align != 'stretchmax') {
+        } else if (!isStretchMax) {
             if (percentageRe.test(height)) {
                 // Height %ages are calculated based on container size, so they are the
                 // same as align=stretch for this purpose...
                 key = 'stretch';
+            } else if (constrain && !ownerSizeModel[names.height].shrinkWrap) {
+                // Same functionality as stretchmax, only the max is going to be the size
+                // of the container, not the largest item
+                key = 'stretchmax';
             } else {
                 key = '';
             }
@@ -225,18 +231,41 @@ Ext.define('Ext.layout.container.Box', {
     },
 
     flexSort: function (a, b) {
-        var maxWidthName = this.getNames().maxWidth,
-            infiniteValue = Infinity;
+        // We need to sort the flexed items to ensure that we have
+        // the items with max/min width first since when we set the
+        // values we may have the value constrained, so we need to
+        // react accordingly. Precedence is given from the largest
+        // value through to the smallest value
+        var maxWidthName = this.names.maxWidth,
+            minWidthName = this.names.minWidth,
+            infiniteValue = Infinity,
+            aTarget = a.target,
+            bTarget = b.target,
+            result = 0,
+            aMin, bMin, aMax, bMax,
+            hasMin, hasMax;
 
-        a = a.target[maxWidthName] || infiniteValue;
-        b = b.target[maxWidthName] || infiniteValue;
+        aMax = aTarget[maxWidthName] || infiniteValue;
+        bMax = bTarget[maxWidthName] || infiniteValue;
+        aMin = aTarget[minWidthName] || 0;
+        bMin = bTarget[minWidthName] || 0;
+        
+        hasMin = isFinite(aMin) || isFinite(bMin);
+        hasMax = isFinite(aMax) || isFinite(bMax);
 
-        // IE 6/7 Don't like Infinity - Infinity...
-        if (!isFinite(a) && !isFinite(b)) {
-            return 0;
+        if (hasMin || hasMax) {
+            if (hasMax) {
+                result = aMax - bMax;
+            }
+            
+            // If the result is 0, it means either
+            // a) hasMax was false
+            // b) The max values were the same
+            if (result === 0 && hasMin) {
+                result = bMin - aMin;
+            }
         }
-
-        return a - b;
+        return result;
     },
 
     isItemBoxParent: function (itemContext) {
@@ -245,11 +274,6 @@ Ext.define('Ext.layout.container.Box', {
 
     isItemShrinkWrap: function (item) {
         return true;
-    },
-
-    // Sort into *descending* order.
-    minSizeSortFn: function(a, b) {
-        return b.available - a.available;
     },
 
     roundFlex: function(width) {
@@ -286,9 +310,10 @@ Ext.define('Ext.layout.container.Box', {
 
     beginLayout: function (ownerContext) {
         var me = this,
-            smp = me.owner.stretchMaxPartner,
+            owner = me.owner,
+            smp = owner.stretchMaxPartner,
             style = me.innerCt.dom.style,
-            names = me.getNames();
+            names = me.names;
 
         ownerContext.boxNames = names;
 
@@ -298,7 +323,7 @@ Ext.define('Ext.layout.container.Box', {
 
         // get the contextItem for our stretchMax buddy:
         if (typeof smp === 'string') {
-            smp = Ext.getCmp(smp) || me.owner.query(smp)[0];
+            smp = Ext.getCmp(smp) || owner.query(smp)[0];
         }
 
         ownerContext.stretchMaxPartner = smp && ownerContext.context.getCmp(smp);
@@ -308,14 +333,14 @@ Ext.define('Ext.layout.container.Box', {
         ownerContext.innerCtContext = ownerContext.getEl('innerCt', me);
 
         // Capture whether the owning Container is scrolling in the parallel direction
-        me.scrollParallel = !!(me.owner.autoScroll || me.owner[names.overflowX]);
+        me.scrollParallel = owner.scrollFlags[names.x];
 
         // Capture whether the owning Container is scrolling in the perpendicular direction
-        me.scrollPerpendicular = !!(me.owner.autoScroll || me.owner[names.overflowY]);
+        me.scrollPerpendicular = owner.scrollFlags[names.y];
 
         // If we *are* scrolling parallel, capture the scroll position of the encapsulating element
         if (me.scrollParallel) {
-            me.scrollPos = me.owner.getTargetEl().dom[names.scrollLeft];
+            me.scrollPos = owner.getTargetEl().dom[names.scrollLeft];
         }
 
         // Don't allow sizes burned on to the innerCt to influence measurements.
@@ -346,7 +371,8 @@ Ext.define('Ext.layout.container.Box', {
             align: align = {
                 stretch:    align == 'stretch',
                 stretchmax: align == 'stretchmax',
-                center:     align == names.center
+                center:     align == names.center,
+                bottom:     align == names.afterY
             },
             pack: pack = {
                 center: pack == 'center',
@@ -378,10 +404,12 @@ Ext.define('Ext.layout.container.Box', {
 
         me.cacheFlexes(ownerContext);
 
-        // In webkit we set the width of the target el equal to the width of the innerCt
+        // In Webkit and IE we set the width of the target el equal to the width of the innerCt
         // when the layout cycle is finished, so we need to set it back to 20000px here
-        // to prevent the children from being crushed. 
-        if (Ext.isWebKit) {
+        // to prevent the children from being crushed.
+        // IE needs it because of its scrollIntoView bug: https://sencha.jira.com/browse/EXTJSIV-6520
+        // Webkit needs it because of its mouse drag bug: https://sencha.jira.com/browse/EXTJSIV-5962
+        if (Ext.isWebKit || Ext.isIE) {
             me.targetEl.setWidth(20000);
         }
     },
@@ -480,7 +508,7 @@ Ext.define('Ext.layout.container.Box', {
             // Older Microsoft browsers do not size a position:absolute element's width to match its content.
             // So in this case, in the publishInnerCtSize method we may need to adjust the size of the owning Container's element explicitly based upon
             // the discovered max width. So here we put a calculatedWidth property in the metadata to facilitate this.
-            if (me.owner.dock && (Ext.isIE6 || Ext.isIE7 || Ext.isIEQuirks) && !me.owner.width && !me.horizontal) {
+            if (me.owner.dock && (Ext.isIE7m || Ext.isIEQuirks) && !me.owner.width && !me.horizontal) {
                 plan.isIEVerticalDock = true;
                 plan.calculatedWidth = plan.maxSize + ownerContext.getPaddingInfo().width + ownerContext.getFrameInfo().width;
             }
@@ -492,6 +520,7 @@ Ext.define('Ext.layout.container.Box', {
                 me.calculateStretchMax(ownerContext, names, plan);
                 state.stretchMaxDone = true;
             }
+            me.overflowHandler.calculate(ownerContext);
         } else {
             me.done = false;
         }
@@ -501,8 +530,8 @@ Ext.define('Ext.layout.container.Box', {
         var me = this,
             widthName = names.width,
             childItems = ownerContext.childItems,
-            leftName = names.left,
-            rightName = names.right,
+            beforeXName = names.beforeX,
+            afterXName = names.afterX,
             setWidthName = names.setWidth,
             childItemsLength = childItems.length,
             flexedItems = ownerContext.flexedItems,
@@ -511,8 +540,8 @@ Ext.define('Ext.layout.container.Box', {
             padding = me.padding,
             containerWidth = plan.targetSize[widthName],
             totalMargin = 0,
-            left = padding[leftName],
-            nonFlexWidth = left + padding[rightName] + me.scrollOffset +
+            left = padding[beforeXName],
+            nonFlexWidth = left + padding[afterXName] + me.scrollOffset +
                                     (me.reserveOffset ? me.availableSpaceOffset : 0),
             scrollbarWidth = Ext.getScrollbarSize()[names.width],
             i, childMargins, remainingWidth, remainingFlex, childContext, flex, flexedWidth,
@@ -625,7 +654,7 @@ Ext.define('Ext.layout.container.Box', {
             childContext = childItems[i];
             childMargins = childContext.marginInfo; // already cached by first loop
 
-            left += childMargins[leftName];
+            left += childMargins[beforeXName];
 
             childContext.setProp(names.x, left);
 
@@ -633,7 +662,7 @@ Ext.define('Ext.layout.container.Box', {
             // requested it in the calculation of nonFlexedWidths or we calculated it.
             // We cannot call getProp because that would be inappropriate for flexed items
             // and we don't need any extra function call overhead:
-            left += childMargins[rightName] + childContext.props[widthName];
+            left += childMargins[afterXName] + childContext.props[widthName];
         }
 
         contentWidth += ownerContext.targetContext.getPaddingInfo()[widthName];
@@ -655,7 +684,7 @@ Ext.define('Ext.layout.container.Box', {
             // there is just the *exactly correct* spare space created for it. We
             // have to force that to happen once all the styles have been flushed
             // to the DOM (see completeLayout):
-            ownerContext[names.invalidateScrollY] = (Ext.isStrict && Ext.isIE8);
+            ownerContext[names.invalidateScrollY] = Ext.isStrict && Ext.isIE8;
         }
         ownerContext[names.setContentWidth](contentWidth);
 
@@ -671,23 +700,27 @@ Ext.define('Ext.layout.container.Box', {
             mmax = Math.max,
             heightName = names.height,
             setHeightName = names.setHeight,
-            topName = names.top,
+            beforeYName = names.beforeY,
             topPositionName = names.y,
             padding = me.padding,
-            top = padding[topName],
-            availHeight = targetSize[heightName] - top - padding[names.bottom],
+            top = padding[beforeYName],
+            availHeight = targetSize[heightName] - top - padding[names.afterY],
             align = ownerContext.boxOptions.align,
             isStretch    = align.stretch, // never true if heightShrinkWrap (see beginLayoutCycle)
             isStretchMax = align.stretchmax,
             isCenter     = align.center,
+            isBottom     = align.bottom,
+            constrain    = me.constrainAlign,
             maxHeight = 0,
             hasPercentageSizes = 0,
+            onBeforeInvalidateChild = me.onBeforeConstrainInvalidateChild,
+            onAfterInvalidateChild = me.onAfterConstrainInvalidateChild,
             scrollbarHeight = Ext.getScrollbarSize().height,
             childTop, i, childHeight, childMargins, diff, height, childContext,
             stretchMaxPartner, stretchMaxChildren, shrinkWrapParallelOverflow, 
             percentagePerpendicular;
 
-        if (isStretch || (isCenter && !heightShrinkWrap)) {
+        if (isStretch || ((isCenter || isBottom) && !heightShrinkWrap)) {
             if (isNaN(availHeight)) {
                 return false;
             }
@@ -728,6 +761,25 @@ Ext.define('Ext.layout.container.Box', {
                         childHeight = childContext[names.setHeight](childHeight);
                     }
                 }
+                
+                // Summary:
+                // 1) Not shrink wrapping height, so the height is not determined by the children
+                // 2) Constrain is set
+                // 3) The child item is shrink wrapping
+                // 4) It execeeds the max
+                if (!heightShrinkWrap && constrain && childContext[names.heightModel].shrinkWrap && childHeight > availHeight) {
+                    childContext.invalidate({
+                        before: onBeforeInvalidateChild,
+                        after: onAfterInvalidateChild,
+                        layout: me,
+                        childHeight: availHeight,
+                        names: names
+                    });
+                    
+                    // By invalidating the height, it could mean the width can change, so we need
+                    // to recalculate in the parallel direction.
+                    ownerContext.state.parallelDone = false; 
+                }
 
                 // Max perpendicular measurement (used for stretchmax) must take the min perpendicular size of each child into account in case any fall short.
                 if (isNaN(maxHeight = mmax(maxHeight, childHeight + childMargins,
@@ -749,7 +801,7 @@ Ext.define('Ext.layout.container.Box', {
                 // there is just the *exactly correct* spare space created for it. We
                 // have to force that to happen once all the styles have been flushed
                 // to the DOM (see completeLayout):
-                ownerContext[names.invalidateScrollX] = (Ext.isStrict && Ext.isIE8);
+                ownerContext[names.invalidateScrollX] = Ext.isStrict && Ext.isIE8;
             }
 
             // If we are associated with another box layout, grab its maxChildHeight
@@ -781,8 +833,12 @@ Ext.define('Ext.layout.container.Box', {
 
             if (isStretchMax) {
                 height = maxHeight;
-            } else if (isCenter || hasPercentageSizes) {
-                height = heightShrinkWrap ? maxHeight : mmax(availHeight, maxHeight);
+            } else if (isCenter || isBottom || hasPercentageSizes) {
+                if (constrain) {
+                    height = heightShrinkWrap ? maxHeight : availHeight;
+                } else {
+                    height = heightShrinkWrap ? maxHeight : mmax(availHeight, maxHeight);
+                }
 
                 // When calculating a centered position within the content box of the innerCt,
                 // the width of the borders must be subtracted from the size to yield the
@@ -796,7 +852,7 @@ Ext.define('Ext.layout.container.Box', {
             childContext = childItems[i];
             childMargins = childContext.marginInfo || childContext.getMarginInfo();
 
-            childTop = top + childMargins[topName];
+            childTop = top + childMargins[beforeYName];
 
             if (isStretch) {
                 childContext[setHeightName](height - childMargins[heightName]);
@@ -813,6 +869,8 @@ Ext.define('Ext.layout.container.Box', {
                     if (diff > 0) {
                         childTop = top + Math.round(diff / 2);
                     }
+                } else if (isBottom) {
+                    childTop = mmax(0, height - childTop - childContext.props[heightName]);
                 }
             }
 
@@ -820,6 +878,31 @@ Ext.define('Ext.layout.container.Box', {
         }
 
         return true;
+    },
+    
+    onBeforeConstrainInvalidateChild: function(childContext, options){
+        // NOTE: No "this" pointer in here...
+        var heightModelName = options.names.heightModel;
+        if (!childContext[heightModelName].constrainedMin) {
+            // if the child hit a min constraint, it needs to be at its configured size, so
+            // we leave the sizeModel alone
+            childContext[heightModelName] = Ext.layout.SizeModel.calculated;
+        }
+    },
+    
+    onAfterConstrainInvalidateChild: function(childContext, options){
+         // NOTE: No "this" pointer in here...
+        var names = options.names;
+
+        // We use 0 here because we know the size exceeds the available size.
+        // This was chosen on purpose, even for align: 'bottom', because it doesn't
+        // make practical sense to place the item at the bottom and then have it overflow
+        // over the top of the container, since it's not possible to scroll to it. As such,
+        // we always put the component at the top to follow normal document flow.
+        childContext.setProp(names.beforeY, 0);
+        if (childContext[names.heightModel].calculated) {
+            childContext[names.setHeight](options.childHeight);
+        }
     },
 
     calculateStretchMax: function (ownerContext, names, plan) {
@@ -829,8 +912,8 @@ Ext.define('Ext.layout.container.Box', {
             childItems = ownerContext.childItems,
             length = childItems.length,
             height = plan.maxSize,
-            onBeforeInvalidateChild = me.onBeforeInvalidateChild,
-            onAfterInvalidateChild = me.onAfterInvalidateChild,
+            onBeforeStretchMaxInvalidateChild = me.onBeforeStretchMaxInvalidateChild,
+            onAfterStretchMaxInvalidateChild = me.onAfterStretchMaxInvalidateChild,
             childContext, props, i, childHeight;
 
         for (i = 0; i < length; ++i) {
@@ -849,8 +932,8 @@ Ext.define('Ext.layout.container.Box', {
                 // We also include a before callback to change the sizeModel to calculated
                 // prior to the layout being invoked.
                 childContext.invalidate({
-                    before: onBeforeInvalidateChild,
-                    after: onAfterInvalidateChild,
+                    before: onBeforeStretchMaxInvalidateChild,
+                    after: onAfterStretchMaxInvalidateChild,
                     layout: me,
                     // passing this data avoids a 'scope' and its Function.bind
                     childWidth: props[widthName],
@@ -861,6 +944,41 @@ Ext.define('Ext.layout.container.Box', {
                     names: names
                 });
             }
+        }
+    },
+    
+    onBeforeStretchMaxInvalidateChild: function (childContext, options) {
+        // NOTE: No "this" pointer in here...
+        var heightModelName = options.names.heightModel;
+
+        // Change the childItem to calculated (i.e., "set by ownerCt"). The component layout
+        // of the child can course-correct (like dock layout does for a collapsed panel),
+        // so we must make these changes here before that layout's beginLayoutCycle is
+        // called.
+        if (!childContext[heightModelName].constrainedMax) {
+            // if the child hit a max constraint, it needs to be at its configured size, so
+            // we leave the sizeModel alone...
+            childContext[heightModelName] = Ext.layout.SizeModel.calculated;
+        }
+    },
+
+    onAfterStretchMaxInvalidateChild: function (childContext, options) {
+        // NOTE: No "this" pointer in here...
+        var names = options.names,
+            childHeight = options.childHeight,
+            childWidth = options.childWidth;
+
+        childContext.setProp('x', options.childX);
+        childContext.setProp('y', options.childY);
+
+        if (childContext[names.heightModel].calculated) {
+            // We need to respect a child that is still not calculated (such as a collapsed
+            // panel)...
+            childContext[names.setHeight](childHeight);
+        }
+
+        if (childContext[names.widthModel].calculated) {
+            childContext[names.setWidth](childWidth);
         }
     },
 
@@ -931,44 +1049,10 @@ Ext.define('Ext.layout.container.Box', {
         // in some cases the very large width makes it possible to scroll the innerCt
         // by dragging on certain child elements. To prevent this from happening we ensure
         // that the targetEl's width is the same as the innerCt.
-        if (Ext.isWebKit) {
+        // IE needs it because of its scrollIntoView bug: https://sencha.jira.com/browse/EXTJSIV-6520
+        // Webkit needs it because of its mouse drag bug: https://sencha.jira.com/browse/EXTJSIV-5962
+        if (Ext.isWebKit || Ext.isIE) {
             this.targetEl.setWidth(ownerContext.innerCtContext.props.width);
-        }
-    },
-
-    onBeforeInvalidateChild: function (childContext, options) {
-        // NOTE: No "this" pointer in here...
-        var heightModelName = options.names.heightModel;
-
-        // Change the childItem to calculated (i.e., "set by ownerCt"). The component layout
-        // of the child can course-correct (like dock layout does for a collapsed panel),
-        // so we must make these changes here before that layout's beginLayoutCycle is
-        // called.
-        if (!childContext[heightModelName].constrainedMax) {
-            // if the child hit a max constraint, it needs to be at its configured size, so
-            // we leave the sizeModel alone...
-            childContext[heightModelName] = Ext.layout.SizeModel.calculated;
-        }
-    },
-
-    onAfterInvalidateChild: function (childContext, options) {
-        // NOTE: No "this" pointer in here...
-        var names = options.names,
-            scrollbarSize = Ext.getScrollbarSize(),
-            childHeight = options.childHeight,
-            childWidth = options.childWidth;
-
-        childContext.setProp('x', options.childX);
-        childContext.setProp('y', options.childY);
-
-        if (childContext[names.heightModel].calculated) {
-            // We need to respect a child that is still not calculated (such as a collapsed
-            // panel)...
-            childContext[names.setHeight](childHeight);
-        }
-
-        if (childContext[names.widthModel].calculated) {
-            childContext[names.setWidth](childWidth);
         }
     },
 
@@ -985,16 +1069,16 @@ Ext.define('Ext.layout.container.Box', {
             height = targetSize[heightName],
             innerCtContext = ownerContext.innerCtContext,
             innerCtWidth = (ownerContext.parallelSizeModel.shrinkWrap || (plan.tooNarrow && me.scrollParallel)
-                    ? ownerContext.state.contentWidth
+                    ? ownerContext.state.contentWidth - ownerContext.targetContext.getPaddingInfo()[widthName]
                     : targetSize[widthName]) - (reservedSpace || 0),
             innerCtHeight;
 
         if (align.stretch) {
             innerCtHeight = height;
         } else {
-            innerCtHeight = plan.maxSize + padding[names.top] + padding[names.bottom] + innerCtContext.getBorderInfo()[heightName];
+            innerCtHeight = plan.maxSize + padding[names.beforeY] + padding[names.afterY] + innerCtContext.getBorderInfo()[heightName];
 
-            if (!ownerContext.perpendicularSizeModel.shrinkWrap && align.center) {
+            if (!ownerContext.perpendicularSizeModel.shrinkWrap && (align.center || align.bottom)) {
                 innerCtHeight = Math.max(height, innerCtHeight);
             }
         }

@@ -1,16 +1,16 @@
 /**
- * This plugin provides drag and/or drop functionality for a GridView.
+ * This plugin provides drag and/or drop functionality for a {@link Ext.grid.View GridView}.
  *
  * It creates a specialized instance of {@link Ext.dd.DragZone DragZone} which knows how to drag out of a {@link
  * Ext.grid.View GridView} and loads the data object which is passed to a cooperating {@link Ext.dd.DragZone DragZone}'s
  * methods with the following properties:
  *
- * - `copy` : Boolean
+ * - `copy` : {@link Boolean}
  *
- *   The value of the GridView's `copy` property, or `true` if the GridView was configured with `allowCopy: true` _and_
+ *   The value of the {@link Ext.grid.View GridView}'s `copy` property, or `true` if the GridView was configured with `allowCopy: true` _and_
  *   the control key was pressed when the drag operation was begun.
  *
- * - `view` : GridView
+ * - `view` : {@link Ext.grid.View GridView}
  *
  *   The source GridView from which the drag originated.
  *
@@ -22,9 +22,9 @@
  *
  *   The GridView node upon which the mousedown event was registered.
  *
- * - `records` : Array
+ * - `records` : {@link Array}
  *
- *   An Array of {@link Ext.data.Model Model}s representing the selected data being dragged from the source GridView.
+ *   An Array of {@link Ext.data.Model Model}s representing the selected data being dragged from the source {@link Ext.grid.View GridView}.
  *
  * It also creates a specialized instance of {@link Ext.dd.DropZone} which cooperates with other DropZones which are
  * members of the same ddGroup which processes such data objects.
@@ -70,11 +70,11 @@ Ext.define('Ext.grid.plugin.DragDrop', {
 
     /**
      * @event beforedrop
-     * **This event is fired through the GridView. Add listeners to the GridView object**
+     * **This event is fired through the GridView. Add listeners to the {@link Ext.grid.View GridView} object**
      *
      * Fired when a drop gesture has been triggered by a mouseup event in a valid drop position in the GridView.
      *
-     * @param {HTMLElement} node The GridView node **if any** over which the mouse was positioned.
+     * @param {HTMLElement} node The {@link Ext.grid.View GridView} node **if any** over which the mouse was positioned.
      *
      * Returning `false` to this event signals that the drop gesture was invalid, and if the drag proxy will animate
      * back to the point from which the drag began.
@@ -87,24 +87,24 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * @param {Object} data The data object gathered at mousedown time by the cooperating {@link Ext.dd.DragZone
      * DragZone}'s {@link Ext.dd.DragZone#getDragData getDragData} method it contains the following properties:
      *
-     * - copy : Boolean
+     * - `copy` : {@link Boolean}
      *
      *   The value of the GridView's `copy` property, or `true` if the GridView was configured with `allowCopy: true` and
      *   the control key was pressed when the drag operation was begun
      *
-     * - view : GridView
+     * - `view` : {@link Ext.grid.View GridView}
      *
      *   The source GridView from which the drag originated.
      *
-     * - ddel : HtmlElement
+     * - `ddel` : HtmlElement
      *
      *   The drag proxy element which moves with the mouse
      *
-     * - item : HtmlElement
+     * - `item` : HtmlElement
      *
      *   The GridView node upon which the mousedown event was registered.
      *
-     * - records : Array
+     * - `records` : {@link Array}
      *
      *   An Array of {@link Ext.data.Model Model}s representing the selected data being dragged from the source GridView.
      *
@@ -134,24 +134,24 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * @param {Object} data The data object gathered at mousedown time by the cooperating {@link Ext.dd.DragZone
      * DragZone}'s {@link Ext.dd.DragZone#getDragData getDragData} method it contains the following properties:
      *
-     * - copy : Boolean
+     * - `copy` : {@link Boolean}
      *
      *   The value of the GridView's `copy` property, or `true` if the GridView was configured with `allowCopy: true` and
      *   the control key was pressed when the drag operation was begun
      *
-     * - view : GridView
+     * - `view` : {@link Ext.grid.View GridView}
      *
      *   The source GridView from which the drag originated.
      *
-     * - ddel : HtmlElement
+     * - `ddel` : HtmlElement
      *
      *   The drag proxy element which moves with the mouse
      *
-     * - item : HtmlElement
+     * - `item` : HtmlElement
      *
-     *   The GridView node upon which the mousedown event was registered.
+     *   The {@link Ext.grid.View GridView}{@link Ext.grid.View GridView} node upon which the mousedown event was registered.
      *
-     * - records : Array
+     * - `records` : {@link Array}
      *
      *   An Array of {@link Ext.data.Model Model}s representing the selected data being dragged from the source GridView.
      *
@@ -161,6 +161,7 @@ Ext.define('Ext.grid.plugin.DragDrop', {
      * of the node.
      */
     //<locale>
+
     /**
      * @cfg
      * The text to show while dragging.
@@ -182,31 +183,38 @@ Ext.define('Ext.grid.plugin.DragDrop', {
 
     /**
      * @cfg {String} dragGroup
-     * The ddGroup to which the DragZone will belong.
+     * The {@link #ddGroup} to which the DragZone will belong.
      *
      * This defines which other DropZones the DragZone will interact with. Drag/DropZones only interact with other
-     * Drag/DropZones which are members of the same ddGroup.
+     * Drag/DropZones which are members of the same {@link #ddGroup}.
      */
 
     /**
      * @cfg {String} dropGroup
-     * The ddGroup to which the DropZone will belong.
+     * The {@link #ddGroup} to which the DropZone will belong.
      *
      * This defines which other DragZones the DropZone will interact with. Drag/DropZones only interact with other
-     * Drag/DropZones which are members of the same ddGroup.
+     * Drag/DropZones which are members of the same {@link #ddGroup}.
      */
 
     /**
      * @cfg {Boolean} enableDrop
-     * False to disallow the View from accepting drop gestures.
+     * `false` to disallow the View from accepting drop gestures.
      */
     enableDrop: true,
 
     /**
      * @cfg {Boolean} enableDrag
-     * False to disallow dragging items from the View.
+     * `false` to disallow dragging items from the View.
      */
     enableDrag: true,
+    
+    /**
+     * `true` to register this container with the Scrollmanager for auto scrolling during drag operations.
+     * A {@link Ext.dd.ScrollManager} configuration may also be passed.
+     * @cfg {Object/Boolean} containerScroll
+     */
+    containerScroll: false,
 
     init : function(view) {
         view.on('render', this.onViewRender, this, {single: true});
@@ -243,13 +251,20 @@ Ext.define('Ext.grid.plugin.DragDrop', {
     },
 
     onViewRender : function(view) {
-        var me = this;
+        var me = this,
+            scrollEl;
 
         if (me.enableDrag) {
+            if (me.containerScroll) {
+                scrollEl = view.getEl();
+            }
+            
             me.dragZone = new Ext.view.DragZone({
                 view: view,
                 ddGroup: me.dragGroup || me.ddGroup,
-                dragText: me.dragText
+                dragText: me.dragText,
+                containerScroll: me.containerScroll,
+                scrollEl: scrollEl
             });
         }
 

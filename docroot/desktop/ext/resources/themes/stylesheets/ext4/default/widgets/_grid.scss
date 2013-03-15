@@ -12,11 +12,15 @@
             border-width: 1px;
             border-top-color: $grid-header-background-color;
         }
-
-        // Hide using visibility so that its available width can be calculated correctly
-        .#{$prefix}grid-header-ct-hidden {
-            visibility: hidden;
+        .#{$prefix}summary-bottom {
+            border-bottom-color: $grid-header-background-color;
         }
+    }
+
+    .#{$prefix}docked-summary {
+        border-width: 1px;
+        border-color: $panel-body-border-color;
+        border-style: $panel-body-border-style;
     }
 
     .#{$prefix}grid-empty {
@@ -47,10 +51,6 @@
         width: auto!important;
     }
 
-    .#{$prefix}grid-row .#{$prefix}grid-table {
-        border-collapse: collapse;
-    }
-
     .#{$prefix}grid-locked .#{$prefix}grid-inner-locked {
         border-width: 0 1px 0 0 !important;
         border-style: solid;
@@ -71,18 +71,21 @@
     }
 
     .#{$prefix}accordion-item .#{$prefix}grid-header-ct {
-        border-width: 0 0 1px 0!important;
+        border-width: 0 0 1px !important;
+    }
+
+    // When hideHeaders: true, we need !important to override above rule
+    .#{$prefix}accordion-item .#{$prefix}grid-header-ct-hidden {
+        border: 0 !important;
     }
 
     .#{$prefix}column-header {
         padding: 0;
         position: absolute;
         overflow: hidden;
+        border: 0 none;
 
         border-right: 1px solid $grid-header-background-color;
-        border-left: 0 none;
-        border-top: 0 none;
-        border-bottom: 0 none;
 
         text-shadow: 0 1px 0 rgba(255, 255, 255, .3);
 
@@ -93,6 +96,13 @@
 
         @if $supports-gradients or $compile-all {
             @include background-gradient($grid-header-background-color, $grid-header-background-gradient);
+        }
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}column-header {
+            border-right: 0 none;
+            border-left: 1px solid $grid-header-background-color;
         }
     }
 
@@ -108,7 +118,6 @@
 
     .#{$prefix}column-header-inner {
         zoom: 1;
-        position: relative;
         white-space: nowrap;
         line-height: $grid-header-line-height;
         padding: $grid-header-padding;
@@ -118,13 +127,23 @@
         }
     }
 
-    .#{$prefix}column-header-over,
-    .#{$prefix}column-header-sort-ASC,
-    .#{$prefix}column-header-sort-DESC {
-        border-left-color: $grid-header-over-border-color;
-        border-right-color: $grid-header-over-border-color;
+    @if $include-rtl {
+        .#{$prefix}ie {
+            .#{$prefix}rtl.#{$prefix}column-header-text {
+                // in all version of IE except for 8 strict, left and right padding are
+                // automatically reversed on inline elements when the direction property
+                // is "rtl". triggering hasLayout corrects this bug in IE6/7/quirks, and
+                // display: inline-block is used for IE9/10
+                zoom: 1;
+                display: inline-block;
+            }
+        }
+    }
 
-        @if $supports-gradients or $compile-all {
+    @if $supports-gradients or $compile-all {
+        .#{$prefix}column-header-over,
+        .#{$prefix}column-header-sort-ASC,
+        .#{$prefix}column-header-sort-DESC {
             @include background-gradient($grid-header-over-background-color, $grid-header-over-background-gradient);
         }
     }
@@ -160,6 +179,15 @@
         cursor: pointer;
     }
 
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}column-header-trigger {
+            left: 0;
+            right: auto;
+            background-image: theme-background-image($theme-name, 'grid/grid3-hd-btn-left.gif');
+            background-position: right center;
+        }
+    }
+
     .#{$prefix}column-header-over, .#{$prefix}column-header-open {
         .#{$prefix}column-header-trigger {
             display: block;
@@ -174,6 +202,22 @@
             margin-right: 6px;
         }
     }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}column-header-align-right {
+            text-align: left;
+        }
+        .#{$prefix}column-header-align-right .#{$prefix}rtl.#{$prefix}column-header-text {
+            padding-right: 0;
+            padding-left: 0.5ex;
+            margin-right: 0;
+            margin-left: 6px;
+        }
+        .#{$prefix}rtl.#{$prefix}column-header-align-left {
+            text-align: right;
+        }
+    }
+
     .#{$prefix}column-header-align-center {
         text-align: center;
     }
@@ -182,14 +226,27 @@
     }
 
     // Sort direction indicator is a background of the text span.
+    .#{$prefix}column-header-sort-ASC,
+    .#{$prefix}column-header-sort-DESC {
+        .#{$prefix}column-header-text {
+            padding-right: $grid-header-sort-icon-width + 3;
+            background: no-repeat right 6px;
+        }
+    }
+    @if $include-rtl {
+        .#{$prefix}column-header-sort-ASC,
+        .#{$prefix}column-header-sort-DESC {
+            .#{$prefix}rtl.#{$prefix}column-header-text {
+                padding-right: 0;
+                padding-left: $grid-header-sort-icon-width + 3;
+                background-position: 0 6px;
+            }
+        }
+    }
     .#{$prefix}column-header-sort-ASC .#{$prefix}column-header-text {
-        padding-right: 16px;
-        background: no-repeat right 6px;
         background-image: theme-background-image($theme-name, 'grid/sort_asc.gif');
     }
     .#{$prefix}column-header-sort-DESC .#{$prefix}column-header-text {
-        padding-right: 16px;
-        background: no-repeat right 6px;
         background-image: theme-background-image($theme-name, 'grid/sort_desc.gif');
     }
 
@@ -213,7 +270,7 @@
         border-width: $grid-row-cell-border-width;
     }
 
-    .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-rowwrap {
         border-width: $grid-row-wrap-border-width;
         border-color: $grid-row-wrap-border-color;
         border-style: $grid-row-wrap-border-style;
@@ -223,38 +280,52 @@
     }
 
     .#{$prefix}grid-row-alt .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-alt .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-alt .#{$prefix}grid-rowwrap {
         background-color: $grid-row-cell-alt-background;
     }
 
     .#{$prefix}grid-row-over .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-over .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-over .#{$prefix}grid-rowwrap {
         border-color: $grid-row-cell-over-border-color;
 
         background-color: $grid-row-cell-over-background-color;
     }
 
     .#{$prefix}grid-row-focused .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-focused .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-focused .#{$prefix}grid-rowwrap {
         border-color: $grid-row-cell-focus-border-color;
 
         background-color: $grid-row-cell-focus-background-color;
     }
 
-    .#{$prefix}grid-row-selected .#{$prefix}grid-cell,
-    .#{$prefix}grid-row-selected .#{$prefix}grid-rowwrap-div {
-        border-style: $grid-row-cell-selected-border-style;
-        border-color: $grid-row-cell-selected-border-color;
-
-        background-color: $grid-row-cell-selected-background-color !important;
+    .#{$prefix}grid-row-selected {
+        .#{$prefix}grid-cell,
+        .#{$prefix}grid-rowwrap {
+            border-style: $grid-row-cell-selected-border-style;
+            border-color: $grid-row-cell-selected-border-color;
+            background-color: $grid-row-cell-selected-background-color !important;
+        }
+        .#{$prefix}grid-rowbody {
+            background-color: $grid-row-cell-selected-background-color !important;
+        }
     }
 
-    .#{$prefix}grid-rowwrap-div {
+    .#{$prefix}grid-row-summary {
+        .#{$prefix}grid-cell,
+        .#{$prefix}grid-rowwrap,
+        .#{$prefix}grid-cell-rowbody {
+            border-color: $grid-row-cell-border-color;
+            background-color: transparent !important;
+            border-top-width: 0;
+            font: $grid-row-cell-font;
+        }
+    }
+
+    .#{$prefix}grid-rowwrap {
         .#{$prefix}grid-cell,
         .#{$prefix}grid-cell-inner {
             border-width: 0;
-
-            background: transparent;
+            background-color: transparent;
         }
     }
 
@@ -313,23 +384,15 @@
         @include background-gradient(#f6f6f6, 'grid-cell-special');
     }
 
-    .#{$prefix}grid-row .#{$prefix}grid-cell-row-checker {
-        vertical-align: middle;
+    @if $include-rtl {
+        .#{$prefix}grid-row .#{$prefix}rtl.#{$prefix}grid-cell-special {
+            border-right: 0;
+            border-left: 1px solid $grid-cell-with-col-lines-border-color;
+        }
     }
 
-    /*
-    IE6-8 have issues with shrinking the TR to 0px (even w/line-height=0), so we
-    use an IE-specific trick to make the row disappear. We cannot do this on any
-    other browser, because it is not a non-standard thing to do and those other
-    browsers will do whacky things with it.
-    */
-
-    .#{$prefix}ie6,
-    .#{$prefix}ie7,
-    .#{$prefix}quirks .#{$prefix}ie8 {
-        .#{$prefix}grid-header-row {
-            position: absolute;
-        }
+    .#{$prefix}grid-row .#{$prefix}grid-cell-row-checker {
+        vertical-align: middle;
     }
 
     .#{$prefix}grid-row-selected .#{$prefix}grid-cell-special {
@@ -342,6 +405,13 @@
         background-image: theme-background-image($theme-name, 'grid/dirty.gif');
         background-position: 0 0;
         background-repeat: no-repeat;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}rtl.#{$prefix}grid-dirty-cell {
+            background-image: theme-background-image($theme-name, 'grid/dirty-rtl.gif');
+            background-position: right 0;
+        }
     }
 
     .#{$prefix}grid-cell-selected {
@@ -396,15 +466,7 @@
         }
     }
 
-    .#{$prefix}unselectable {
-        @include no-select;
-    }
-
-    .#{$prefix}grid-row-body-hidden {
-        display: none;
-    }
-
-    .#{$prefix}grid-group-collapsed {
+    .#{$prefix}grid-row-body-hidden, .#{$prefix}grid-group-collapsed {
         display: none;
     }
 
@@ -489,19 +551,20 @@
     }
 
     .#{$prefix}grid-group-hd {
-        padding-top: 6px;
 
-        .#{$prefix}grid-cell-inner {
-            padding: 10px 4px 4px 4px;
+        padding: 10px 4px 4px 4px;
 
-            background: $grid-grouped-header-background-color;
+        background: $grid-grouped-header-background-color;
 
-            border-width: $grid-grouped-header-border-width;
-            border-style: $grid-grouped-header-border-style;
-            border-color: $grid-grouped-header-border-color;
+        border-width: $grid-grouped-header-border-width;
+        border-style: $grid-grouped-header-border-style;
+        border-color: $grid-grouped-header-border-color;
 
-            cursor: pointer;
-        }
+        cursor: pointer;
+    }
+    
+    .#{$prefix}grid-group-hd-not-collapsible {
+        cursor: default; 
     }
 
     .#{$prefix}grid-group-hd-collapsible {
@@ -541,6 +604,7 @@
 
     .#{$prefix}column-header-checkbox .#{$prefix}column-header-inner {
         padding: 0;
+        line-height: 0;
     }
 
     .#{$prefix}grid-cell-special .#{$prefix}grid-cell-inner {
@@ -563,7 +627,14 @@
     // Header checkbox element needs centering
     .#{$prefix}column-header-checkbox .#{$prefix}column-header-text {
         display: block;
-        margin: 0 5px;
+        margin-left: 5px;
+    }
+
+    @if $include-rtl {
+        .#{$prefix}column-header-checkbox .#{$prefix}rtl.#{$prefix}column-header-text {
+            margin-left: 0;
+            margin-right: 4px;
+        }
     }
 
     @if $include-ie or $compile-all {
@@ -763,6 +834,13 @@
                 height: 10px !important;
             }
         }
+        @if $include-rtl {
+            .#{$prefix}rtl.#{$prefix}form-trigger-wrap {
+                .#{$prefix}form-spinner-up, .#{$prefix}form-spinner-down {
+                    background-image: theme-background-image($theme-name, 'form/spinner-small-rtl.gif');
+                }
+            }
+        }
     }
     .#{$prefix}grid-editor, .#{$prefix}grid-row-editor {
         .#{$prefix}form-text {
@@ -896,4 +974,17 @@
             margin-left: 15px;
         }
     }
+
+    // Inner locked grid has a 1px border. Last cell looks bad with an extra grey one.
+    // The rules must be last because they override default header and cell bordering.
+    // Must use the border-right property because we have to override the .x-column-header border-right setting.
+    .#{$prefix}grid-inner-locked {
+        .#{$prefix}column-header-last {
+            border-right: 0 none;
+        }
+        .#{$prefix}grid-cell-last {
+            border-right: 0 none;
+        }
+    }
+
 }

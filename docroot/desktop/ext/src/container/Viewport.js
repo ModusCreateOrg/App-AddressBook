@@ -116,9 +116,9 @@ Ext.define('Ext.container.Viewport', {
     initComponent : function() {
         var me = this,
             html = document.body.parentNode,
-            el;
+            el = me.el = Ext.getBody();
 
-        // Get the DOM disruption over with beforfe the Viewport renders and begins a layout
+        // Get the DOM disruption over with before the Viewport renders and begins a layout
         Ext.getScrollbarSize();
         
         // Clear any dimensions, we will size later on
@@ -127,13 +127,10 @@ Ext.define('Ext.container.Viewport', {
         me.callParent(arguments);
         Ext.fly(html).addCls(Ext.baseCSSPrefix + 'viewport');
         if (me.autoScroll) {
+            Ext.fly(html).setStyle(me.getOverflowStyle());
             delete me.autoScroll;
-            Ext.fly(html).setStyle('overflow', 'auto');
         }
-        me.el = el = Ext.getBody();
-        el.setHeight = Ext.emptyFn;
-        el.setWidth = Ext.emptyFn;
-        el.setSize = Ext.emptyFn;
+        el.setHeight = el.setWidth = Ext.emptyFn;
         el.dom.scroll = 'no';
         me.allowDomMove = false;
         me.renderTo = me.el;
@@ -165,5 +162,9 @@ Ext.define('Ext.container.Viewport', {
         if (width != this.width || height != this.height) {
             this.setSize(width, height);
         }
+    },
+
+    initHierarchyState: function(hierarchyState) {
+        this.callParent([this.hierarchyState = Ext.rootHierarchyState]);
     }
 });

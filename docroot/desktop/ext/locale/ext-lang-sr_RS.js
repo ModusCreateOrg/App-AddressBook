@@ -18,9 +18,9 @@ Ext.onReady(function() {
         emptyText: ""
     });
 
-    Ext.define("Ext.locale.sr_RS.grid.Panel", {
-        override: "Ext.grid.Panel",
-        ddText: "{0} изабраних редова"
+    Ext.define("Ext.locale.sr_RS.grid.plugin.DragDrop", {
+        override: "Ext.grid.plugin.DragDrop",
+        dragText: "{0} изабраних редова"
     });
 
     Ext.define("Ext.locale.sr_RS.TabPanelItem", {

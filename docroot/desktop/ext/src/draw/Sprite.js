@@ -352,7 +352,6 @@ Ext.define('Ext.draw.Sprite', {
 
     initDraggable: function() {
         var me = this;
-        me.draggable = true;
         //create element if it doesn't exist.
         if (!me.el) {
             me.surface.createSpriteElement(me);

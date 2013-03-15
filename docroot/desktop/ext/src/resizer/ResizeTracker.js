@@ -60,7 +60,7 @@ Ext.define('Ext.resizer.ResizeTracker', {
 
     onBeforeStart: function(e) {
         // record the startBox
-        this.startBox = this.el.getBox();
+        this.startBox = this.target.getBox();
     },
 
     /**
@@ -149,6 +149,8 @@ Ext.define('Ext.resizer.ResizeTracker', {
             axis, // 1 = x, 2 = y, 3 = x and y.
             newBox,
             newHeight, newWidth;
+
+        region = me.convertRegionName(region);
 
         switch (region) {
             case 'south':
@@ -313,27 +315,14 @@ Ext.define('Ext.resizer.ResizeTracker', {
     },
 
     resize: function(box, direction, atEnd) {
-        var target = this.getResizeTarget(atEnd);
-        if (target.isComponent) {
-            target.setSize(box.width, box.height);
-            if (target.floating) {
-                target.setPagePosition(box.x, box.y);
-            }
-        } else {
-            target.setBox(box);
-        }
+        var me = this,
+            target = me.getResizeTarget(atEnd);
+
+        target.setBox(box);
 
         // update the originalTarget if it was wrapped, and the target passed in was the wrap el.
-        target = this.originalTarget;
-        if (target && (this.dynamic || atEnd)) {
-            if (target.isComponent) {
-                target.setSize(box.width, box.height);
-                if (target.floating) {
-                    target.setPagePosition(box.x, box.y);
-                }
-            } else {
-                target.setBox(box);
-            }
+        if (me.originalTarget && (me.dynamic || atEnd)) {
+            me.originalTarget.setBox(box);
         }
     },
 
@@ -342,5 +331,9 @@ Ext.define('Ext.resizer.ResizeTracker', {
         if (this.proxy) {
             this.proxy.hide();
         }
+    },
+
+    convertRegionName: function(name) {
+        return name;
     }
 });

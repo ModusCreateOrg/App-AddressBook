@@ -58,7 +58,7 @@ Ext.define('Ext.util.TextMetrics', {
         this.el = Ext.get(bindTo);
         
         measure.position('absolute');
-        measure.setLeftTop(-1000, -1000);
+        measure.setLocalXY(-1000, -1000);
         measure.hide();
 
         if (fixedWidth) {
