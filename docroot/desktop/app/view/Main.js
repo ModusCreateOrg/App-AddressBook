@@ -263,14 +263,13 @@
         dockedItems : {
             xtype  : 'toolbar',
             dock   : 'top',
-            height : 34,
             itemId : 'header-bar',
+            cls    : 'header-bar',
             items  : [
                 {
                     xtype : 'component',
                     width : 400,
-                    html  : '<img style="margin: 0 5px 0 5px; float: left;" src="../img/Modus-create-logo-only.png" />' +
-                        '<span style="font-size: 24px;">Modus Create Address Book</span>'
+                    html  : '<span class="text">Address Book</span>'
 
                 },
                 '->',
@@ -333,15 +332,21 @@
             var me = this;
             return {
                 xtype      : 'tabpanel',
+                cls        : 'main-tabs',
                 itemId     : 'ab-tabPanel',
+                deferredRender: true,
+                // margin: '10 0 0 0',
+                height     : 125,
+                margin     : 30,
                 activeItem : 0,
                 border     : false,
                 items      : [
                     {
                         xtype      : 'schemagrid',
                         title      : 'Contacts',
+                        iconCls    : 'contacts',
                         border     : false,
-                        icon       : '../img/famfam/group.png',
+                        // icon       : '../img/famfam/group.png',
                         schema     : ab.Schemas.Contacts,
                         filterable : true,
                         loadFn     : loadContactRecord,
@@ -357,8 +362,9 @@
                     {
                         xtype    : 'schemagrid',
                         title    : 'Groups',
+                        iconCls    : 'groups',
                         border   : false,
-                        icon     : '../img/famfam/group.png',
+                        // icon     : '../img/famfam/group.png',
                         schema   : ab.Schemas.ContactGroups,
 //                        filterable : true,
                         loadFn   : loadContactGroupRecord,

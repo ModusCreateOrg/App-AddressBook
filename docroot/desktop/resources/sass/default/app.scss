@@ -1,4 +1,35 @@
-@import 'compass';
-@import 'ext4/default/all';
+/* setup some base variables */
+$color: #333;
+$font-family: "Lato", "Helvetica Neue", sans-serif;
+$ui-font-family: "Lato", "Helvetica Neue", sans-serif;
 
-// Your custom code goes here...
+/* setup colors */
+$base-color: #dcdcdc; // Momentum blue
+$base-light-color: #3c7aeb;
+$base-dark-color: darken(#3c7aeb, 10);
+
+$confirm-color: #1aaf5d;
+$bright-color: #e94b35;;
+$drastic-color: #c23824;
+
+$neutral-color: #eaf1f6;
+$neutral-dark-color: darken($neutral-color, 14);
+$neutral-light-color: lighten($neutral-color, 4);
+
+/* make things flat? */
+$include-highlights: false;
+$base-gradient: flat;
+
+/* import our icon font */
+@import 'include/font/font-awesome';
+@import 'include/font/icons';
+
+/* setup more variable imports that override defaults */
+@import 'include/mixins';
+@import 'include/header';
+@import 'include/grid';
+@import 'include/tabs';
+
+@import 'compass/css3';
+@import "compass/css3/user-interface";
+@import 'ext4/default/all';
