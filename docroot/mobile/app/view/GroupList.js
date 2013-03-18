@@ -62,7 +62,7 @@ Ext.define('mobile.view.GroupList', {
                 load: function(me) {
                     me.insert(0, {
                         contactGroupId: 0,
-                        groupName: 'All Contact Groups'
+                        groupName: 'All Contacts'
                     });
                 }
             }
@@ -72,7 +72,7 @@ Ext.define('mobile.view.GroupList', {
         me.del = null;
         me.on("itemswipe", function(dataview, ix, target, record, event, options) {
             var el = event.target;
-            if (me.del || record.get('groupName') === 'All Contact Groups') {
+            if (me.del || record.get('groupName') === 'All Contacts') {
                 console.log('stop event');
                 event.stopEvent();
                 return false;
