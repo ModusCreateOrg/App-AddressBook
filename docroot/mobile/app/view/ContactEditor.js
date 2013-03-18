@@ -63,7 +63,7 @@ Ext.define('mobile.view.ContactEditor', {
                             xtype       : field.editor.xtype,
                             name        : what + '_' + field.name,
                             placeHolder : field.header || field.editor.fieldLabel,
-                            value       : detail ? detail[field.name] : undefined
+                            value       : detail ? detail[field.name] : undefined,
                         });
                     }
                 }
@@ -71,7 +71,8 @@ Ext.define('mobile.view.ContactEditor', {
             me.add({
                 xtype : 'fieldset',
                 title : what + ' Information',
-                items : items
+                items : items                
+
             });
         });
         Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
@@ -82,6 +83,7 @@ Ext.define('mobile.view.ContactEditor', {
                     xtype       : field.editor.xtype,
                     title       : field.editor.fieldLabel,
                     name        : field.name,
+                    labelWidth: '100%',
                     placeHolder : (field.header || field.editor.fieldLabel) + (field.required ? ' (required)' : ''),
                     value       : details ? details[field.name] : undefined
                 });

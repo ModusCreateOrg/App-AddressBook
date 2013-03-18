@@ -30,6 +30,7 @@ Ext.define('mobile.ux.DataSourceField', {
                 valueItem  : item,
                 label      : item.display,
                 inputValue : item.value,
+                labelWidth: '100%',
                 listeners  : {
                     change : function(cb, newValue, oldValue, eOpts) {
                         cb.valueItem.checked = newValue;
