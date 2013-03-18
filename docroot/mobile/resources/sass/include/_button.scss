@@ -1,10 +1,22 @@
 .x-toolbar-dark .x-button {
-	background: #33485f;
-	border-radius: 6px;
+	background: #3c7aeb;
+	border-radius: 3px;
 	border: none;
 	height: 30px;
 	&.x-button-pressing {
-		background: #6184a9;
+		background: darken(#3c7aeb, 10);
+	}
+}
+
+/* confirm button is the */
+.x-button.x-button-confirm, {
+	background: #009048;
+	background-image: none;
+	border: none;
+	border-radius: 4px;
+	padding: 10px;
+	&.x-button-pressing {
+		background: #16974f;
 	}
 }
 
@@ -24,16 +36,17 @@
 .mobile-add-contact-group-button, 
 .mobile-add-contact-button
   {
-	background: none !important;
+	background: #b53428 !important;
 	border: none !important;
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f067";
-		color: #33485f;
+		color: #FFF;
 	}
 	&.x-button-pressing {
+		background: #3c7aeb !important;
 		&:before {
-			color: #6184a9;
+			color: #FFF;
 		}		
 	}
 }
@@ -44,16 +57,19 @@
 .mobile-cancel-add-contact-button,
 .mobile-cancel-edit-contact-button,
 .mobile-cancel-groups-editor-button {
-	background: none !important;
+	background: #b53428 !important;
 	border: none !important;
 	&:before {
 		font-family: "FontAwesome";
 		content: "\f060";
-		color: #33485f;
+		color: #FFF;
+		position: relative;
+		top: -1px;		
 	}
 	&.x-button-pressing {
+		background: #3c7aeb !important;
 		&:before {
-			color: #6184a9;
+			color: #FFF;
 		}		
 	}	
 }
@@ -61,7 +77,7 @@
 /* swipe to delete button */
 .swipe-delete-button {
 	@include border-radius(3px);
-	background-color: #e94b35 !important;
+	background-color: #b53428 !important;
 	border: none !important;
 	background-image: none !important;
 }

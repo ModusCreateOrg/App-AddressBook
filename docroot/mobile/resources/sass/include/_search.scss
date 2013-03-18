@@ -1,6 +1,7 @@
 // Search - background
 .x-toolbar-search.x-docked-top {
-	background: #BDC3C7 ;
+	background: #EEE;
+	border-bottom: 1px solid #DDD;
 }
 
 .x-toolbar .x-field-search .x-component-outer {
@@ -13,16 +14,18 @@
 }
 
 .x-toolbar .x-field-select .x-component-outer, .x-toolbar .x-field-search .x-component-outer {
-	-webkit-border-radius: 6px !important;
-	border-radius: 6px !important;
+	-webkit-border-radius: 0px !important;
+	border-radius: 0px !important;
 }
 
 
 .search-field {
-  .x-form-field {
-    border: none;
-  }
   .x-field-search {
     margin: 10px 0; 
   }
+}
+
+.x-field-search .x-field-input .x-form-field {
+	margin-left: 0px !important;
+	font-weight: 300;
 }

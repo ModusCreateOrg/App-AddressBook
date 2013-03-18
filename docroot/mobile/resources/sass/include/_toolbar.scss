@@ -1,16 +1,19 @@
 .x-toolbar {
   background-image: none;
-  background: #1ABC9C;
+  background: #DDD;
   border: none !important;
   box-shadow: none !important;
   &.x-docked-top {
     border: none;
   }
+  .x-field-input {
+    padding-right: 0px !important;
+  }
 }
 
 .x-title .x-innerhtml {
   text-shadow: none;
-  color: #34495e;
+  color: #222;
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 400;
 }

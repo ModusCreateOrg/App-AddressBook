@@ -25,25 +25,30 @@ Ext.define('mobile.view.Login', {
         this.add([
             {
                 xtype    : 'fieldset',
+                cls      : 'login-screen',
                 defaults : {
-                    labelWidth : 100
+                    autoComplete: false,
+                    autoCorrect: false,
+                    autoCapitilize: false,
+                    clearIcon: false,
+                    cls: 'login-input'
                 },
                 items    : [
                     {
                         xtype : 'textfield',
                         name  : 'username',
-                        label : 'User Name'
+                        placeHolder: 'Username',
                     },
                     {
                         xtype : 'passwordfield',
                         name  : 'password',
-                        label : 'Password'
+                        placeHolder: 'Password'
                     },
                     {
                         xtype : 'button',
                         ui    : 'confirm',
-                        style : 'margin: 10px',
-                        text  : 'Log In'
+                        style : 'margin: 10px 0',
+                        text  : 'Sign In'
                     }
                 ]
             }

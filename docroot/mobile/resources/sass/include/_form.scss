@@ -3,23 +3,37 @@
 }
 
 .x-form-field {
-  // @include border-radius(6px);
-  border: 2px solid rgba(236, 240, 241, 0.5);
+  border: 1px solid rgba(236, 240, 241, 0);
   background: white;
-  color: #42566b;
+  color: #666;
   &:focus {
     @include transition(all .2s ease);
-    border: 2px solid rgba(0, 189, 156, 1.0);
+    border: 1px solid rgba(60, 122, 235, 1.0);
   }
 }
 
+.x-toolbar .x-form-field {
+  padding: 0em 1.3em;
+}
+
 .x-form-fieldset .x-form-fieldset-inner {
+  border-radius: 0px;
   background: transparent;
   margin-bottom: 5px;
   border: none;
+  .x-field:first-child { border-radius: 0px; }
   .x-field {
     border: none;
     margin-bottom: 5px;
+    &.login-input {
+      .x-form-field {
+        @include border-top-radius(6px);
+        margin-bottom: 0;
+        &:focus {
+          border: 1px solid transparent;
+        }      
+      }
+    }
   }
 }
 
@@ -28,9 +42,30 @@
   margin-bottom: 10px;
   text-shadow: none !important;
   .x-innerhtml {
-    font-weight: 800;
-    color: #00bd9c;
+    font-weight: 300;
+    color: #3c7aeb;
     font-size: 20px;
     margin-bottom: 5px;
   }
+}
+
+/* this is the group selector on iPad */
+.group-select-field {
+  .x-component-outer {
+    border: none;
+    border-radius: 6px !important;
+  }
+  .x-form-field {
+    background: rgb(180, 180, 180);
+    border-radius: 6px;
+  }
+  .x-input-text {
+    height: 30px;
+    padding: 0px 7px;
+  }
+}
+
+/* get rid of the awful border on select fields */
+.x-toolbar .x-field-select .x-component-outer {
+  border: none;
 }
