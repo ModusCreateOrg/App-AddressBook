@@ -13,14 +13,14 @@ Ext.define('mobile.view.ContactEditor', {
         'Ext.field.Hidden'
     ],
 
-    initialize : function() {
+    initialize : function () {
         var me = this,
             details = me.details;
 
         console.log('initialize contact editor');
         me.callParent(arguments);
         var items = [];
-        Ext.iterate(mobile.schemas.Contacts.fields, function(field) {
+        Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
             if (field.editor) {
                 if (field.editor.xtype === 'textfield' || field.editor.xtype === 'hiddenfield') {
                     items.push({
@@ -39,17 +39,17 @@ Ext.define('mobile.view.ContactEditor', {
             items : items
         });
 
-        Ext.iterate(['Home', 'Work', 'Mobile'], function(what) {
+        Ext.iterate(['Home', 'Work', 'Mobile'], function (what) {
             var detail = false;
             if (me.details && me.details.contactData) {
-                Ext.iterate(me.details.contactData, function(info) {
+                Ext.iterate(me.details.contactData, function (info) {
                     if (info.infoType === what) {
                         detail = info;
                     }
                 });
             }
             var items = [];
-            Ext.iterate(mobile.schemas.ContactInfo.fields, function(field) {
+            Ext.iterate(mobile.schemas.ContactInfo.fields, function (field) {
                 if (field.editor) {
                     if (field.editor.xtype === 'typecombofield') {
                         items.push({
@@ -74,12 +74,13 @@ Ext.define('mobile.view.ContactEditor', {
                 items : items
             });
         });
-        Ext.iterate(mobile.schemas.Contacts.fields, function(field) {
+        Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
             console.dir(field.editor);
             if (field.editor && field.editor.xtype === 'datasourcefield') {
                 console.log('datasource');
                 me.add({
                     xtype       : field.editor.xtype,
+                    title       : field.editor.fieldLabel,
                     name        : field.name,
                     placeHolder : (field.header || field.editor.fieldLabel) + (field.required ? ' (required)' : ''),
                     value       : details ? details[field.name] : undefined
