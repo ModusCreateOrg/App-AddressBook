@@ -48,3 +48,24 @@
     margin-bottom: 5px;
   }
 }
+
+/* this is the group selector on iPad */
+.group-select-field {
+  .x-component-outer {
+    border: none;
+    border-radius: 6px !important;
+  }
+  .x-form-field {
+    background: rgb(180, 180, 180);
+    border-radius: 6px;
+  }
+  .x-input-text {
+    height: 30px;
+    padding: 0px 7px;
+  }
+}
+
+/* get rid of the awful border on select fields */
+.x-toolbar .x-field-select .x-component-outer {
+  border: none;
+}
