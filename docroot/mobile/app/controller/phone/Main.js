@@ -9,6 +9,20 @@
 
     // banners generated with linux "figlet" command
 
+    /**
+     *  _                 _  ____            _             _   ____                        _
+     * | | ___   __ _  __| |/ ___|___  _ __ | |_ __ _  ___| |_|  _ \ ___  ___ ___  _ __ __| |
+     * | |/ _ \ / _` |/ _` | |   / _ \| '_ \| __/ _` |/ __| __| |_) / _ \/ __/ _ \| '__/ _` |
+     * | | (_) | (_| | (_| | |__| (_) | | | | || (_| | (__| |_|  _ <  __/ (_| (_) | | | (_| |
+     * |_|\___/ \__,_|\__,_|\____\___/|_| |_|\__\__,_|\___|\__|_| \_\___|\___\___/|_|  \__,_|
+     *
+     * loadContactRecord
+     *
+     * Load in a contact record and associated information
+     *
+     * @param record
+     * @param callback
+     */
     function loadContactRecord(record, callback) {
         var allGroups = [],
             groups = [];
@@ -325,12 +339,12 @@
                 direction : direction
             });
             Ext.Function.defer(function () {
-                titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Create New Contact');
+                titleBar.setTitle(me.selectedRecord.contactId ? 'Edit Contact' : 'Create New Contact');
                 rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-button');
                 rightButton.show();
                 // backButton.setText('Cancel');
-                if (me.selectedRecord) {
+                if (me.selectedRecord.contactId) {
                     backButton.setCls('mobile-cancel-edit-contact-button');
                 }
                 else {
