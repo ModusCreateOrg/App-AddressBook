@@ -355,6 +355,7 @@
                         listeners  : {
                             scope         : me,
                             deleterecords : me.onSchemaGridDeleteRecords,
+                            saverecord : me.onSchemaGridSaveRecord,
                             itemdblclick  : me.onContactsGridItemDblClick
                         }
                     },
@@ -378,10 +379,23 @@
                 ]
             }
         },
+
+        onSchemaGridSaveRecord: function(grid, records) {
+            var me = this;
+            Ext.iterate(records, function(record) {
+                var cmp = me.down('#userInfo-grid-' + record.contactId);
+                if (cmp) {
+                    cmp.setTitle(record.firstName + ' ' + record.lastName);
+                }
+            });
+        },
+
         onSchemaGridDeleteRecords : function (grid, records) {
-            var tabPanel = this.down('#ab-tabPanel');
+            var me = this,
+                tabPanel = this.down('#ab-tabPanel');
+
             Ext.iterate(records, function (record) {
-                var cmp = this.down('#userInfo-grid-' + record.data.contactId);
+                var cmp = me.down('#userInfo-grid-' + record.data.contactId);
                 if (cmp) {
                     tabPanel.remove(cmp);
                 }

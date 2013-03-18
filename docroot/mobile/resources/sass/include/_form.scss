@@ -49,6 +49,22 @@
   }
 }
 
+// Contact form - Data field (group selection in Edit Contact)
+.x-form-fieldset .x-form-label {
+  position: absolute;
+  width: 94%;
+}
+
+// This is so the text does not go under the X button
+.x-input-text {
+  padding-right: 32px;
+}
+
+// Clearable contact details
+.x-field-clearable .x-field-input {
+  padding-right: 0px !important;
+}
+
 /* this is the group selector on iPad */
 .group-select-field {
   .x-component-outer {

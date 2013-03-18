@@ -30,6 +30,7 @@ Ext.define('mobile.ux.DataSourceField', {
                 valueItem  : item,
                 label      : item.display,
                 inputValue : item.value,
+                labelWidth : '90%',
                 listeners  : {
                     change : function(cb, newValue, oldValue, eOpts) {
                         cb.valueItem.checked = newValue;
@@ -42,9 +43,7 @@ Ext.define('mobile.ux.DataSourceField', {
     },
 
     getValue: function() {
-        console.log('datasourcefield getvalue');
         var me = this;
-        console.dir(me._value);
         return me._value;
     },
 

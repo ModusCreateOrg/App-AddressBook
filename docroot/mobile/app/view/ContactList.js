@@ -13,10 +13,7 @@ Ext.define("mobile.view.ContactList", {
         schema   : false,
 
         itemTpl : ''.concat(
-//            '<div class="contact">',
-//                '<div class="photo" style="background-image: url(http://src.sencha.io/30/{imageUrl});"></div>',
             '<span class="first_name">{firstName}</span> <span class="last_name">{lastName}</span>'
-//            '</div>'
         )
     },
     initialize : function () {
@@ -78,9 +75,6 @@ Ext.define("mobile.view.ContactList", {
 
             filters: {
                 filterFn: function(record) {
-//                    if (mobile.data.contactIds) {
-//                        debugger;
-//                    }
                     if (mobile.data.contactIds && mobile.data.contactIds.indexOf(parseInt(''+record.data.contactId, 10)) === -1) {
                         return false;
                     }

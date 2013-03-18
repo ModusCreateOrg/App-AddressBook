@@ -13,7 +13,7 @@ Ext.application({
         'common.DreamFactory'
     ],
 
-    profiles: [
+    profiles : [
         'Phone',
         'Tablet'
     ],
@@ -45,7 +45,6 @@ Ext.application({
     launch : function () {
         var me = this;
 
-
         var production = window.location.host.indexOf('dreamfactory.com') !== -1;
         mobile.data = {
             serviceUrl : production ? '/' : '/service/',
@@ -53,7 +52,6 @@ Ext.application({
                 userId : 0
             }
         };
-        console.dir(mobile.data);
     },
 
     onUpdated : function () {

@@ -25,7 +25,6 @@ Ext.define('mobile.view.GroupList', {
     },
 
     initialize: function() {
-        console.log('initialize group list');
         var me = this,
             fields = [],
             schema = mobile.schemas.ContactGroups,
@@ -62,7 +61,7 @@ Ext.define('mobile.view.GroupList', {
                 load: function(me) {
                     me.insert(0, {
                         contactGroupId: 0,
-                        groupName: 'All Contact Groups'
+                        groupName: 'All Contacts'
                     });
                 }
             }
@@ -72,7 +71,7 @@ Ext.define('mobile.view.GroupList', {
         me.del = null;
         me.on("itemswipe", function(dataview, ix, target, record, event, options) {
             var el = event.target;
-            if (me.del || record.get('groupName') === 'All Contact Groups') {
+            if (me.del || record.get('groupName') === 'All Contacts') {
                 console.log('stop event');
                 event.stopEvent();
                 return false;
@@ -94,6 +93,9 @@ Ext.define('mobile.view.GroupList', {
                     }
                 });
                 var removeDeleteButton = function() {
+                    if (!me.del) {
+                        return;
+                    }
                     Ext.Anim.run(me.del, 'fade', {
                         after: function() {
                             me.del.destroy();
@@ -126,5 +128,15 @@ Ext.define('mobile.view.GroupList', {
                 });
             }
         });
+    },
+
+    highlightRecord: function(contactGroupId) {
+        var me = this,
+            index = me.getStore().find('contactGroupId', contactGroupId);
+
+        me.select(index, false, true);
+        Ext.Function.defer(function() {
+            me.deselect(index, true);
+        }, 500);
     }
 });

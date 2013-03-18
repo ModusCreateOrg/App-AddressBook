@@ -7,11 +7,26 @@
 
 (function () {
 
+    // banners generated with linux "figlet" command
+
+    /**
+     *  _                 _  ____            _             _   ____                        _
+     * | | ___   __ _  __| |/ ___|___  _ __ | |_ __ _  ___| |_|  _ \ ___  ___ ___  _ __ __| |
+     * | |/ _ \ / _` |/ _` | |   / _ \| '_ \| __/ _` |/ __| __| |_) / _ \/ __/ _ \| '__/ _` |
+     * | | (_) | (_| | (_| | |__| (_) | | | | || (_| | (__| |_|  _ <  __/ (_| (_) | | | (_| |
+     * |_|\___/ \__,_|\__,_|\____\___/|_| |_|\__\__,_|\___|\__|_| \_\___|\___\___/|_|  \__,_|
+     *
+     * loadContactRecord
+     *
+     * Load in a contact record and associated information
+     *
+     * @param record
+     * @param callback
+     */
     function loadContactRecord(record, callback) {
         var allGroups = [],
             groups = [];
 
-        console.log('loadContactRecord');
         common.DreamFactory.filterRecords(mobile.schemas.ContactGroups.name, {
             fields   : 'contactGroupId,groupName',
             callback : function (o) {
@@ -48,7 +63,6 @@
                                     });
                                     record.groups = allGroups;
                                     record.currentGroups = groups;
-                                    console.dir(record);
                                     if (callback) {
                                         callback(record);
                                     }
@@ -68,6 +82,16 @@
         });
     }
 
+    /**
+     *                  _     _ _                       _             _ _                 _                        __  __       _
+     *  _ __ ___   ___ | |__ (_) | ___   ___ ___  _ __ | |_ _ __ ___ | | | ___ _ __ _ __ | |__   ___  _ __   ___  |  \/  | __ _(_)_ __
+     * | '_ ` _ \ / _ \| '_ \| | |/ _ \ / __/ _ \| '_ \| __| '__/ _ \| | |/ _ \ '__| '_ \| '_ \ / _ \| '_ \ / _ \ | |\/| |/ _` | | '_ \
+     * | | | | | | (_) | |_) | | |  __/| (_| (_) | | | | |_| | | (_) | | |  __/ | _| |_) | | | | (_) | | | |  __/_| |  | | (_| | | | | |
+     * |_| |_| |_|\___/|_.__/|_|_|\___(_)___\___/|_| |_|\__|_|  \___/|_|_|\___|_|(_) .__/|_| |_|\___/|_| |_|\___(_)_|  |_|\__,_|_|_| |_|
+     *                                                                             |_|
+     *
+     * Main controller (phone profile)
+     */
     Ext.define('mobile.controller.phone.Main', {
         extend : 'Ext.app.Controller',
 
@@ -129,6 +153,11 @@
         },
 
         /**
+         *              ____  _                    ____              _
+         *   ___  _ __ / ___|| |__   _____      __/ ___|__ _ _ __ __| |
+         *  / _ \| '_ \\___ \| '_ \ / _ \ \ /\ / / |   / _` | '__/ _` |
+         * | (_) | | | |___) | | | | (_) \ V  V /| |__| (_| | | | (_| |
+         *  \___/|_| |_|____/|_| |_|\___/ \_/\_/  \____\__,_|_|  \__,_|
          *
          * onShowCard
          *
@@ -219,10 +248,15 @@
         showContactsCard : function (direction) {
             direction = direction || 'right';
             var me = this,
+                searchField = me.getSearchField(),
+                contactList = me.getContactList(),
                 mainPanel = me.getMainPanel(),
                 titleBar = me.getTitleBar(),
                 rightButton = me.getRightButton(),
                 backButton = me.getBackButton();
+
+            searchField.reset();
+            delete contactList.search;
 
             mainPanel.animateActiveItem(1, {
                 type      : 'slide',
@@ -272,6 +306,19 @@
 
         },
 
+        /**
+         *      _                    ____            _             _   _____    _ _ _              ____              _
+         *  ___| |__   _____      __/ ___|___  _ __ | |_ __ _  ___| |_| ____|__| (_) |_ ___  _ __ / ___|__ _ _ __ __| |
+         * / __| '_ \ / _ \ \ /\ / / |   / _ \| '_ \| __/ _` |/ __| __|  _| / _` | | __/ _ \| '__| |   / _` | '__/ _` |
+         * \__ \ | | | (_) \ V  V /| |__| (_) | | | | || (_| | (__| |_| |__| (_| | | || (_) | |  | |__| (_| | | | (_| |
+         * |___/_| |_|\___/ \_/\_/  \____\___/|_| |_|\__\__,_|\___|\__|_____\__,_|_|\__\___/|_|   \____\__,_|_|  \__,_|
+         *
+         * showContactEditorCard
+         *
+         * Add contact editor card to layout and animate it into view
+         *
+         * @param direction
+         */
         showContactEditorCard : function (direction) {
             direction = direction || 'up';
             var me = this,
@@ -291,12 +338,12 @@
                 direction : direction
             });
             Ext.Function.defer(function () {
-                titleBar.setTitle(me.selectedRecord ? 'Edit Contact' : 'Create New Contact');
+                titleBar.setTitle(me.selectedRecord.contactId ? 'Edit Contact' : 'Create New Contact');
                 rightButton.setText('Save');
                 rightButton.setCls('mobile-save-contact-button');
                 rightButton.show();
                 // backButton.setText('Cancel');
-                if (me.selectedRecord) {
+                if (me.selectedRecord.contactId) {
                     backButton.setCls('mobile-cancel-edit-contact-button');
                 }
                 else {
@@ -357,7 +404,6 @@
                 Ext.Function.defer(function () {
                     contactList.deselectAll();
                 }, 1);
-//            contactList.deselectAll();
                 delete contactList.deleteButton;
                 return;
             }
@@ -394,6 +440,18 @@
             me.showContactDetailsCard(direction);
         },
 
+        /**
+         *              ____  _       _     _   ____        _   _
+         *   ___  _ __ |  _ \(_) __ _| |__ | |_| __ ) _   _| |_| |_ ___  _ __
+         *  / _ \| '_ \| |_) | |/ _` | '_ \| __|  _ \| | | | __| __/ _ \| '_ \
+         * | (_) | | | |  _ <| | (_| | | | | |_| |_) | |_| | |_| || (_) | | | |
+         *  \___/|_| |_|_| \_\_|\__, |_| |_|\__|____/ \__,_|\__|\__\___/|_| |_|
+         *                      |___/
+         *
+         * onRightButton
+         *
+         * Handles tap on right button in title bar
+         */
         onRightButton : function () {
             var me = this,
                 mainPanel = me.getMainPanel(),
@@ -417,7 +475,10 @@
                     break;
                 case 'mobile-add-contact-button':
                     delete me.selectedRecord;
-                    me.showContactEditorCard();
+                    loadContactRecord({}, function(r) {
+                        me.selectedRecord = r;
+                        me.showContactEditorCard();
+                    });
                     break;
                 case 'mobile-edit-contact-button':
                     me.showContactEditorCard('up');
@@ -429,6 +490,17 @@
 
         },
 
+        /**
+         *              ____             _    ____        _   _
+         *   ___  _ __ | __ )  __ _  ___| | _| __ ) _   _| |_| |_ ___  _ __
+         *  / _ \| '_ \|  _ \ / _` |/ __| |/ /  _ \| | | | __| __/ _ \| '_ \
+         * | (_) | | | | |_) | (_| | (__|   <| |_) | |_| | |_| || (_) | | | |
+         *  \___/|_| |_|____/ \__,_|\___|_|\_\____/ \__,_|\__|\__\___/|_| |_|
+         *
+         * onBackButton
+         *
+         * Handles tap on back button in title bar
+         */
         onBackButton : function () {
             var me = this,
                 mainPanel = me.getMainPanel(),
@@ -444,7 +516,7 @@
             });
             switch (cls) {
                 case 'mobile-cancel-groups-editor-button':
-                    me.getGroupEditor().reset();
+                    me.getGroupEditor().blur().reset();
                     me.showContactGroupsCard();
                     break;
                 case 'mobile-cancel-groups-button':
