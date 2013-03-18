@@ -18,16 +18,12 @@
   .photo {
     height: 320px;
     width: 100%;
-    display: inline-block;
-    vertical-align: middle;
-    background-size: cover;
-    background-repeat: no-repeat;
     overflow: hidden;
+    text-align: center;
     img {
       width: 320px;
       height: auto;
-      left: 50%;
-      right: 50%;
+      display: inline-block;
       // -webkit-animation-duration: 15s;
       // -webkit-animation-name: slide;  
       // -webkit-animation-iteration-count: infinite;
