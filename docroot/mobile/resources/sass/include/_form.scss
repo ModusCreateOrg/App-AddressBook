@@ -52,7 +52,10 @@
 // Contact form - Data field (group selection in Edit Contact)
 .x-form-fieldset .x-form-label {
   position: absolute;
-  width: 94%;
+}
+
+.x-form .x-scroll-container>.x-inner {
+  background-color: #eee !important;
 }
 
 // This is so the text does not go under the X button
