@@ -50,8 +50,9 @@
 }
 
 // Contact form - Data field (group selection in Edit Contact)
-.x-field-checkbox .x-input-el {
-  width: 0% !important;
+.x-form-fieldset .x-form-label {
+  position: absolute;
+  width: 94%;
 }
 
 // This is so the text does not go under the X button
