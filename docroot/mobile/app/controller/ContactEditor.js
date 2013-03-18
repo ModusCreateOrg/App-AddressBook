@@ -66,9 +66,7 @@
         else {
             common.DreamFactory.createRecords(schema.name, [record], function (o) {
                 record.contactId = parseInt('0' + o.record[0].contactId, 10);
-                console.dir(o);
                 addContactRelationships(record.contactId, groupIds, function () {
-                    console.dir(record);
                     if (callback) {
                         callback(record);
                     }
@@ -129,9 +127,11 @@
             console.dir(record);
             var contactId = record.contactId = parseInt('0' + record.contactId, 10);
 
-            saveContactRecord(record, function (o) {
-                console.dir(record);
+            if (record.imageUrl === '../img/default_portrait.png') {
+                record.imageUrl = '';
+            }
 
+            saveContactRecord(record, function (o) {
                 var infoData = {
                     Home         : {
                         contactId : record.contactId
@@ -161,7 +161,6 @@
                     }
                 });
 
-                console.dir(infoData);
 
                 var info = [];
                 if (!infoData.Home_empty) {
@@ -192,8 +191,6 @@
                     });
                 }
             });
-
-            console.dir(contactId);
 
         },
 

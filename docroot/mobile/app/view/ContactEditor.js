@@ -17,7 +17,6 @@ Ext.define('mobile.view.ContactEditor', {
         var me = this,
             details = me.details;
 
-        console.log('initialize contact editor');
         me.callParent(arguments);
         var items = [];
         Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
@@ -76,9 +75,7 @@ Ext.define('mobile.view.ContactEditor', {
             });
         });
         Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
-            console.dir(field.editor);
             if (field.editor && field.editor.xtype === 'datasourcefield') {
-                console.log('datasource');
                 me.add({
                     xtype       : field.editor.xtype,
                     title       : field.editor.fieldLabel,

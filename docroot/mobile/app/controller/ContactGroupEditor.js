@@ -57,6 +57,7 @@ Ext.define('mobile.controller.ContactGroupEditor', {
                     groupList.getStore().load({
                         callback : function () {
                             mainPanel.fireEvent('showCard', 'groupList', 'down');
+                            groupList.highlightRecord(parseInt('0' + o.record[0].contactGroupId, 10));
 //                            form.reset();
                         }
                     });

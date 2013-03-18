@@ -63,7 +63,6 @@
                                     });
                                     record.groups = allGroups;
                                     record.currentGroups = groups;
-                                    console.dir(record);
                                     if (callback) {
                                         callback(record);
                                     }

@@ -43,9 +43,7 @@ Ext.define('mobile.ux.DataSourceField', {
     },
 
     getValue: function() {
-        console.log('datasourcefield getvalue');
         var me = this;
-        console.dir(me._value);
         return me._value;
     },
 

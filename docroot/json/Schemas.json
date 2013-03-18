@@ -30,7 +30,7 @@
                 "type"          : "int",
                 "autoIncrement" : true,
                 "header"        : "ID",
-                "width"         : 40,
+                "width"         : 50,
                 "editor"        : {
                     "xtype" : "hiddenfield"
                 }
