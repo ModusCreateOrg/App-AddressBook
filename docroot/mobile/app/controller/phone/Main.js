@@ -516,7 +516,7 @@
             });
             switch (cls) {
                 case 'mobile-cancel-groups-editor-button':
-                    me.getGroupEditor().blur().reset();
+//                    me.getGroupEditor().blur().reset();
                     me.showContactGroupsCard();
                     break;
                 case 'mobile-cancel-groups-button':
