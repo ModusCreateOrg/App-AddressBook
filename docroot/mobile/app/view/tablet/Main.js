@@ -116,22 +116,27 @@ Ext.define("mobile.view.tablet.Main", {
                 style  : 'border-top: 1px solid black',
                 items  : [
                     {
-                        xtype  : 'titlebar',
-                        title  : 'Contact Information',
-                        docked : 'top',
-                        items  : [
+                        layout: 'fit',
+                        items: [
                             {
-                                itemId : 'edit-contact',
-                                action : 'edit-contact',
-                                align  : 'right',
-                                text   : 'Edit',
-                                hidden : true
+                                xtype  : 'titlebar',
+                                title  : 'Contact Information',
+                                docked : 'top',
+                                items  : [
+                                    {
+                                        itemId : 'edit-contact',
+                                        action : 'edit-contact',
+                                        align  : 'right',
+                                        text   : 'Edit',
+                                        hidden : true
+                                    }
+                                ]
+                            },
+                            {
+                                padding : 20,
+                                xtype   : 'contact_details'
                             }
                         ]
-                    },
-                    {
-                        padding : 20,
-                        xtype   : 'contact_details'
                     }
                 ]
             }
