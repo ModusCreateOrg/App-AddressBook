@@ -60,7 +60,7 @@ Ext.define("mobile.view.tablet.Main", {
                                 title  : 'Groups',
                                 items  : [
                                     {
-                                        text   : 'Add',
+                                        cls    : 'mobile-add-contact-button',
                                         align  : 'right',
                                         action : 'add-group'
                                     }
@@ -83,7 +83,7 @@ Ext.define("mobile.view.tablet.Main", {
                                 items  : [
                                     {
                                         align  : 'right',
-                                        text   : 'Add',
+                                        cls    : 'mobile-add-contact-button',
                                         action : 'add-contact'
                                     }
                                 ]

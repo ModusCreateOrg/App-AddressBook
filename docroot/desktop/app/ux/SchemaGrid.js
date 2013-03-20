@@ -107,21 +107,21 @@ Ext.define('ab.ux.SchemaGrid', {
                 new Action({
                     text    : 'Add',
                     itemId  : 'add',
-                    icon    : '../img/famfam/add.png',
+                    cls     : 'toolbar-button add',
                     scope   : me,
                     handler : me.onAddButton
                 }),
                 new Action({
                     text    : 'Edit',
                     itemId  : 'edit',
-                    icon    : '../img/famfam/pencil.png',
+                    cls     : 'toolbar-button edit',
                     scope   : me,
                     handler : me.onEditButton
                 }),
                 new Action({
                     text    : 'Delete',
                     itemId  : 'delete',
-                    icon    : '../img/famfam/delete.png',
+                    cls     : 'toolbar-button delete',
                     scope   : me,
                     handler : me.deleteRecords
                 })

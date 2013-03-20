@@ -6,7 +6,7 @@
     position: relative;
     top: 11px;
     padding: 3px 6px;
-    height: 40px !important;;
+    height: 40px !important;
     border: none !important;
     background: none;
     box-shadow: none !important;
@@ -58,5 +58,8 @@
 .main-tabs {
   .x-tabpanel-child {
     margin-top: 15px;    
-  } 
+  }
+  .x-toolbar-docked-top {
+    background: none;
+  }
 }

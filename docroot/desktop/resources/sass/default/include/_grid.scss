@@ -1,7 +1,29 @@
 /* setup variables */
 $grid-row-cell-line-height: 30px;
+$grid-row-cell-selected-background-color: #bac4c5;
+$grid-row-cell-selected-border-style: none;
+$grid-row-cell-over-background-color: #dae4e6;
 
 /* custom styles */
 .x-column-header-text {
   font-weight: 800;
+}
+
+.x-column-header { 
+  background-image: none !important;
+  background: #f4f4f4 !important;
+  border: none !important;
+  text-shadow: none !important;
+}
+
+.x-column-header-inner {
+  .x-column-header-over {
+    background: #b3b3b3;
+  }
+}
+
+.x-grid-header-ct {
+  border: none !important;
+  background-image: none !important;
+  background-color: transparent !important;
 }

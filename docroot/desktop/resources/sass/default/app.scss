@@ -26,6 +26,7 @@ $base-gradient: flat;
 
 /* setup more variable imports that override defaults */
 @import 'include/mixins';
+@import 'include/buttons';
 @import 'include/header';
 @import 'include/grid';
 @import 'include/tabs';

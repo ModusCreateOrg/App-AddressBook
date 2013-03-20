@@ -308,14 +308,16 @@
                         docked : 'top',
                         items  : [
                             {
-                                text   : 'Cancel',
-                                ui     : 'decline',
+                                // text   : 'Cancel',
+                                // ui     : 'decline',
+                                cls : 'cancel-edit-contact',
                                 action : 'cancel-edit-contact',
+                                text   : '',
                                 align  : 'left'
                             },
                             {
                                 text   : 'Save',
-                                ui     : 'confirm',
+                                // ui     : 'confirm',
                                 action : 'save-contact',
                                 align  : 'right'
                             }
@@ -331,7 +333,7 @@
             layout.animateActiveItem(2, {
                 type      : 'slide',
                 duration  : 250,
-                direction : 'up'
+                direction : 'left',
             });
         },
 
@@ -345,7 +347,7 @@
             layout.animateActiveItem(0, {
                 type      : 'slide',
                 duration  : 250,
-                direction : 'down'
+                direction : 'right'
             });
             Ext.Function.defer(function () {
                 layout.removeAt(1);

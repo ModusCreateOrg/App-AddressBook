@@ -1,0 +1,30 @@
+@mixin toolbarButton($color) {
+  background: $color;
+  border: none;
+  background-image: none;
+  padding: 5px 8px;  
+  .x-btn-inner {
+    color: white !important;
+    font: {
+      weight: bold !important;
+      size: 13px; 
+    }
+    padding: 0px 5px !important;
+  }
+  &.x-btn-disabled {
+    background: #bac4c5;
+  }
+  &.x-btn-over {
+    border: none;
+    background: lighten($color, 10);
+  }
+  &.x-btn-pressed {
+    background: darken($color, 5); 
+  }
+}
+
+.toolbar-button {
+  &.add     { @include toolbarButton(#1ece6d) }
+  &.edit    { @include toolbarButton(#f2c500) }
+  &.delete  { @include toolbarButton(#e94b35) }
+}
