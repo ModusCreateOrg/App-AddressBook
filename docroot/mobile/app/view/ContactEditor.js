@@ -63,6 +63,11 @@ Ext.define('mobile.view.ContactEditor', {
                             name        : what + '_' + field.name,
                             placeHolder : field.header || field.editor.fieldLabel,
                             value       : detail ? detail[field.name] : undefined,
+                            listeners: {
+                                change: function() {
+                                    console.log('change');
+                                }
+                            }
                         });
                     }
                 }

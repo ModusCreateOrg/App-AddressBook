@@ -43,7 +43,6 @@
             schema = mobile.schemas.Contacts,
             groupIds = [];
 
-        console.dir(record);
         if (record.groups) {
             Ext.iterate(record.groups, function (group) {
                 if (group.checked) {
@@ -73,6 +72,19 @@
                 });
             });
         }
+    }
+
+    function deleteContactInfo(record, callback) {
+        if (!record || !record.contactId) {
+            callback();
+            return;
+        }
+        common.DreamFactory.deleteRecordsFiltered(mobile.schemas.ContactInfo.name, {
+            where    : 'contactId=' + record.contactId,
+            callback : function (o) {
+                callback();
+            }
+        });
     }
 
     Ext.define('mobile.controller.ContactEditor', {
@@ -132,64 +144,61 @@
             }
 
             saveContactRecord(record, function (o) {
-                var infoData = {
-                    Home         : {
-                        contactId : record.contactId
-                    },
-                    Home_empty   : true,
-                    Work         : {
-                        contactId : record.contactId
-                    },
-                    Work_empty   : true,
-                    Mobile       : {
-                        contactId : record.contactId
-                    },
-                    Mobile_empty : true
-                };
+                deleteContactInfo(record, function () {
 
-                Ext.iterate(record, function (key, value) {
-                    var parts = key.split('_');
-                    if (parts.length > 1) {
-                        var what = parts[0],
-                            fieldName = parts[1];
+                    var infoData = {
+                        Home         : {
+                            contactId : record.contactId
+                        },
+                        Home_empty   : true,
+                        Work         : {
+                            contactId : record.contactId
+                        },
+                        Work_empty   : true,
+                        Mobile       : {
+                            contactId : record.contactId
+                        },
+                        Mobile_empty : true
+                    };
 
-                        infoData[what][fieldName] = value;
-                        delete record[key];
-                        if (fieldName != 'infoType' && value.length) {
-                            infoData[what + '_empty'] = false;
+                    Ext.iterate(record, function (key, value) {
+                        var parts = key.split('_');
+                        if (parts.length > 1) {
+                            var what = parts[0],
+                                fieldName = parts[1];
+
+                            if (fieldName !== 'infoId') {
+                                infoData[what][fieldName] = value;
+                                if (fieldName != 'infoType' && value.length) {
+                                    console.log(key + ' = ' + value);
+                                    infoData[what + '_empty'] = false;
+                                }
+                            }
+                            delete record[key];
                         }
+                    });
+
+
+                    var info = [];
+                    if (!infoData.Home_empty) {
+                        info.push(infoData.Home);
                     }
-                });
+                    if (!infoData.Work_empty) {
+                        info.push(infoData.Work);
+                    }
+                    if (!infoData.Mobile_empty) {
+                        info.push(infoData.Mobile);
+                    }
 
-
-                var info = [];
-                if (!infoData.Home_empty) {
-                    info.push(infoData.Home);
-                }
-                if (!infoData.Work_empty) {
-                    info.push(infoData.Work);
-                }
-                if (!infoData.Mobile_empty) {
-                    info.push(infoData.Mobile);
-                }
-                if (record.contactId !== contactId) {
+//                    console.dir(infoData);
                     // create records
                     common.DreamFactory.createRecords(mobile.schemas.ContactInfo.name, info, function (o) {
                         // fire event
-                        contactList.getStore().load(function() {
+                        contactList.getStore().load(function () {
                             mainPanel.fireEvent('showCard', 'contact', 'down', record);
                         });
                     });
-                }
-                else {
-                    // update records
-                    common.DreamFactory.updateRecords(mobile.schemas.ContactInfo.name, info, function () {
-                        // fire event
-                        contactList.getStore().load(function() {
-                            mainPanel.fireEvent('showCard', 'contact', 'down', record);
-                        });
-                    });
-                }
+                });
             });
 
         },

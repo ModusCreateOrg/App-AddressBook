@@ -96,7 +96,7 @@
             refs    : {
                 groupList               : 'group_list',
                 contactList             : 'contact_list',
-                contactEditor: 'contact_editor',
+                contactEditor           : 'contact_editor',
                 mainPanel               : 'mainview',
                 titleBar                : 'titlebar',
                 detailCard              : 'contact_details',
@@ -129,10 +129,10 @@
                 'button[action=cancel-edit-contact]' : {
                     tap : 'onCancelEditContactButton'
                 },
-                'button[action=save-contact]' : {
+                'button[action=save-contact]'        : {
                     tap : 'onSaveContactButton'
                 },
-                mainPanel : {
+                mainPanel                            : {
                     showCard : 'onShowCard'
                 }
             }
@@ -183,7 +183,10 @@
          * @param record
          */
         onShowCard : function (card, direction, record) {
-            var me = this;
+            var me = this,
+                mainPanel = me.getMainPanel(),
+                layout = mainPanel.down('#card');
+
             switch (card) {
                 case 'contact':
                     loadContactRecord(arguments[2], function (o) {
@@ -193,6 +196,7 @@
                             callback : function (o) {
                                 me.selectedRecord.contactData = o.record;
                                 me.showDetails();
+                                layout.removeAt(1);
                             }
                         });
                     });
@@ -268,7 +272,8 @@
             var me = this,
                 recordData = me.selectedRecord,
                 mainPanel = me.getMainPanel(),
-                editButton = mainPanel.down('#edit-contact');
+                editButton = mainPanel.down('#edit-contact'),
+                layout = mainPanel.down('#card');
 
             recordData.imageUrl = recordData.imageUrl || '../img/default_portrait.png';
             if (recordData.notes) {
@@ -276,7 +281,7 @@
             }
 
             me.getDetailCard().setData(recordData);
-            mainPanel.down('#card').setActiveItem(0);
+//            layout.setActiveItem(0);
             editButton.show();
         },
 
@@ -299,7 +304,7 @@
                 items  : [
                     {
                         xtype  : 'titlebar',
-                        title  : 'Edit Conctact',
+                        title  : 'Edit Contact',
                         docked : 'top',
                         items  : [
                             {
@@ -343,13 +348,19 @@
                 direction : 'down'
             });
             Ext.Function.defer(function () {
-                layout.removeAt(2);
+                layout.removeAt(1);
             }, 260);
         },
 
-        onSaveContactButton: function() {
-            var me = this;
+        onSaveContactButton : function () {
+            var me = this,
+                mainPanel = me.getMainPanel(),
+                layout = mainPanel.down('#card');
+
             me.getContactEditor().submit();
+//            Ext.Function.defer(function () {
+//                layout.removeAt(1);
+//            }, 260);
         }
 
     });
