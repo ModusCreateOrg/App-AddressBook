@@ -1,4 +1,5 @@
-.x-toolbar-dark .x-button {
+.x-toolbar-dark .x-button,
+.x-toolbar .x-button.x-button-confirm {
   background: #3c7aeb;
   border-radius: 3px;
   border: none;
@@ -56,7 +57,9 @@
 .mobile-cancel-contact-button,
 .mobile-cancel-add-contact-button,
 .mobile-cancel-edit-contact-button,
-.mobile-cancel-groups-editor-button {
+.mobile-cancel-groups-editor-button,
+.x-button.x-button-decline,
+.x-toolbar .x-button.x-button-decline {
   background: #b53428 !important;
   border: none !important;
   &:before {
