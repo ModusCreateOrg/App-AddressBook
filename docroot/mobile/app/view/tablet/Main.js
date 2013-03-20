@@ -3,9 +3,15 @@
  * User: mschwartz
  * Date: 2/14/13
  * Time: 6:49 AM
- * To change this template use File | Settings | File Templates.
  */
 
+/*
+ *  _____     _     _      _     __  __       _        __     ___
+ * |_   _|_ _| |__ | | ___| |_  |  \/  | __ _(_)_ __   \ \   / (_) _____      __
+ *   | |/ _` | '_ \| |/ _ \ __| | |\/| |/ _` | | '_ \   \ \ / /| |/ _ \ \ /\ / /
+ *   | | (_| | |_) | |  __/ |_  | |  | | (_| | | | | |   \ V / | |  __/\ V  V /
+ *   |_|\__,_|_.__/|_|\___|\__| |_|  |_|\__,_|_|_| |_|    \_/  |_|\___| \_/\_/
+ */
 Ext.define("mobile.view.tablet.Main", {
 
     extend : 'Ext.Container',
@@ -15,6 +21,7 @@ Ext.define("mobile.view.tablet.Main", {
         'Ext.TitleBar',
         'Ext.Toolbar',
         'mobile.view.Login',
+        'mobile.view.GroupList',
         'mobile.view.ContactList',
         'mobile.view.ContactDetails'
     ],
@@ -29,7 +36,7 @@ Ext.define("mobile.view.tablet.Main", {
         ]
     },
 
-    initialize : function () {
+    initialize : function() {
         console.log('initialize tablet main');
         this.add([
             {
@@ -40,59 +47,51 @@ Ext.define("mobile.view.tablet.Main", {
             {
                 flex   : .3,
                 style  : 'border-right: 1px solid black;',
-                layout : 'fit',
+                layout : 'vbox',
                 items  : [
-//                    {
-//                        xtype  : 'toolbar',
-//                        docked : 'top',
-//                        items  : [
-//                            {
-//                                xtype    : 'selectfield',
-//                                width    : '90%',
-//                                centered : true,
-//                                options  : [
-//                                    { text : 'All Contacts' },
-//                                    { text : 'Group 1' },
-//                                    { text : 'Group 2' },
-//                                    { text : 'Group 3' },
-//                                    { text : 'Group 4' },
-//                                    { text : 'Group 5' },
-//                                    { text : 'Group 6' },
-//                                    { text : 'Group 7' },
-//                                    { text : 'Group 8' },
-//                                    { text : 'Group 9' },
-//                                    { text : 'Group 10' },
-//                                    { text : 'Group 11' },
-//                                    { text : 'Group 12' },
-//                                    { text : 'Group 13' },
-//                                    { text : 'Group 14' },
-//                                    { text : 'Group 15' },
-//                                    { text : 'Group 16' },
-//                                    { text : 'Group 17' },
-//                                    { text : 'Group 18' },
-//                                    { text : 'Group 19' },
-//                                    { text : 'Group 20' },
-//                                    { text : 'Group 21' },
-//                                    { text : 'Group 22' },
-//                                    { text : 'Group 23' },
-//                                    { text : 'Group 24' },
-//                                    { text : 'Group 25' },
-//                                    { text : 'Group 26' },
-//                                    { text : 'Group 27' },
-//                                    { text : 'Group 28' },
-//                                    { text : 'Group 29' }
-//                                ]
-//                            }
-//                        ]
-////                        title: 'Contacts'
-//                    },
                     {
                         layout : 'fit',
+                        height : 175,
+                        style  : 'border-top: 1px solid black',
                         items  : [
+                            {
+                                xtype  : 'titlebar',
+                                docked : 'top',
+                                title  : 'Groups',
+                                items  : [
+                                    {
+                                        text   : 'Add',
+                                        align  : 'right',
+                                        action : 'add-group'
+                                    }
+                                ]
+                            },
+                            {
+                                xtype : 'group_list'
+                            }
+                        ]
+                    },
+                    {
+                        layout : 'fit',
+                        flex   : 1,
+                        style  : 'border-top: 1px solid black',
+                        items  : [
+                            {
+                                xtype  : 'titlebar',
+                                docked : 'top',
+                                title  : 'Contacts',
+                                items  : [
+                                    {
+                                        align  : 'right',
+                                        text   : 'Add',
+                                        action : 'add-contact'
+                                    }
+                                ]
+                            },
                             {
                                 xtype  : 'toolbar',
                                 docked : 'top',
-                                ui: 'search',
+                                ui     : 'search',
                                 items  : [
                                     {
                                         xtype       : 'searchfield',
@@ -105,64 +104,36 @@ Ext.define("mobile.view.tablet.Main", {
                             {
                                 xtype  : 'contact_list',
                                 schema : mobile.schemas.Contacts
-                            },
-                            {
-                                xtype  : 'titlebar',
-                                docked : 'bottom',
-                                items  : [
-                                    {
-                                        xtype    : 'selectfield',
-                                        cls      : 'group-select-field',
-                                        options  : [
-                                            { text : 'All Contacts' },
-                                            { text : 'Group 1' },
-                                            { text : 'Group 2' },
-                                            { text : 'Group 3' },
-                                            { text : 'Group 4' },
-                                            { text : 'Group 5' },
-                                            { text : 'Group 6' },
-                                            { text : 'Group 7' },
-                                            { text : 'Group 8' },
-                                            { text : 'Group 9' },
-                                            { text : 'Group 10' },
-                                            { text : 'Group 11' },
-                                            { text : 'Group 12' },
-                                            { text : 'Group 13' },
-                                            { text : 'Group 14' },
-                                            { text : 'Group 15' },
-                                            { text : 'Group 16' },
-                                            { text : 'Group 17' },
-                                            { text : 'Group 18' },
-                                            { text : 'Group 19' },
-                                            { text : 'Group 20' },
-                                            { text : 'Group 21' },
-                                            { text : 'Group 22' },
-                                            { text : 'Group 23' },
-                                            { text : 'Group 24' },
-                                            { text : 'Group 25' },
-                                            { text : 'Group 26' },
-                                            { text : 'Group 27' },
-                                            { text : 'Group 28' },
-                                            { text : 'Group 29' }
-                                        ]
-                                    },
-                                    {
-                                        align  : 'right',
-                                        ui     : 'edit',
-                                        cls    : 'edit-button',
-                                        text   : 'Edit',
-                                        hidden : false
-                                    }
-                                ]
                             }
                         ]
                     }
                 ]
             },
             {
-                flex    : .7,
-                padding : 20,
-                xtype   : 'contact_details'
+                flex   : .7,
+                layout : 'card',
+                itemId : 'card',
+                style  : 'border-top: 1px solid black',
+                items  : [
+                    {
+                        xtype  : 'titlebar',
+                        title  : 'Contact Information',
+                        docked : 'top',
+                        items  : [
+                            {
+                                itemId : 'edit-contact',
+                                action : 'edit-contact',
+                                align  : 'right',
+                                text   : 'Edit',
+                                hidden : true
+                            }
+                        ]
+                    },
+                    {
+                        padding : 20,
+                        xtype   : 'contact_details'
+                    }
+                ]
             }
         ]);
 

@@ -141,6 +141,7 @@
         init : function () {
             console.log('init ' + this.$className);
             this.callParent(arguments);
+            document.title = 'Phone';
         },
 
         onSearchFieldChanged : function () {

@@ -25,6 +25,7 @@ Ext.define('mobile.view.GroupList', {
     },
 
     initialize: function() {
+        console.log('initialize group list');
         var me = this,
             fields = [],
             schema = mobile.schemas.ContactGroups,
@@ -37,7 +38,7 @@ Ext.define('mobile.view.GroupList', {
             });
         });
 
-        this.setStore({
+       me.setStore({
             fields: fields,
             autoLoad: true,
             proxy: {
@@ -58,11 +59,12 @@ Ext.define('mobile.view.GroupList', {
                 pageParam: false
             },
             listeners: {
-                load: function(me) {
-                    me.insert(0, {
+                load: function(store) {
+                    store.insert(0, {
                         contactGroupId: 0,
                         groupName: 'All Contacts'
                     });
+                    me.fireEvent('storeloaded');
                 }
             }
         });
