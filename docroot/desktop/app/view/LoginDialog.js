@@ -9,7 +9,7 @@ Ext.define('ab.view.LoginDialog', {
     closable    : false,
     // y           : 150,
     width       : 240,
-    height      : 174,
+    height      : 200,
     shadow      : false,
     border      : false,
     layout      : 'fit',
