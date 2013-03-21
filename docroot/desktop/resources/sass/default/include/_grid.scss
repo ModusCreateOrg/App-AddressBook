@@ -1,8 +1,8 @@
 /* setup variables */
-$grid-row-cell-line-height: 30px;
-$grid-row-cell-selected-background-color: #bac4c5;
-$grid-row-cell-selected-border-style: none;
-$grid-row-cell-over-background-color: #dae4e6;
+$grid-row-cell-line-height: 20px;
+$grid-row-cell-selected-background-color: #3877ee;
+$grid-row-cell-selected-border-style: solid;
+$grid-row-cell-over-background-color: #f1f1f1;
 
 /* custom styles */
 .x-column-header-text {
@@ -17,8 +17,9 @@ $grid-row-cell-over-background-color: #dae4e6;
 }
 
 .x-column-header-inner {
-  .x-column-header-over {
-    background: #b3b3b3;
+  &.x-column-header-over {
+    background-image: none !important;
+    background: #e4e4e4 !important;
   }
 }
 
@@ -26,4 +27,23 @@ $grid-row-cell-over-background-color: #dae4e6;
   border: none !important;
   background-image: none !important;
   background-color: transparent !important;
+}
+
+.x-panel .x-grid-body {
+  border-top-color: rgb(214, 214, 214) !important;
+}
+
+.x-grid-row-over {
+  .x-grid-cell {
+    border-color: transparent !important;
+  }
+}
+
+.x-grid-row-selected {
+  .x-grid-cell {
+    border-color: transparent !important;
+  }
+  .x-grid-cell-inner {
+    color: white;
+  }
 }

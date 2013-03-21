@@ -2,20 +2,16 @@
 .main-tabs {
   margin-top: 20px;
   .x-tab {
-    @include border-radius(0px);
-    position: relative;
-    top: 11px;
+    @include border-radius(3px);
     padding: 3px 6px;
-    height: 40px !important;
-    border: none !important;
+    height: 33px !important;
+    border: 1px solid transparent !important;
     background: none;
     box-shadow: none !important;
     .x-tab-inner {
-      // @include text-shadow(0px 1px $baseWhite);
-      height: 18px !important;
-      color: #444 !important;
+      color: rgb(114, 114, 114) !important;
       font-weight: bold;
-      font-size: 13px !important;
+      font-size: 15px !important;
     }
     .x-tab-icon {
       color: rgb(165, 165, 165) !important;
@@ -23,8 +19,14 @@
       margin-right: 5px;      
     }
     &.x-tab-active {
-      background: #f4f4f4;
-      border: 1px solid #dfdfdf !important;
+      background: #bac4c5;
+      border: 1px solid transparent !important;
+      .x-tab-inner {
+        color: white !important;
+      }
+      .x-tab-icon {
+        color: white !important;
+      }
     }
   }
   .x-tab-bar-strip {
@@ -61,5 +63,6 @@
   }
   .x-toolbar-docked-top {
     background: none;
+    margin-bottom: 15px !important;
   }
 }
