@@ -16,7 +16,8 @@ Ext.define('ab.view.LoginDialog', {
     buttonAlign : 'center',
     cls         : 'login-form',
 
-    items        : {
+    items        : [
+        {
         xtype : 'form',
         frame : true,
         defaults : {
@@ -45,7 +46,7 @@ Ext.define('ab.view.LoginDialog', {
                 itemId : 'login-message'
             }
         ]
-    },
+    }],
 
     buttons : [
         {
