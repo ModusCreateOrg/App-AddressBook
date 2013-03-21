@@ -23,8 +23,33 @@
   }
 }
 
+@mixin mainButton($color) {
+  background: $color !important;
+  border: none !important;
+  background-image: none !important;
+  padding: 6px 10px !important;  
+  .x-btn-inner {
+    color: white !important;
+    font: {
+      weight: bold !important;
+      size: 13px !important; 
+    }
+    padding: 0px 5px !important;
+  }
+  &.x-btn-disabled {
+    background: #bac4c5 !important;
+  }
+  &.x-btn-over {
+    border: none;
+    background: lighten($color, 5) !important;
+  }
+  &.x-btn-pressed {
+    background: darken($color, 5) !important; 
+  }
+}
+
 .toolbar-button {
-  &.add     { @include toolbarButton(#1ece6d) }
-  &.edit    { @include toolbarButton(#f2c500) }
+  &.add     { @include toolbarButton(#1aaf5d) }
+  &.edit    { @include toolbarButton(#3373f2) }
   &.delete  { @include toolbarButton(#e94b35) }
 }

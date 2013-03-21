@@ -1,0 +1,42 @@
+.login-form {
+  &.x-window-default { 
+    background-color: transparent !important;
+  }
+  .x-window-body-default {
+    background-color: transparent !important;
+  }
+  .x-window-header-default-top {
+    background-color: transparent !important;
+  }
+  .x-panel-default-framed {
+    background: none !important;
+    border: none !important;
+    padding: 5px 0;
+  }
+  .x-panel-body-default-framed {
+    background: none !important;
+  }
+
+  /* form fields */
+  .x-form-text {
+    @include border-radius(3px);
+    -webkit-transition: all .2s ease;
+    background-image: none;
+    border: 2px solid #dee5ed;
+    color: #66676a;
+    height: 40px !important;
+    font-size: 16px;
+    padding: 6px;
+    &.x-field-form-focus {
+      border: 2px solid #00bd9c;
+    }
+  }
+}
+
+.login-button {
+  @include mainButton(#00bd9c)
+}
+
+.forgot-button {
+  @include mainButton(#33485f) 
+}

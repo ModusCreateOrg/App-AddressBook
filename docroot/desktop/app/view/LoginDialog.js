@@ -6,12 +6,15 @@ Ext.define('ab.view.LoginDialog', {
     modal       : true,
     draggable   : false,
     resizable   : false,
-    y           : 150,
-    width       : 400,
-    height      : 140,
+    closable    : false,
+    // y           : 150,
+    width       : 240,
+    height      : 174,
+    shadow      : false,
     border      : false,
     layout      : 'fit',
     buttonAlign : 'center',
+    cls         : 'login-form',
 
     items        : {
         xtype : 'form',
@@ -24,13 +27,17 @@ Ext.define('ab.view.LoginDialog', {
         items    : [
             {
                 itemId     : 'username',
-                fieldLabel : 'Username',
+                // fieldLabel : 'Username',
+                hideLabel  : true,
+                emptyText : 'Username',
                 value      : 'admin'
             },
             {
                 itemId     : 'password',
                 inputType  : 'password',
-                fieldLabel : 'Password',
+                hideLabel  : true,
+                // fieldLabel : 'Password',
+                emptyText : 'Password',
                 value      : 'admin'
             },
             {
@@ -43,11 +50,13 @@ Ext.define('ab.view.LoginDialog', {
     buttons : [
         {
             text   : 'Log In',
-            itemId : 'login-button'
+            itemId : 'login-button',
+            cls    : 'login-button'
         },
         {
             text   : 'Forgot Password',
-            itemId : 'forgot-button'
+            itemId : 'forgot-button',
+            cls    : 'forgot-button'
         }
     ],
 
@@ -69,7 +78,7 @@ Ext.define('ab.view.LoginDialog', {
     },
 
     errorMessage : function(text) {
-        this.down('#login-message').el.update('<span style="color: red">' + text + '</span>');
+        this.down('#login-message').el.update('<span style="color: #ea5641">' + text + '</span>');
     },
 
     onFieldSpecialKey : function(field, e) {
