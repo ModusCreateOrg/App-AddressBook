@@ -5,6 +5,13 @@
  * Time: 7:10 AM
  */
 
+/*  ____  _                        __  __       _          ____            _             _ _
+ * |  _ \| |__   ___  _ __   ___  |  \/  | __ _(_)_ __    / ___|___  _ __ | |_ _ __ ___ | | | ___ _ __
+ * | |_) | '_ \ / _ \| '_ \ / _ \ | |\/| |/ _` | | '_ \  | |   / _ \| '_ \| __| '__/ _ \| | |/ _ \ '__|
+ * |  __/| | | | (_) | | | |  __/ | |  | | (_| | | | | | | |__| (_) | | | | |_| | | (_) | | |  __/ |
+ * |_|   |_| |_|\___/|_| |_|\___| |_|  |_|\__,_|_|_| |_|  \____\___/|_| |_|\__|_|  \___/|_|_|\___|_|
+ */
+
 (function () {
 
     // banners generated with linux "figlet" command
@@ -555,7 +562,8 @@
         },
 
         onDeleteContact : function (contactId) {
-            var me = this;
+            var me = this,
+                contactList = me.getContactList();
 
             common.DreamFactory.deleteRecordsFiltered(mobile.schemas.Contacts.name, {
                 where    : 'contactId=' + contactId,
@@ -566,7 +574,7 @@
                             common.DreamFactory.deleteRecordsFiltered(mobile.schemas.ContactRelationships.name, {
                                 where    : 'contactId=' + contactId,
                                 callback : function () {
-                                    me.getContactList().getStore().load();
+                                    contactList.getStore().load();
                                 }
                             });
                         }
