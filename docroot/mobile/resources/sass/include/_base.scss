@@ -5,5 +5,12 @@
 
 /* some basic login stuff */
 .login-screen {
-  margin-top: 50px;
+  margin: 35px auto;
+  width: 300px;
+  @media all and (min-device-width : 768px) and (max-device-width : 1024px) {
+  margin: 150px auto;
+  }
+  @media all and (max-width: 320px) {
+    width: 285px;
+  }
 }
