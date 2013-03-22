@@ -13,7 +13,7 @@ Ext.define("mobile.view.ContactList", {
         schema   : false,
 
         itemTpl : ''.concat(
-            '<span id="contact-list-{contactId}" class="first_name">{firstName}</span> <span class="last_name">{lastName}</span>'
+            '<span class="first_name">{firstName}</span> <span class="last_name">{lastName}</span>'
         )
     },
     initialize : function() {
@@ -58,18 +58,11 @@ Ext.define("mobile.view.ContactList", {
                 {
                     sorterFn  : function(a, b) {
                         // this logic is presented for clarity, not for elegance
-                        // it could be a single line returning localeCompare() of the two strings
-                        a = a.lastName + ' ' + a.firstName;
+                        a = a.raw.lastName + ' ' + a.raw.firstName;
                         a = a.toLowerCase();
-                        b = b.lastName + ' ' + b.firstName;
+                        b = b.raw.lastName + ' ' + b.raw.firstName;
                         b = b.toLowerCase();
-                        if (a > b) {
-                            return 1;
-                        }
-                        if (a === b) {
-                            return 0;
-                        }
-                        return -1;
+                        return a.localeCompare(b);
                     },
                     direction : 'ASC'
                 }
@@ -151,49 +144,5 @@ Ext.define("mobile.view.ContactList", {
             }
         });
 
-    },
-
-    selectWithScroll : function(record, suppressEvent) {
-        var me = this, index;
-        if (me.getDisableSelection()) {
-            return;
-        }
-        index = me.getStore().indexOf(record);
-        me.doScrollSelect(record, index, suppressEvent);
-    },
-    doScrollSelect   : function(record, index, suppressEvent) {
-        var me = this,
-            selected = me.selected;
-        if (me.getDisableSelection()) {
-            return;
-        }
-        if (me.isSelected(record)) {
-            return;
-        }
-        if (selected.getCount() > 0) {
-            me.deselect(me.getLastSelected(), suppressEvent);
-        }
-        selected.add(record);
-        me.setLastSelected(record);
-        me.onItemSelect(record, suppressEvent);
-        me.setLastFocused(record);
-
-        if (index > 0) {
-            var scroller = me.getScrollable().getScroller(),
-                direction = scroller.getDirection(),
-                itemScroll;
-            if (direction == 'vertical') {
-                itemScroll = (me.getItemHeight() * index);
-                scroller.scrollTo(0, itemScroll);
-            }
-            else if (direction == 'horizontal') {
-                itemScroll = (me.getItemWidth() * index);
-                scroller.scrollTo(itemScroll, 0);
-            }
-        }
-        if (!suppressEvent) {
-            me.fireSelectionChange([record]);
-        }
     }
-
 });

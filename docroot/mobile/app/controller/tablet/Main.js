@@ -228,44 +228,20 @@
                                 layout.removeAt(1);
                                 // select and scroll selected record into view in group list
                                 var store = contactList.getStore(),
-                                    rec = store.findRecord('contactId', me.selectedRecord.contactId);
+                                    rec = store.find('contactId', me.selectedRecord.contactId);
                                 console.dir(rec);
 
-                                contactList.selectWithScroll(rec, true);
+                                contactList.select(store.getAt(rec), false, true);
 
+                                var el = contactList.element,
+                                    cls = contactList.getSelectedCls(),
+                                    selected = el.down('.' + cls);
 
-//    var list = contactList,
-//        store = list.getStore(),
-//        selected = list.getSelection()[0],
-//        idx = store.indexOf(selected),
-//        els = list.container.getViewItems(),
-//        el = els[idx],
-//        offset = el.dom.offsetTop;
-//
-//    list.getScrollable().getScroller().scrollTo(0, offset);
-
-//                                var el = Ext.get('contact-list-' + me.selectedRecord.contactId);
-//                                if (el) {
-//                                    el.scrollIntoView();
-//                                }
-//                                Ext.Function.defer(function() {
-//                                    var el = contactList.element,
-//                                        cls = contactList.getSelectedCls(),
-//                                        selected = el.down('.' + cls),
-//                                        y;
-////debugger;
-//                                    if (selected) {
-//                                        console.log('selected');
-//                                        console.dir(selected);
-//                                        selected.dom.scrollIntoView();
-//                    //                y = selected.dom.offsetTop;
-//
-//                    //                contactList.getScrollable().getScroller().scrollTo(0, y, true);
-//                                    }
-//                                    else {
-//                                        console.log('not selected ' + me.selectedRecord.contactId);
-//                                    }
-//                                }, 10);
+                                if (!selected) {
+                                    // this is magic I figured out through a lot of discovery
+                                    contactList.getScrollable().getScroller().scrollTo(0, rec*contactList._itemHeight);
+                                    contactList.doRefresh();
+                                }
                             }
                         });
                     });
@@ -275,6 +251,8 @@
 
         onDeleteContact : function(contactId) {
             var me = this,
+                mainPanel = me.getMainPanel(),
+                editButton = mainPanel.down('#edit-contact'),
                 contactList = me.getContactList(),
                 detailCard = me.getDetailCard(),
                 currentId = me.selectedRecord ? me.selectedRecord.contactId : false;
@@ -298,6 +276,7 @@
                                     if (contactId === currentId) {
                                         contactList.deselectAll();
                                         detailCard.setData({});
+                                        editButton.hide();
                                     }
                                     contactList.getStore().load();
                                 }
@@ -390,7 +369,6 @@
             }
 
             me.getDetailCard().setData(recordData);
-//            layout.setActiveItem(0);
             editButton.show();
 
         },
