@@ -16,7 +16,8 @@ Ext.define('mobile.view.Login', {
     ],
     config     : {
         submitOnAction : true,
-        fullscreen     : true
+        fullscreen     : true,
+        scrollable     : false
     },
     fullscreen : true,
 
@@ -54,6 +55,4 @@ Ext.define('mobile.view.Login', {
             }
         ]);
     }
-
-
 });
