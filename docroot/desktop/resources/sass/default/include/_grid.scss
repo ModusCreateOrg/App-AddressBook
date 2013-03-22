@@ -47,3 +47,11 @@ $grid-row-cell-over-background-color: #f1f1f1;
     color: white;
   }
 }
+
+.x-border-box .x-form-text {
+  border: 1px solid #ddd;
+  -webkit-transition: all .2s ease;
+  &:focus {
+    border: 1px solid rgba(60, 122, 235, 1.0);
+  }
+}
