@@ -54,6 +54,32 @@
       content: $icon-group;
     }    
   }
+  .x-btn-icon {
+    background-image: none !important;
+    &.x-tbar-page-next::before {
+      @include FontAwesomeIcon;
+      content: $icon-angle-right;
+    }
+    &.x-tbar-page-last::before {
+      @include FontAwesomeIcon;
+      content: $icon-double-angle-right;
+    }
+    &.x-tbar-page-prev::before {
+      @include FontAwesomeIcon;
+      content: $icon-angle-left;
+    }
+    &.x-tbar-page-first::before {
+      @include FontAwesomeIcon;
+      content: $icon-double-angle-left;
+    }
+    &.x-item-disabled,
+    &.x-tbar-page-first,
+    &.x-tbar-page-prev,
+    &.x-tbar-page-next,
+    &.x-tbar-page-last {
+      background-image: none !important;
+    }
+  }
 }
 
 /* the actual tabbed content */
