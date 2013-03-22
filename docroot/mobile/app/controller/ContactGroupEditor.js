@@ -63,7 +63,7 @@ Ext.define('mobile.controller.ContactGroupEditor', {
                     });
                 });
             }
-        })
+        });
 
     },
 
