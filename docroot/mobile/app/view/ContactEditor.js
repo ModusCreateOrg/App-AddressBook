@@ -22,11 +22,15 @@ Ext.define('mobile.view.ContactEditor', {
         Ext.iterate(mobile.schemas.Contacts.fields, function (field) {
             if (field.editor) {
                 if (field.editor.xtype === 'textfield' || field.editor.xtype === 'hiddenfield') {
+                    var value = details ? details[field.name] : undefined;
+                    if (value === '../img/default_portrait.png') {
+                        value = '';
+                    }
                     items.push({
                         xtype       : field.editor.xtype,
                         name        : field.name,
                         placeHolder : (field.header || field.editor.fieldLabel) + (field.required ? ' (required)' : ''),
-                        value       : details ? details[field.name] : undefined
+                        value       : value
                     });
                 }
             }
