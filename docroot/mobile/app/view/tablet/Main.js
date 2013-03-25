@@ -45,18 +45,18 @@ Ext.define("mobile.view.tablet.Main", {
         this.add([
             {
                 xtype  : 'titlebar',
+                cls    : 'main-titlebar',
                 title  : this.getTitle(),
                 docked : 'top'
             },
             {
                 flex   : .3,
-                style  : 'border-right: 1px solid black;',
+                style  : 'border-right: 1px solid #ccc',
                 layout : 'vbox',
                 items  : [
                     {
                         layout : 'fit',
                         height : 175,
-                        style  : 'border-top: 1px solid black',
                         items  : [
                             {
                                 xtype  : 'titlebar',
@@ -78,7 +78,6 @@ Ext.define("mobile.view.tablet.Main", {
                     {
                         layout : 'fit',
                         flex   : 1,
-                        style  : 'border-top: 1px solid black',
                         items  : [
                             {
                                 xtype  : 'titlebar',
@@ -117,7 +116,6 @@ Ext.define("mobile.view.tablet.Main", {
                 flex   : .7,
                 layout : 'card',
                 itemId : 'card',
-                style  : 'border-top: 1px solid black',
                 items  : [
                     {
                         layout: 'fit',
