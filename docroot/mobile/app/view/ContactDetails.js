@@ -78,7 +78,7 @@ Ext.define("mobile.view.ContactDetails", {
                     '</tpl>',
                 '</div>',
             '<tpl else>',
-                '<div>No contact selected</div>',
+                '<div class="no-contact">No contact selected</div>',
             '</tpl>'
         ]
     },
