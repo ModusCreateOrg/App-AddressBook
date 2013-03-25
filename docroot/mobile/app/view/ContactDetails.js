@@ -54,27 +54,28 @@ Ext.define("mobile.view.ContactDetails", {
 
                 '<div class="contact-methods">',
                     '<tpl for="contactData">',
-                        '<div class="info-type">{infoType}</div>',
+                        '<div class="contact-section">',
+                            '<div class="info-type">{infoType}</div>',
 
-                        '<tpl if="values.phone">',
-                            '<a class="contact untouched" target="_blank" href="tel:{phone}" class="value"><i class="icon-phone"></i> {phone}</a>',
-                        '</tpl>',
+                            '<tpl if="values.phone">',
+                                '<a class="contact untouched" target="_blank" href="tel:{phone}" class="value"><i class="icon-phone"></i> {phone}</a>',
+                            '</tpl>',
 
-                        '<tpl if="values.email">',
-                            '<a class="contact untouched" target="_blank" href="mailto:{email}" class="value"><i class="icon-envelope"></i> {email}</a>',
-                        '</tpl>',
+                            '<tpl if="values.email">',
+                                '<a class="contact untouched" target="_blank" href="mailto:{email}" class="value"><i class="icon-envelope"></i> {email}</a>',
+                            '</tpl>',
 
-                        '<tpl if="values.address && values.city && values.state && values.zip">',
-                            // TODO: optimize
-                            // TODO: Fix issue with tap
-                            '<a class="contact" sclass="contact-address" target="_blank" href="http://maps.google.com/?q={address} {city} {state} {zip}">',
-                                '<i class="icon-home"></i><span style="margin-bottom: -5px;">{address}</span>',
-                                '<div class="contact-rest">{city}, {state} {zip}</div>',
-                                '<div class="contact-rest">{country}</div>',
-                            '</a>',
-                        '</tpl>',
-                        '<div class="info-clear"></div>',
-
+                            '<tpl if="values.address && values.city && values.state && values.zip">',
+                                // TODO: optimize
+                                // TODO: Fix issue with tap
+                                '<a class="contact" sclass="contact-address" target="_blank" href="http://maps.google.com/?q={address} {city} {state} {zip}">',
+                                    '<i class="icon-home"></i><span style="margin-bottom: -5px;">{address}</span>',
+                                    '<div class="contact-rest">{city}, {state} {zip}</div>',
+                                    '<div class="contact-rest">{country}</div>',
+                                '</a>',
+                            '</tpl>',
+                            '<div class="info-clear"></div>',  
+                        '</div>',
                     '</tpl>',
                 '</div>',
             '<tpl else>',
