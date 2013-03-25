@@ -250,23 +250,28 @@ Ext.define('ab.ux.SchemaGrid', {
     },
 
     editRecord : function(record) {
-        var me = this
-        create = !!record;
+        var me = this,
+            el = Ext.get(document.body),
+            create = !!record;
 
         record = record || {};
         record = Ext.apply(record, me.extraFields);
 
+        el.mask();
         if (create && me.loadFn) {
             me.loadFn(record, function(record) {
                 if (record === false) {
+                    el.unmask();
                     me.getStore().load();
                     return;
                 }
                 me.showEditDialog(record);
+                el.unmask();
             });
         }
         else {
             me.showEditDialog(record);
+            el.unmask();
         }
     },
 
