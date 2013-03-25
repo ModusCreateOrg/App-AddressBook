@@ -1,3 +1,14 @@
+/**
+ * Created with JetBrains WebStorm.
+ * User: mschwartz
+ * Date: 2/14/13
+ * Time: 6:49 AM
+ *
+ * Copyright (c) 2013 Modus Create, Inc.
+ * This file is licensed under the terms of the MIT license.
+ * See the file license.txt for more details.
+ */
+
 Ext.define("mobile.view.ContactDetails", {
     extend: 'Ext.Container',
     xtype: 'contact_details',

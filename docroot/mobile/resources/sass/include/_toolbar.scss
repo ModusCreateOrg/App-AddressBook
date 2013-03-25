@@ -11,9 +11,27 @@
   }
 }
 
+.x-toolbar-dark {
+  border-color: transparent;
+}
+
 .x-title .x-innerhtml {
   text-shadow: none;
   color: #222;
   font-size: 20px;
   font-weight: 400;
+}
+
+.main-titlebar {
+  background: rgb(139, 139, 139);
+  border: none;
+  .x-innerhtml {
+    color: white;
+    font-weight: 700; 
+  }
+}
+
+.x-title .x-innerhtml {
+  text-shadow: none;
+  color: rgb(88, 88, 88);
 }

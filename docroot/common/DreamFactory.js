@@ -3,7 +3,10 @@
  * User: mschwartz
  * Date: 2/11/13
  * Time: 7:17 AM
- * To change this template use File | Settings | File Templates.
+ *
+ * Copyright (c) 2013 Modus Create, Inc.
+ * This file is licensed under the terms of the MIT license.
+ * See the file license.txt for more details.
  */
 
 (function () {
@@ -14,10 +17,12 @@
                 'X-Application-Name' : 'add'
             };
 
+        // if REST tunneling is required, then uncomment the following lines
 //        if (method === 'DELETE' || method === 'MERGE') {
 //            headers['X-HTTP-METHOD'] = method;
 //            method = 'POST';
 //        }
+
         Ext.Ajax.request({
             url      : common.DreamFactory.serviceUrl + 'rest/' + config.url,
             method   : method,

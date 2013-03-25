@@ -3,6 +3,10 @@
  * User: mschwartz
  * Date: 3/14/13
  * Time: 10:25 AM
+ *
+ * Copyright (c) 2013 Modus Create, Inc.
+ * This file is licensed under the terms of the MIT license.
+ * See the file license.txt for more details.
  */
 
 Ext.define('mobile.ux.DataSourceField', {

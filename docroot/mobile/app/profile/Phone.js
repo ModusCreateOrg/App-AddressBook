@@ -3,7 +3,10 @@
  * User: mschwartz
  * Date: 2/13/13
  * Time: 7:23 AM
- * To change this template use File | Settings | File Templates.
+ *
+ * Copyright (c) 2013 Modus Create, Inc.
+ * This file is licensed under the terms of the MIT license.
+ * See the file license.txt for more details.
  */
 
 Ext.define('mobile.profile.Phone', {

@@ -3,6 +3,10 @@
  * User: mschwartz
  * Date: 3/13/13
  * Time: 9:37 AM
+ *
+ * Copyright (c) 2013 Modus Create, Inc.
+ * This file is licensed under the terms of the MIT license.
+ * See the file license.txt for more details.
  */
 
 (function () {
