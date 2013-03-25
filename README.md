@@ -70,3 +70,8 @@ for local development (on MacOS, Linux, potentially Windows) and accessing the D
 reverse proxy.
 
 
+# License
+
+Licensed under the MIT License.
+
+See license.txt for more information
