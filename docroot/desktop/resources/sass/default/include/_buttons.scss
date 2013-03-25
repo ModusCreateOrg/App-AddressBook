@@ -60,6 +60,9 @@
   .x-menu-item-link {
     text-align: center;
     padding: 6px 0px 3px 0px;
+    background-image: none !important;
+    background-color: transparent !important;
+    border: none !important;
     &.x-menu-item-active {
       background: #000 !important;
     }
