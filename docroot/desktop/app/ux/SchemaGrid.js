@@ -251,7 +251,7 @@ Ext.define('ab.ux.SchemaGrid', {
 
     editRecord : function(record) {
         var me = this,
-            el = Ext.get(body),
+            el = Ext.get(document.body),
             create = !!record;
 
         record = record || {};
