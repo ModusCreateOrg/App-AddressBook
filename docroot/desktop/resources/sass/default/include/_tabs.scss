@@ -54,6 +54,8 @@
       content: $icon-group;
     }    
   }
+
+  // paging arrows
   .x-btn-icon {
     background-image: none !important;
     &.x-tbar-page-next::before {
@@ -80,6 +82,19 @@
       background-image: none !important;
     }
   }
+}
+
+.x-tool {
+  background-image: none !important;
+  &.img {
+    @include FontAwesomeIcon;
+    content: $icon-remove;
+  }
+}
+
+.x-toolbar-separator-horizontal {
+  border-left: 1px solid #999 !important;
+  border-right: 1px solid #fff !important;
 }
 
 /* the actual tabbed content */

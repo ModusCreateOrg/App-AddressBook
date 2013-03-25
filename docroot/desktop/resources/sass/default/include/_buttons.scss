@@ -52,6 +52,18 @@
   &.add     { @include toolbarButton(#009048) }
   &.edit    { @include toolbarButton(#3c7aeb) }
   &.delete  { @include toolbarButton(#b53428) }
+  .x-menu-item-text {
+    font-size: 16px;
+    text-align: center;
+    color: #fff;
+  }
+  .x-menu-item-link {
+    text-align: center;
+    padding: 6px 0px 3px 0px;
+    &.x-menu-item-active {
+      background: #000 !important;
+    }
+  }
 }
 
 .x-btn-default-small-noicon {
