@@ -1,0 +1,86 @@
+{"table" : {
+    "name"    : "ContactRelationships",
+    "label"   : "ContactRelationships",
+    "plural"  : "ContactRelationships",
+    "field"   : [
+        {
+            "name"               : "contactRelationshipId",
+            "label"              : "contactRelationshipId",
+            "type"               : "id",
+            "db_type"            : "int(11)",
+            "length"             : 11,
+            "precision"          : 11,
+            "scale"              : 0,
+            "default"            : null,
+            "required"           : false,
+            "allow_null"         : false,
+            "fixed_length"       : false,
+            "supports_multibyte" : false,
+            "auto_increment"     : true,
+            "is_primary_key"     : true,
+            "is_foreign_key"     : false,
+            "ref_table"          : "",
+            "ref_fields"         : "",
+            "validation"         : "",
+            "values"             : []
+        },
+        {
+            "name"               : "contactId",
+            "label"              : "contactId",
+            "type"               : "reference",
+            "db_type"            : "int(11)",
+            "length"             : 11,
+            "precision"          : 11,
+            "scale"              : 0,
+            "default"            : null,
+            "required"           : false,
+            "allow_null"         : true,
+            "fixed_length"       : false,
+            "supports_multibyte" : false,
+            "auto_increment"     : false,
+            "is_primary_key"     : false,
+            "is_foreign_key"     : true,
+            "ref_table"          : "Contacts",
+            "ref_fields"         : "contactId",
+            "validation"         : "",
+            "values"             : []
+        },
+        {
+            "name"               : "contactGroupId",
+            "label"              : "contactGroupId",
+            "type"               : "reference",
+            "db_type"            : "int(11)",
+            "length"             : 11,
+            "precision"          : 11,
+            "scale"              : 0,
+            "default"            : null,
+            "required"           : false,
+            "allow_null"         : true,
+            "fixed_length"       : false,
+            "supports_multibyte" : false,
+            "auto_increment"     : false,
+            "is_primary_key"     : false,
+            "is_foreign_key"     : true,
+            "ref_table"          : "ContactGroups",
+            "ref_fields"         : "contactGroupId",
+            "validation"         : "",
+            "values"             : []
+        }
+    ],
+    "related" : [
+        {
+            "name"      : "ContactGroups_by_contactGroupId",
+            "type"      : "belongs_to",
+            "ref_table" : "ContactGroups",
+            "ref_field" : "contactGroupId",
+            "field"     : "contactGroupId"
+        },
+        {
+            "name"      : "Contacts_by_contactId",
+            "type"      : "belongs_to",
+            "ref_table" : "Contacts",
+            "ref_field" : "contactId",
+            "field"     : "contactId"
+        }
+    ]
+}}

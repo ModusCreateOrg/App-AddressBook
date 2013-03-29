@@ -1,0 +1,67 @@
+{
+    "table" : {
+    "name"    : "ContactGroups",
+    "label"   : "ContactGroups",
+    "plural"  : "ContactGroups",
+    "field"   : [
+        {
+            "name"               : "contactGroupId",
+            "label"              : "contactGroupId",
+            "type"               : "id",
+            "db_type"            : "int(11)",
+            "length"             : 11,
+            "precision"          : 11,
+            "scale"              : 0,
+            "default"            : null,
+            "required"           : false,
+            "allow_null"         : false,
+            "fixed_length"       : false,
+            "supports_multibyte" : false,
+            "auto_increment"     : true,
+            "is_primary_key"     : true,
+            "is_foreign_key"     : false,
+            "ref_table"          : "",
+            "ref_fields"         : "",
+            "validation"         : "",
+            "values"             : []
+        },
+        {
+            "name"               : "groupName",
+            "label"              : "groupName",
+            "type"               : "string",
+            "db_type"            : "varchar(128)",
+            "length"             : 128,
+            "precision"          : 128,
+            "scale"              : 0,
+            "default"            : null,
+            "required"           : false,
+            "allow_null"         : true,
+            "fixed_length"       : false,
+            "supports_multibyte" : false,
+            "auto_increment"     : false,
+            "is_primary_key"     : false,
+            "is_foreign_key"     : false,
+            "ref_table"          : "",
+            "ref_fields"         : "",
+            "validation"         : "",
+            "values"             : []
+        }
+    ],
+    "related" : [
+        {
+            "name"      : "ContactRelationships_by_contactGroupId",
+            "type"      : "has_many",
+            "ref_table" : "ContactRelationships",
+            "ref_field" : "contactGroupId",
+            "field"     : "contactGroupId"
+        },
+        {
+            "name"      : "Contacts_by_ContactRelationships",
+            "type"      : "many_many",
+            "ref_table" : "Contacts",
+            "ref_field" : "contactId",
+            "join"      : "ContactRelationships(contactGroupId,contactId)",
+            "field"     : "contactGroupId"
+        }
+    ]
+}}
