@@ -6,7 +6,7 @@
 # See the file license.txt for more details.
 
 # initial version simply zips up the docroot directory
-rm df.zip
+rm df.zip .DS_Store
 cd docroot && zip -rq ../df.zip . ; cd ..
 ls -l df.zip
 
