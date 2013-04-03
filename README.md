@@ -32,7 +32,8 @@ Dream Factory API schema can be generated from the extended JSON.
 
 Both the desktop and mobile applications load Schemas.json at startup.
 
-The Dream Factory Launch Pad schema editor should be used to create the initial database structure.
+The Dream Factory Launch Pad schema editor should be used to create the initial database structure.  The JSON
+files used to create the database schema can be found in the schema/ directory.
 
 ## Desktop Application
 
