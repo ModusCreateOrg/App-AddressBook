@@ -49,6 +49,12 @@ Ext.define('ab.controller.LoginDialog', {
         dialog.setMessage('Logging in...');
 
         common.DreamFactory.login(username, password, function(o) {
+            if (o.error) {
+                dialog.enable();
+                dialog.setMessage('Log In Failed');
+                Ext.Msg.alert('Server Error ' + o.error[0].code, o.error[0].message);
+                return;
+            }
             ab.data.user = o;
             dialog.close();
             me.application.fireEvent('loginsuccessful');
