@@ -57,10 +57,12 @@ is common between the Tablet and Phone profiles.
 
 ## Directory Structure
 
+The schema folder contains the JSON used to create the schema (database tables) in the DSP launchpad.
+
 The docroot folder contains the application's HTML, JavaScript, CSS, and static assets.
 
 The docroot folder contains a desktop/ directory which is the ExtJS 4 application.  The mobile/ directory
- contains the Sencha Touch 2 applicatio.
+ contains the Sencha Touch 2 application.
 
 The index.html file in the docroot folder contains a simple JavaScript that detects if running in a desktop or
 mobile browser and redirects to the desktop/ or mobile/ URL accordingly.  This should allow the application to be
