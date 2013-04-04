@@ -69,7 +69,7 @@
                                 where    : 'contactId=' + record.contactId,
                                 callback : function(o) {
                                     Ext.iterate(o.record, function(record) {
-                                        groups.push(record.contactGroupId);
+                                        groups.push(intVal(record.contactGroupId));
                                     });
                                     Ext.each(allGroups, function(group) {
                                         if (groups.indexOf(group.value) !== -1) {
@@ -423,32 +423,6 @@
                     groupList.deselectAll();
                 }, 1);
             });
-//            if (record.data.contactGroupId) {
-//                common.DreamFactory.filterRecords(mobile.schemas.ContactRelationships.name, {
-//                    where    : 'contactGroupId=' + record.data.contactGroupId,
-//                    callback : function(o) {
-//                        mobile.data.contactIds = [];
-//                        Ext.iterate(o.record, function(item) {
-//                            mobile.data.contactIds.push(intVal(item.contactId));
-//                        });
-//                        me.getContactList().getStore().load(function() {
-//                            me.showContactsCard('left');
-//                            Ext.Function.defer(function() {
-//                                groupList.deselectAll();
-//                            }, 1);
-//                        });
-//                    }
-//                });
-//            }
-//            else {
-//                mobile.data.contactIds = undefined;
-//                contactList.getStore().load(function() {
-//                    me.showContactsCard('left');
-//                    Ext.Function.defer(function() {
-//                        groupList.deselectAll();
-//                    }, 1);
-//                });
-//            }
         },
 
         onContactSelected : function(list, index, target, record, e) {
@@ -536,6 +510,10 @@
                     });
                     break;
                 case 'mobile-edit-contact-button':
+//                    loadContactRecord(me.selectedRecord, function(r) {
+//                        me.selectedRecord = r;
+//                        me.showContactEditorCard();
+//                    });
                     me.showContactEditorCard('up');
                     break;
                 case 'mobile-save-contact-button':
