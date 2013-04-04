@@ -4,6 +4,9 @@
  * Date: 2/11/13
  * Time: 7:17 AM
  *
+ * Implements the Document Services REST API
+ * Version 0.6, roughly as of February 15.
+ *
  * Copyright (c) 2013 Modus Create, Inc.
  * This file is licensed under the terms of the MIT license.
  * See the file license.txt for more details.
