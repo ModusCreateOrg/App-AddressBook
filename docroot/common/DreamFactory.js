@@ -121,11 +121,6 @@
                 fields : record
             });
         });
-//        return {
-//            records : {
-//                record : recs
-//            }
-//        };
         return {
             record : records
         };
