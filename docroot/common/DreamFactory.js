@@ -124,22 +124,10 @@
                 fields : record
             });
         });
-//        return {
-//            records : {
-//                record : recs
-//            }
-//        };
         return {
             record : records
         };
     }
-
-//    var production = window.location.host.indexOf('dreamfactory.com') !== -1;
-//    console.dir(window.location.host);
-//    console.dir(window.location.host.indexOf('dreamfactory.com'));
-//    ab.data = {
-//        serviceUrl : production ? '/' : '/service/',
-
 
     Ext.define('common.DreamFactory', {
         singleton : true,
@@ -440,7 +428,6 @@
             if (args.length) {
                 url += '?' + args.join('&');
             }
-console.dir('delete');
             rpc({
                 url      : url,
                 method   : 'DELETE',
