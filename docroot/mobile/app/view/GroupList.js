@@ -66,7 +66,6 @@ Ext.define('mobile.view.GroupList', {
                     if (a.raw.groupName === 'All Contacts') {
                         return -1;
                     }
-                    console.dir(a);
                     a = a.raw.groupName.toLowerCase();
                     b = b.raw.groupName.toLowerCase();
                     return a.localeCompare(b);

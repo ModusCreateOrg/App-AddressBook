@@ -2,22 +2,27 @@
 	ServerName df
 	ServerAdmin webmaster@localhost
 
-	DocumentRoot /Users/mschwartz/modus/www/DreamFactory/docroot/
+    # NOTE: This should be path to docroot in your checked out repository
+	DocumentRoot /path/to/your/repository/DreamFactory/docroot/
 	<Directory />
 		Options FollowSymLinks
 		AllowOverride None
 	</Directory>
-	<Directory /Users/mschwartz/modus/www/DreamFactory/docroot/>
+    # NOTE: This should be path to docroot in your checked out repository
+	<Directory /path/to/your/repository/DreamFactory/docroot/>
 		Options All MultiViews
 		AllowOverride All
 		Order allow,deny
 		allow from all
 	</Directory>
 	<Location /service/>
-	    ProxyPass http://modus_create.cloud.dreamfactory.com/
-	    ProxyPassReverse http://modus_create.cloud.dreamfactory.com/
+        # NOTE: These should be modified to be the URL of your DSP instance
+	    ProxyPass http://your_dsp_name.cloud.dreamfactory.com/
+	    ProxyPassReverse http://your_dsp_name.cloud.dreamfactory.com/
 	</Location>
+	# error log for the vhost will be in /var/log/df-error.log
 	ErrorLog /var/log/apache2/df-error.log
 	LogLevel warn
+	# access log for the vhost will be in /var/log/df-access.log
 	CustomLog /var/log/apache2/df-access.log combined
 </VirtualHost>

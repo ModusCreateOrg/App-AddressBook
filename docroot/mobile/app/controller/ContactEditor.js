@@ -9,7 +9,7 @@
  * See the file license.txt for more details.
  */
 
-(function () {
+(function() {
 
     function deleteContactRelationships(contactId, callback) {
         if (!contactId) {
@@ -18,7 +18,7 @@
         }
         common.DreamFactory.deleteRecordsFiltered(mobile.schemas.ContactRelationships.name, {
             where    : 'contactId=' + contactId,
-            callback : function (o) {
+            callback : function(o) {
                 callback();
             }
         });
@@ -26,14 +26,14 @@
 
     function addContactRelationships(contactId, groupIds, callback) {
         var records = [];
-        Ext.each(groupIds, function (id) {
+        Ext.each(groupIds, function(id) {
             records.push({
                 contactId      : contactId,
                 contactGroupId : id
             });
         });
         if (records.length) {
-            common.DreamFactory.createRecords(mobile.schemas.ContactRelationships.name, records, function (o) {
+            common.DreamFactory.createRecords(mobile.schemas.ContactRelationships.name, records, function(o) {
                 callback();
             });
         }
@@ -48,7 +48,7 @@
             groupIds = [];
 
         if (record.groups) {
-            Ext.iterate(record.groups, function (group) {
+            Ext.iterate(record.groups, function(group) {
                 if (group.checked) {
                     groupIds.push(parseInt(group.value, 10));
                 }
@@ -56,9 +56,9 @@
         }
 
         if (record[schema.primaryKey]) {
-            deleteContactRelationships(record[schema.primaryKey], function () {
-                common.DreamFactory.updateRecords(schema.name, [record], function () {
-                    addContactRelationships(record[schema.primaryKey], groupIds, function () {
+            deleteContactRelationships(record[schema.primaryKey], function() {
+                common.DreamFactory.updateRecords(schema.name, [record], function() {
+                    addContactRelationships(record[schema.primaryKey], groupIds, function() {
                         if (callback) {
                             callback(record);
                         }
@@ -67,9 +67,9 @@
             });
         }
         else {
-            common.DreamFactory.createRecords(schema.name, [record], function (o) {
+            common.DreamFactory.createRecords(schema.name, [record], function(o) {
                 record.contactId = parseInt('0' + o.record[0].contactId, 10);
-                addContactRelationships(record.contactId, groupIds, function () {
+                addContactRelationships(record.contactId, groupIds, function() {
                     if (callback) {
                         callback(record);
                     }
@@ -85,7 +85,7 @@
         }
         common.DreamFactory.deleteRecordsFiltered(mobile.schemas.ContactInfo.name, {
             where    : 'contactId=' + record.contactId,
-            callback : function (o) {
+            callback : function(o) {
                 callback();
             }
         });
@@ -112,16 +112,16 @@
             }
         },
 
-        init : function () {
+        init : function() {
             console.log('init ' + this.$className);
             this.callParent(arguments);
         },
 
-        onFormShown : function () {
+        onFormShown : function() {
 
         },
 
-        validate : function (values) {
+        validate : function(values) {
             if (!values.firstName.length || !values.lastName.length) {
                 Ext.Msg.alert('Error', 'First and Last Name are required');
                 return false;
@@ -129,26 +129,29 @@
             return true;
         },
 
-        doSave : function () {
-            console.log('doSave');
+        doSave : function() {
+//            console.log('doSave');
             var me = this,
                 contactList = me.getContactList(),
                 mainPanel = me.getMainPanel(),
                 form = me.getForm(),
-                record = form.getValues();
+                record = form.getValues(),
+                body = Ext.getBody();
 
             if (!me.validate(record)) {
                 return;
             }
-            console.dir(record);
+//            console.dir(record);
             var contactId = record.contactId = parseInt('0' + record.contactId, 10);
 
             if (record.imageUrl === '../img/default_portrait.png') {
                 record.imageUrl = '';
             }
 
-            saveContactRecord(record, function (o) {
-                deleteContactInfo(record, function () {
+//            var mask = new Ext.Mask(body);
+//            mask.show();
+            saveContactRecord(record, function(o) {
+                deleteContactInfo(record, function() {
 
                     var infoData = {
                         Home         : {
@@ -165,7 +168,7 @@
                         Mobile_empty : true
                     };
 
-                    Ext.iterate(record, function (key, value) {
+                    Ext.iterate(record, function(key, value) {
                         var parts = key.split('_');
                         if (parts.length > 1) {
                             var what = parts[0],
@@ -194,20 +197,17 @@
                         info.push(infoData.Mobile);
                     }
 
-//                    console.dir(infoData);
                     // create records
-                    common.DreamFactory.createRecords(mobile.schemas.ContactInfo.name, info, function (o) {
-                        // fire event
-                        contactList.getStore().load(function () {
-                            mainPanel.fireEvent('showCard', 'contact', 'down', record);
-                        });
+                    common.DreamFactory.createRecords(mobile.schemas.ContactInfo.name, info, function(o) {
+//                        mask.hide();
+                        mainPanel.fireEvent('showCard', 'contact', 'down', record);
                     });
                 });
             });
 
         },
 
-        onBeforeSubmit : function () {
+        onBeforeSubmit : function() {
             this.doSave();
             return false;
         }

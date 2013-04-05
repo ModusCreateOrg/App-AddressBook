@@ -7,6 +7,7 @@
 
 # initial version simply zips up the docroot directory
 rm df.zip
+find . -name '*.DS_Store' -type f -delete
 cd docroot && zip -rq ../df.zip . ; cd ..
 ls -l df.zip
 

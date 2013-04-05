@@ -4,6 +4,9 @@
  * Date: 2/11/13
  * Time: 7:17 AM
  *
+ * Implements the Document Services REST API
+ * Version 0.6, roughly as of February 15.
+ *
  * Copyright (c) 2013 Modus Create, Inc.
  * This file is licensed under the terms of the MIT license.
  * See the file license.txt for more details.
@@ -121,22 +124,10 @@
                 fields : record
             });
         });
-//        return {
-//            records : {
-//                record : recs
-//            }
-//        };
         return {
             record : records
         };
     }
-
-//    var production = window.location.host.indexOf('dreamfactory.com') !== -1;
-//    console.dir(window.location.host);
-//    console.dir(window.location.host.indexOf('dreamfactory.com'));
-//    ab.data = {
-//        serviceUrl : production ? '/' : '/service/',
-
 
     Ext.define('common.DreamFactory', {
         singleton : true,
@@ -437,7 +428,6 @@
             if (args.length) {
                 url += '?' + args.join('&');
             }
-console.dir('delete');
             rpc({
                 url      : url,
                 method   : 'DELETE',
