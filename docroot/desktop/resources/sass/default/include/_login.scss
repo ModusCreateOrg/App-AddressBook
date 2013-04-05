@@ -40,3 +40,7 @@
 .forgot-button {
   @include mainButton(#33485f) 
 }
+
+.login-form .x-panel-body-default-framed {
+  height: 123px !important;
+}
