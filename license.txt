@@ -10,7 +10,13 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-Sencha Touch SDK Directory (/sdk) is licensed under the terms of the GPLv3.
+The Sencha Touch SDK (in the docroot/mobile/touch directory) and the ExtJS SDK (in the docroot/desktop/ext directory) are licensed under the terms of the GPLv3, see below for details.
+
+Alternatively, commercial licenses ExtJS and Sencha Touch are available from Sencha, please see here for more information:
+
+ * http://www.sencha.com/products/touch/license/
+ * http://www.sencha.com/products/extjs/license/
+
 
                     GNU GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
