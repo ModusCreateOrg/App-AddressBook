@@ -54,8 +54,6 @@ Ext.define('ab.ux.DataSourceField', {
     },
     setValue: function(v) {
         var me = this;
-        console.log('DataSourceField.setValue');
-        console.dir(v);
         me.value = v;
 //        me.callParent(arguments);
         Ext.iterate(v, function(value) {
