@@ -22,7 +22,12 @@ Ext.define('ab.ux.DataSourceField', {
         var me = this,
 //            id = 'ds-' + Ext.id(),
             items = [],
-            initialized = false;
+            initialized = false,
+            value = me.value || me.config.value;
+
+console.log('initComponent DataSourceField');
+console.dir(me);
+console.dir(value);
 
         Ext.iterate(me.value, function(item) {
             items.push({
@@ -53,6 +58,7 @@ Ext.define('ab.ux.DataSourceField', {
     },
     setValue: function(v) {
         var me = this;
+        console.log('DataSourceField.setValue');
         console.dir(v);
         me.value = v;
 //        me.callParent(arguments);

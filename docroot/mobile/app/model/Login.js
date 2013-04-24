@@ -14,7 +14,7 @@ Ext.define('mobile.model.Login', {
     config: {
         fields: [
             'id',
-            'username',
+            'email',
             'password'
         ],
         proxy: {

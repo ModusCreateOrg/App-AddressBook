@@ -12,7 +12,13 @@
 Ext.define('ab.ux.SchemaGrid', {
     extend   : 'Ext.grid.Panel',
     alias    : 'widget.schemagrid',
-    requires : [ 'Ext.Action' ],
+    requires : [
+        'Ext.Action',
+        'Ext.form.field.Hidden',
+        'Ext.form.field.Text',
+        'Ext.form.field.TextArea',
+        'ab.ux.DataSourceField'
+    ],
 
     autoSizeColumns : true,
     autoFill        : true,
@@ -351,7 +357,7 @@ Ext.define('ab.ux.SchemaGrid', {
         var winEl = win.el,
             elHeight = winEl.getHeight(),
             form = win.down('form'),
-            newHeight = Math.min(form.getHeight() + elHeight + 10, Ext.getBody().getViewSize().height * .8),
+            newHeight = Math.min(form.getHeight() + elHeight + 10, Ext.getBody().getViewSize().height * 0.8),
             yPos = winEl.getTop() - (newHeight / 2),
             winBody = win.body,
             buttonBarEl = win.down('[ui=footer]').el;
@@ -371,8 +377,8 @@ Ext.define('ab.ux.SchemaGrid', {
                 winBody.fadeIn({duration : 500});
                 buttonBarEl.fadeIn({duration : 500});
                 Ext.Function.defer(function() {
-                    form.items.items[0].focus()
-                }, 600)
+                    form.items.items[0].focus();
+                }, 600);
             }
         });
     },

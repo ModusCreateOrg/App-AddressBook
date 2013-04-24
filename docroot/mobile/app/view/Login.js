@@ -40,8 +40,8 @@ Ext.define('mobile.view.Login', {
                 items    : [
                     {
                         xtype : 'textfield',
-                        name  : 'username',
-                        placeHolder: 'Username',
+                        name  : 'email',
+                        placeHolder: 'Email'
                     },
                     {
                         xtype : 'passwordfield',

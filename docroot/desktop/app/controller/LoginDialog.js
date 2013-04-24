@@ -37,18 +37,18 @@ Ext.define('ab.controller.LoginDialog', {
     onLoginButton : function(btn) {
         var me = this,
             dialog = btn.up('window'),
-            username = dialog.down('#username').getValue().trim(),
+            email = dialog.down('#email').getValue().trim(),
             password = dialog.down('#password').getValue();
 
-        if (!username.length || !password.length) {
-            dialog.errorMessage('Username and Password fields are required');
+        if (!email.length || !password.length) {
+            dialog.errorMessage('Email and Password fields are required');
             return;
         }
 
         dialog.disable();
         dialog.setMessage('Logging in...');
 
-        common.DreamFactory.login(username, password, function(o) {
+        common.DreamFactory.login(email, password, function(o) {
             if (o.error) {
                 dialog.enable();
                 dialog.setMessage('Log In Failed');
@@ -62,7 +62,7 @@ Ext.define('ab.controller.LoginDialog', {
     },
 
     onDialogShow : function(dialog) {
-        dialog.down('#username').focus(false, 20);
+        dialog.down('#email').focus(false, 20);
     },
     onEnterKey   : function(view) {
         this.onLoginButton(view.down('#login-button'));

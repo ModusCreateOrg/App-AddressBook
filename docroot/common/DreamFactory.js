@@ -138,11 +138,11 @@
             console.log('init dream factory');
         },
 
-        login : function (username, password, callback) {
+        login : function (email, password, callback) {
             rpc({
                 url      : 'user/session/',
                 params   : {
-                    username : username,
+                    email : email,
                     password : password
                 },
                 callback : callback

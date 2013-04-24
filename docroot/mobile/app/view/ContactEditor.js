@@ -19,7 +19,12 @@ Ext.define('mobile.view.ContactEditor', {
 
     initialize : function() {
         var me = this,
-            details = me.details;
+            details = me.details || me.config.details;
+
+console.log('>>>');
+console.dir(details);
+console.dir(me);
+console.log('<<<');
 
         me.callParent(arguments);
         var items = [];
@@ -48,8 +53,8 @@ Ext.define('mobile.view.ContactEditor', {
 
         Ext.iterate(['Home', 'Work', 'Mobile'], function(what) {
             var detail = false;
-            if (me.details && me.details.contactData) {
-                Ext.iterate(me.details.contactData, function(info) {
+            if (details && details.contactData) {
+                Ext.iterate(details.contactData, function(info) {
                     if (info.infoType === what) {
                         detail = info;
                     }

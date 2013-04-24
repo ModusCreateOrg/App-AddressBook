@@ -23,7 +23,9 @@ cp -rp docroot/img $TMPDIR
 cp -rp docroot/index.html $TMPDIR
 cp -rp docroot/json $TMPDIR
 cp -rp docroot/desktop/build/desktop/production $TMPDIR/desktop
+cp -rp extras/clear.html $TMPDIR/desktop
 cp -rp docroot/mobile/build/mobile/production $TMPDIR/mobile
+cp -rp extras/clear.html $TMPDIR/mobile
 
 echo "Creating zip file"
 cd $TMPDIR

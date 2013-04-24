@@ -38,10 +38,10 @@ Ext.define('ab.view.LoginDialog', {
         },
         items    : [
             {
-                itemId     : 'username',
+                itemId     : 'email',
                 // fieldLabel : 'Username',
                 hideLabel  : true,
-                emptyText : 'Username',
+                emptyText : 'Email Address',
                 value      : 'admin'
             },
             {

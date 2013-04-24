@@ -15,7 +15,6 @@
         var allGroups = [],
             groups = [];
 
-        console.log('loadContactRecord');
         common.DreamFactory.filterRecords(ab.Schemas.ContactGroups.name, {
             fields   : 'contactGroupId,groupName',
             callback : function (o) {
@@ -52,7 +51,6 @@
                                     });
                                     record.groups = allGroups;
                                     record.currentGroups = groups;
-                                    console.dir(record);
                                     if (callback) {
                                         callback(record);
                                     }
@@ -287,7 +285,7 @@
                 '<span id="clock"></span>',
                 '-',
                 {
-                    text   : '', //ab.user.username
+                    text   : '', //ab.user.email
                     itemId : 'user-button',
                     icon   : '../img/famfam/user.png',
                     menu   : [

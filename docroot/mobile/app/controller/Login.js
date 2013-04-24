@@ -42,7 +42,7 @@ Ext.define('mobile.controller.Login', {
         Login.load('saved', {
             success: function(login) {
                 form.setValues({
-                    username: login.get('username'),
+                    email: login.get('email'),
                     password: login.get('password')
                 });
             },
@@ -55,10 +55,10 @@ Ext.define('mobile.controller.Login', {
     doLogin: function(form) {
         var fields = form.getValues();
 
-        var login = Ext.create('mobile.model.Login', { id: 'saved', username: fields.username, password: fields.password });
+        var login = Ext.create('mobile.model.Login', { id: 'saved', email: fields.email, password: fields.password });
         login.save();
 
-        common.DreamFactory.login(fields.username, fields.password, function(o) {
+        common.DreamFactory.login(fields.email, fields.password, function(o) {
             if (o.error) {
                 var e = o.error[0],
                     code = e.code,
@@ -85,25 +85,6 @@ Ext.define('mobile.controller.Login', {
             form = button.up('loginview');
 
         me.doLogin(form);
-//            fields = form.getValues();
-//
-//        var login = Ext.create('mobile.model.Login', { id: 'saved', username: fields.username, password: fields.password });
-//        login.save();
-//
-//        common.DreamFactory.login(fields.username, fields.password, function(o) {
-//            if (o.error) {
-//                var e = o.error[0],
-//                    code = e.code,
-//                    message = e.message;
-//                console.log('here');
-//                console.log(code + ' ' + message);
-//                Ext.Msg.alert('Error ' + code, message);
-//            }
-//            else {
-//                Ext.Viewport.removeAll(true, true);
-//                Ext.Viewport.add(Ext.create('mobile.view.' + form.which + '.Main'));
-//            }
-//        });
-
     }
+
 });

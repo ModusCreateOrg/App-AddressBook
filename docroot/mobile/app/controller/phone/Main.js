@@ -64,23 +64,29 @@
                                 }
                                 return;
                             }
-                            common.DreamFactory.filterRecords(mobile.schemas.ContactRelationships.name, {
-                                fields   : 'contactGroupId',
+                            common.DreamFactory.filterRecords(mobile.schemas.ContactInfo.name, {
                                 where    : 'contactId=' + record.contactId,
                                 callback : function(o) {
-                                    Ext.iterate(o.record, function(record) {
-                                        groups.push(intVal(record.contactGroupId));
-                                    });
-                                    Ext.each(allGroups, function(group) {
-                                        if (groups.indexOf(group.value) !== -1) {
-                                            group.checked = true;
+                                    record.contactData = o.record;
+                                    common.DreamFactory.filterRecords(mobile.schemas.ContactRelationships.name, {
+                                        fields   : 'contactGroupId',
+                                        where    : 'contactId=' + record.contactId,
+                                        callback : function(o) {
+                                            Ext.iterate(o.record, function(record) {
+                                                groups.push(intVal(record.contactGroupId));
+                                            });
+                                            Ext.each(allGroups, function(group) {
+                                                if (groups.indexOf(group.value) !== -1) {
+                                                    group.checked = true;
+                                                }
+                                            });
+                                            record.groups = allGroups;
+                                            record.currentGroups = groups;
+                                            if (callback) {
+                                                callback(record);
+                                            }
                                         }
                                     });
-                                    record.groups = allGroups;
-                                    record.currentGroups = groups;
-                                    if (callback) {
-                                        callback(record);
-                                    }
                                 }
                             });
                         }
