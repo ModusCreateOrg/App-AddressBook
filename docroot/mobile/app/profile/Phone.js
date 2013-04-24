@@ -23,6 +23,7 @@ Ext.define('mobile.profile.Phone', {
     },
 
     isActive: function() {
+        if (Ext.os.is.Phone) console.log('is Phone');
         return Ext.os.is.Phone;
     },
 

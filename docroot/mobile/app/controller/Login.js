@@ -67,7 +67,7 @@ Ext.define('mobile.controller.Login', {
             }
             else {
                 Ext.Viewport.removeAll(true, true);
-                Ext.Viewport.add(Ext.create('mobile.view.' + form.which + '.Main'));
+                Ext.Viewport.add(Ext.create('mobile.view.' + form.config.which + '.Main'));
             }
         });
 

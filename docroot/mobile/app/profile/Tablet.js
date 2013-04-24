@@ -23,6 +23,7 @@ Ext.define('mobile.profile.Tablet', {
     },
 
     isActive: function() {
+        if (Ext.os.is.Tablet) console.log('is Tablet');
         return Ext.os.is.Tablet;
     },
 
