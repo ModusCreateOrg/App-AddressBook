@@ -131,7 +131,7 @@
 
     Ext.define('common.DreamFactory', {
         singleton : true,
-        extend    : 'Ext.Base',
+        // extend    : 'Ext.Base',
 
         serviceUrl : (window.location.host.indexOf('dreamfactory.com') !== -1) ? '/' : '/service/',
         init       : function () {

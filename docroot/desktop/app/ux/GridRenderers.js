@@ -16,7 +16,7 @@
 
     Ext.define('ab.ux.Renderers', {
         singleton : true,
-        extend    : 'Ext.Base',
+
         creator : function(value, p, record) {
             return date(record.created) + '<br/>By ' + record.creatorInfo.username;
         },

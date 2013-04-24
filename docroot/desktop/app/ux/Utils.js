@@ -17,7 +17,6 @@
 
     Ext.define('ab.ux.Utils', {
         singleton : true,
-        extend    : 'Ext.Base',
 
         // TODO : migrate to utils namespace
 

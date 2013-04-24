@@ -10,10 +10,10 @@
  */
 Ext.define('ab.controller.TabPanel', {
     extend : 'Ext.app.Controller',
-    views  : [
-        'TabPanel.Panel',
-        'UsersTab.Panel'
-    ],
+    // views  : [
+    //     'TabPanel.Panel',
+    //     'UsersTab.Panel'
+    // ],
     init   : function() {
         var me = this;
 

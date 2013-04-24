@@ -3,3 +3,7 @@ df.zip
 .idea
 .idea/*
 .sass-cache
+docroot/dekstop/build
+docroot/desktop/stderr.txt
+docroot/desktop/archive/
+docroot/mobile/build/
