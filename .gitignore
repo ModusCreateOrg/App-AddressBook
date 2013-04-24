@@ -1,9 +1,12 @@
 df.zip
+release.zip
 .DS_Store
 .idea
 .idea/*
 .sass-cache
-docroot/dekstop/build
+docroot/desktop/build/
 docroot/desktop/stderr.txt
 docroot/desktop/archive/
 docroot/mobile/build/
+docroot/mobile/archive/
+docroot-release
