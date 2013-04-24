@@ -25,10 +25,6 @@ Ext.define('ab.ux.DataSourceField', {
             initialized = false,
             value = me.value || me.config.value;
 
-console.log('initComponent DataSourceField');
-console.dir(me);
-console.dir(value);
-
         Ext.iterate(me.value, function(item) {
             items.push({
                 id: me.id + '-' + item.value,
